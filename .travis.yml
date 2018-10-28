@@ -1,5 +1,4 @@
 language: java
-
 notifications:
   slack: nc2019g2:pjWFFs5gmLJj4sufb1w7tULk
     on_success: always
