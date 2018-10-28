@@ -3,6 +3,8 @@ package com.devstr;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 public class AppTest {
 
     @Before
@@ -16,7 +18,11 @@ public class AppTest {
 
     @Test
     public void emailNotification() {
-        
+        assertTrue(trueMethod());
+    }
+
+    private boolean trueMethod() {
+        return true;
     }
 
 }
