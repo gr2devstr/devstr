@@ -1,1 +1,10 @@
 language: java
+
+notifications:
+  email:
+    recipients:
+      - gr2devstr@gmail.com
+    on_success: always
+    on_failure: always
+
+
