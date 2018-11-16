@@ -22,7 +22,7 @@ public class Project {
     private String jiraLogin;
     private String jiraPassword;
 
-    private Project(){
+    private Project() {
     }
 
     public int getProjectId() {
@@ -89,38 +89,139 @@ public class Project {
         return new Project().new ProjectBuilder();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Project project = (Project) o;
+
+        if (projectId != project.projectId) return false;
+        return projectManagerId == project.projectManagerId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = projectId;
+        result = 31 * result + projectManagerId;
+        return result;
+    }
+
     public class ProjectBuilder {
 
         private ProjectBuilder() {
         }
 
-        public ProjectBuilder setProjectId(int id){
+        public ProjectBuilder setProjectId(int id) {
             Project.this.projectId = id;
             return this;
         }
 
-        public ProjectBuilder setProjectName(String name){
+        public ProjectBuilder setProjectName(String name) {
             Project.this.projectName = name;
             return this;
         }
 
-        public ProjectBuilder setProjectManagerId(int id){
+        public ProjectBuilder setProjectManagerId(int id) {
             Project.this.projectManagerId = id;
             return this;
         }
 
-        public ProjectBuilder setTechnicalManagerId(int id){
+        public ProjectBuilder setTechnicalManagerId(int id) {
             Project.this.technicalManagerId = id;
             return this;
         }
 
-        public ProjectBuilder setDeveloperId(int id){
-            if (developersId == null) {
-                developersId = new HashSet<>();
+        public ProjectBuilder setDeveloperId(int id) {
+            if (Project.this.developersId == null) {
+                Project.this.developersId = new HashSet<>();
             }
-
-            Project.this.projectManagerId = id;
+            Project.this.developersId.add(id);
             return this;
+        }
+
+        public ProjectBuilder setDevelopersId(Set<Integer> ids) {
+            if (Project.this.developersId == null) {
+                Project.this.developersId = new HashSet<>();
+            }
+            Project.this.developersId.addAll(ids);
+            return this;
+        }
+
+        public ProjectBuilder setReview(Review review) {
+            if (Project.this.reviews == null) {
+                Project.this.reviews = new HashSet<>();
+            }
+            Project.this.reviews.add(review);
+            return this;
+        }
+
+        public ProjectBuilder setReviews(Set<Review> reviews) {
+            if (Project.this.reviews == null) {
+                Project.this.reviews = new HashSet<>();
+            }
+            Project.this.reviews.addAll(reviews);
+            return this;
+        }
+
+        public ProjectBuilder setIssueId(int id) {
+            if (Project.this.issuesId == null) {
+                Project.this.issuesId = new HashSet<>();
+            }
+            Project.this.issuesId.add(id);
+            return this;
+        }
+
+        public ProjectBuilder setIssuesId(Set<Integer> ids) {
+            if (Project.this.issuesId == null) {
+                Project.this.issuesId = new HashSet<>();
+            }
+            Project.this.issuesId.addAll(ids);
+            return this;
+        }
+
+        public ProjectBuilder setFromDate(LocalDate fromDate) {
+            Project.this.fromDate = fromDate;
+            return this;
+        }
+
+        public ProjectBuilder setToDate(LocalDate toDate) {
+            Project.this.toDate = toDate;
+            return this;
+        }
+
+        public ProjectBuilder setStatus(boolean status) {
+            Project.this.status = status;
+            return this;
+        }
+
+        public ProjectBuilder setGitLogin(String login) {
+            Project.this.gitLogin = login;
+            return this;
+        }
+
+        public ProjectBuilder setGitPassword(String password) {
+            Project.this.gitPassword = password;
+            return this;
+        }
+
+        public ProjectBuilder setJiraLogin(String login) {
+            Project.this.jiraLogin = login;
+            return this;
+        }
+
+        public ProjectBuilder setJiraPassword(String password) {
+            Project.this.jiraPassword = password;
+            return this;
+        }
+
+        public ProjectBuilder setRepoName(String repoName) {
+            Project.this.repoName = repoName;
+            return this;
+        }
+
+        public Project build() {
+            return Project.this;
         }
 
     }
