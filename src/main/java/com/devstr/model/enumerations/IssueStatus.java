@@ -14,7 +14,7 @@ public enum IssueStatus {
         this.issueStatus = issueStatus;
     }
 
-    public String getIssueStatus() {
+    public String getFullName() {
         return issueStatus;
     }
 

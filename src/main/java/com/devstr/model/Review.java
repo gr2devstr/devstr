@@ -2,17 +2,15 @@ package com.devstr.model;
 
 import java.util.Date;
 
-public class Review {
+public abstract class Review {
 
     private int reviewId;
     private int authorId;
     private String authorFullName;
-    private String receiverFullName;
-    private int projectId;
     private String comment;
     private Date creationDate;
 
-    private Review() {
+    Review() {
     }
 
     public int getReviewId() {
@@ -27,24 +25,12 @@ public class Review {
         return authorFullName;
     }
 
-    public String getReceiverFullName() {
-        return receiverFullName;
-    }
-
-    public int getProjectId() {
-        return projectId;
-    }
-
     public String getComment() {
         return comment;
     }
 
     public Date getCreationDate() {
         return creationDate;
-    }
-
-    public static ReviewBuilder builder() {
-        return new Review().new ReviewBuilder();
     }
 
     @Override
@@ -54,20 +40,17 @@ public class Review {
 
         Review review = (Review) o;
 
-        if (reviewId != review.reviewId) return false;
-        return authorId == review.authorId;
+        return getReviewId() == review.getReviewId();
     }
 
     @Override
     public int hashCode() {
-        int result = reviewId;
-        result = 31 * result + authorId;
-        return result;
+        return getReviewId();
     }
 
-    public class ReviewBuilder {
+    class ReviewBuilder {
 
-        private ReviewBuilder() {
+        ReviewBuilder() {
         }
 
         public ReviewBuilder setReviewId(int id) {
@@ -80,18 +63,9 @@ public class Review {
             return this;
         }
 
+
         public ReviewBuilder setAuthorFullName(String fullName) {
             Review.this.authorFullName = fullName;
-            return this;
-        }
-
-        public ReviewBuilder setReceiverFullName(String fullName) {
-            Review.this.receiverFullName = fullName;
-            return this;
-        }
-
-        public ReviewBuilder setProjectId(int id) {
-            Review.this.projectId = id;
             return this;
         }
 
