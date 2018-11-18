@@ -1,6 +1,6 @@
 package com.devstr.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +9,7 @@ public class Commit {
     private int commitId;
     private int userId;
     private String sha;
-    private LocalDate date;
+    private Date date;
     private Set<CommitClass> commitClasses;
     private boolean buildStatus;
     private String buildSha;
@@ -29,7 +29,7 @@ public class Commit {
         return sha;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -98,7 +98,7 @@ public class Commit {
             return this;
         }
 
-        public CommitBuilder setDate(LocalDate date) {
+        public CommitBuilder setDate(Date date) {
             Commit.this.date = date;
             return this;
         }

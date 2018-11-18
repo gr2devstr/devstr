@@ -71,7 +71,6 @@ public class User {
             this.reviewsId = new HashSet<>();
         }
         this.reviewsId.add(reviewId);
-    }
 
     public void setReviewsId(Set<Integer> reviewsId) {
         if (this.reviewsId == null) {
@@ -166,8 +165,6 @@ public class User {
                 User.this.reviewsId = new HashSet<>();
             }
             User.this.reviewsId.addAll(reviewsId);
-            return this;
-        }
 
         public UserBuilder setProjectId(int projectId) {
             User.this.projectId = projectId;
