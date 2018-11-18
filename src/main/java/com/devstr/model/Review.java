@@ -2,15 +2,17 @@ package com.devstr.model;
 
 import java.util.Date;
 
-public abstract class Review {
+public class Review {
 
     private int reviewId;
     private int authorId;
     private String authorFullName;
+    private String receiverFullName;
+    private int projectId;
     private String comment;
     private Date creationDate;
 
-    Review() {
+    private Review() {
     }
 
     public int getReviewId() {
@@ -25,12 +27,24 @@ public abstract class Review {
         return authorFullName;
     }
 
+    public String getReceiverFullName() {
+        return receiverFullName;
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
     public String getComment() {
         return comment;
     }
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public static ReviewBuilder builder() {
+        return new Review().new ReviewBuilder();
     }
 
     @Override
@@ -40,17 +54,20 @@ public abstract class Review {
 
         Review review = (Review) o;
 
-        return getReviewId() == review.getReviewId();
+        if (reviewId != review.reviewId) return false;
+        return authorId == review.authorId;
     }
 
     @Override
     public int hashCode() {
-        return getReviewId();
+        int result = reviewId;
+        result = 31 * result + authorId;
+        return result;
     }
 
-    class ReviewBuilder {
+    public class ReviewBuilder {
 
-        ReviewBuilder() {
+        private ReviewBuilder() {
         }
 
         public ReviewBuilder setReviewId(int id) {
@@ -63,9 +80,18 @@ public abstract class Review {
             return this;
         }
 
-
         public ReviewBuilder setAuthorFullName(String fullName) {
             Review.this.authorFullName = fullName;
+            return this;
+        }
+
+        public ReviewBuilder setReceiverFullName(String fullName) {
+            Review.this.receiverFullName = fullName;
+            return this;
+        }
+
+        public ReviewBuilder setProjectId(int id) {
+            Review.this.projectId = id;
             return this;
         }
 

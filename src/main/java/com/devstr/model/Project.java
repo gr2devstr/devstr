@@ -11,16 +11,16 @@ public class Project {
     private int projectManagerId;
     private int technicalManagerId;
     private Set<Integer> developersId;
+    private Set<Review> reviews;
     private Set<Integer> issuesId;
+    private Date fromDate;
+    private Date toDate;
+    private boolean status;
     private String repoName;
     private String gitLogin;
     private String gitPassword;
     private String jiraLogin;
     private String jiraPassword;
-    private LocalDate fromDate;
-    private LocalDate toDate;
-    private boolean status;
-    private Set<Integer> reviewsId;
 
     private Project() {
     }
@@ -45,8 +45,24 @@ public class Project {
         return developersId;
     }
 
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
     public Set<Integer> getIssuesId() {
         return issuesId;
+    }
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public boolean isStatus() {
+        return status;
     }
 
     public String getRepoName() {
@@ -69,36 +85,6 @@ public class Project {
         return jiraPassword;
     }
 
-    public LocalDate getFromDate() {
-        return fromDate;
-    }
-
-    public LocalDate getToDate() {
-        return toDate;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public Set<Integer> getReviewsId() {
-        return reviewsId;
-    }
-
-    public void setReviewId(int reviewId) {
-        if (this.reviewsId == null) {
-            this.reviewsId = new HashSet<>();
-        }
-        this.reviewsId.add(reviewId);
-    }
-
-    public void setReviewsId(Set<Integer> reviewsId) {
-        if (this.reviewsId == null) {
-            this.reviewsId = new HashSet<>();
-        }
-        this.reviewsId.addAll(reviewsId);
-    }
-
     public static ProjectBuilder builder() {
         return new Project().new ProjectBuilder();
     }
@@ -110,12 +96,15 @@ public class Project {
 
         Project project = (Project) o;
 
-        return getProjectId() == project.getProjectId();
+        if (projectId != project.projectId) return false;
+        return projectManagerId == project.projectManagerId;
     }
 
     @Override
     public int hashCode() {
-        return getProjectId();
+        int result = projectId;
+        result = 31 * result + projectManagerId;
+        return result;
     }
 
     public class ProjectBuilder {
@@ -159,6 +148,22 @@ public class Project {
             return this;
         }
 
+        public ProjectBuilder setReview(Review review) {
+            if (Project.this.reviews == null) {
+                Project.this.reviews = new HashSet<>();
+            }
+            Project.this.reviews.add(review);
+            return this;
+        }
+
+        public ProjectBuilder setReviews(Set<Review> reviews) {
+            if (Project.this.reviews == null) {
+                Project.this.reviews = new HashSet<>();
+            }
+            Project.this.reviews.addAll(reviews);
+            return this;
+        }
+
         public ProjectBuilder setIssueId(int id) {
             if (Project.this.issuesId == null) {
                 Project.this.issuesId = new HashSet<>();
@@ -175,8 +180,18 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setRepoName(String repoName) {
-            Project.this.repoName = repoName;
+        public ProjectBuilder setFromDate(Date fromDate) {
+            Project.this.fromDate = fromDate;
+            return this;
+        }
+
+        public ProjectBuilder setToDate(Date toDate) {
+            Project.this.toDate = toDate;
+            return this;
+        }
+
+        public ProjectBuilder setStatus(boolean status) {
+            Project.this.status = status;
             return this;
         }
 
@@ -200,34 +215,8 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setFromDate(LocalDate fromDate) {
-            Project.this.fromDate = fromDate;
-            return this;
-        }
-
-        public ProjectBuilder setToDate(LocalDate toDate) {
-            Project.this.toDate = toDate;
-            return this;
-        }
-
-        public ProjectBuilder setStatus(boolean status) {
-            Project.this.status = status;
-            return this;
-        }
-
-        public ProjectBuilder setReviewId(int reviewId) {
-            if (Project.this.reviewsId == null) {
-                Project.this.reviewsId = new HashSet<>();
-            }
-            Project.this.reviewsId.add(reviewId);
-            return this;
-        }
-
-        public ProjectBuilder setReviewsId(Set<Integer> reviewsId) {
-            if (Project.this.reviewsId == null) {
-                Project.this.reviewsId = new HashSet<>();
-            }
-            Project.this.reviewsId.addAll(reviewsId);
+        public ProjectBuilder setRepoName(String repoName) {
+            Project.this.repoName = repoName;
             return this;
         }
 
