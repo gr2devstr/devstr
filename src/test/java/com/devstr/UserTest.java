@@ -1,7 +1,7 @@
 package com.devstr;
 
-import com.devstr.model1.User;
-import com.devstr.model1.enumerations.UserRole;
+import com.devstr.model.User;
+import com.devstr.model.enumerations.UserRole;
 import org.junit.Before;
 import org.junit.Test;
 
