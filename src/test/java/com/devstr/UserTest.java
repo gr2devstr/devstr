@@ -5,7 +5,7 @@ import com.devstr.model.enumerations.UserRole;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -43,12 +43,12 @@ public class UserTest {
                 .setFirstName("Anna")
                 .setLastName("Karenina")
                 .setRole(UserRole.TECHNICAL_MANAGER)
-                .setHireDate(LocalDate.now())
+                .setHireDate(new Date(1))
                 .build();
         userD = User.builder()
                 .setUserId(103)
                 .setLogin("bob103")
-                .setHireDate(LocalDate.now())
+                .setHireDate(new Date(2))
                 .build();
         userE = User.builder()
                 .setUserId(101)

@@ -1,6 +1,6 @@
 package com.devstr.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class Review {
 
@@ -10,7 +10,7 @@ public class Review {
     private String receiverFullName;
     private int projectId;
     private String comment;
-    private LocalDate creationDate;
+    private Date creationDate;
 
     private Review() {
     }
@@ -39,7 +39,7 @@ public class Review {
         return comment;
     }
 
-    public LocalDate getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
@@ -100,7 +100,7 @@ public class Review {
             return this;
         }
 
-        public ReviewBuilder setCreationDate(LocalDate creationDate) {
+        public ReviewBuilder setCreationDate(Date creationDate) {
             Review.this.creationDate = creationDate;
             return this;
         }
