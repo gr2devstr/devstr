@@ -4,7 +4,7 @@ import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class Issue {
 
@@ -14,8 +14,8 @@ public class Issue {
     private IssueType type;
     private IssueStatus status;
     private IssuePriority priority;
-    private LocalDate startDate;
-    private LocalDate dueDate;
+    private Date startDate;
+    private Date dueDate;
     private int userId;
     private String reporter;
     private Commit commit;
@@ -47,11 +47,11 @@ public class Issue {
         return priority;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public LocalDate getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
@@ -124,12 +124,12 @@ public class Issue {
             return this;
         }
 
-        public IssueBuilder setStartDate(LocalDate startDate) {
+        public IssueBuilder setStartDate(Date startDate) {
             Issue.this.startDate = startDate;
             return this;
         }
 
-        public IssueBuilder setDueDate(LocalDate dueDate) {
+        public IssueBuilder setDueDate(Date dueDate) {
             Issue.this.dueDate = dueDate;
             return this;
         }

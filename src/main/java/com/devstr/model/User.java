@@ -2,7 +2,7 @@ package com.devstr.model;
 
 import com.devstr.model.enumerations.UserRole;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public class User {
     private String email;
     private UserRole role;
     private int projectId;
-    private LocalDate hireDate;
+    private Date hireDate;
     private boolean status;
 
     private User() {
@@ -59,7 +59,7 @@ public class User {
         return projectId;
     }
 
-    public LocalDate getHireDate() {
+    public Date getHireDate() {
         return hireDate;
     }
 
@@ -150,7 +150,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setHireDate(LocalDate hireDate) {
+        public UserBuilder setHireDate(Date hireDate) {
             User.this.hireDate = hireDate;
             return this;
         }
