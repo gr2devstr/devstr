@@ -2,6 +2,7 @@ package com.devstr.dao.impl;
 
 import com.devstr.dao.ProjectDAO;
 import com.devstr.model.Project;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Set;
 
@@ -9,6 +10,9 @@ import java.util.Set;
  * Created by Robert in 18.11.2018
  */
 public class ProjectDAOImpl implements ProjectDAO {
+
+    JdbcTemplate jdbcTemplate;
+
     @Override
     public void createProject(String name, int managerId, int techId, Set<Integer> devs, String repoName, String gitLogin, String gitPass, String jiraLogin, String jiraPass) {
 
