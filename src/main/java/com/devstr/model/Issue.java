@@ -3,22 +3,23 @@ package com.devstr.model;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
-
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Issue {
 
     private int issueId;
     private String issueKey;
-    private int projectId;
     private IssueType type;
     private IssueStatus status;
     private IssuePriority priority;
-    private Date startDate;
-    private Date dueDate;
+    private LocalDate startDate;
+    private LocalDate dueDate;
+    private int projectId;
     private int userId;
     private String reporter;
-    private Commit commit;
+    private Set<Commit> commits;
 
     private Issue(){
     }
@@ -29,10 +30,6 @@ public class Issue {
 
     public String getIssueKey() {
         return issueKey;
-    }
-
-    public int getProjectId() {
-        return projectId;
     }
 
     public IssueType getType() {
@@ -47,12 +44,16 @@ public class Issue {
         return priority;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
+    }
+
+    public int getProjectId() {
+        return projectId;
     }
 
     public int getUserId() {
@@ -63,8 +64,22 @@ public class Issue {
         return reporter;
     }
 
-    public Commit getCommit() {
-        return commit;
+    public Set<Commit> getCommits() {
+        return commits;
+    }
+
+    public void setCommit(Commit commit) {
+        if (this.commits == null) {
+            this.commits = new HashSet<>();
+        }
+        this.commits.add(commit);
+    }
+
+    public void setCommits(Set<Commit> commits) {
+        if (this.commits == null) {
+            this.commits = new HashSet<>();
+        }
+        this.commits.addAll(commits);
     }
 
     public static IssueBuilder builder() {
@@ -78,15 +93,12 @@ public class Issue {
 
         Issue issue = (Issue) o;
 
-        if (issueId != issue.issueId) return false;
-        return issueKey.equals(issue.issueKey);
+        return getIssueId() == issue.getIssueId();
     }
 
     @Override
     public int hashCode() {
-        int result = issueId;
-        result = 31 * result + issueKey.hashCode();
-        return result;
+        return getIssueId();
     }
 
     public class IssueBuilder {
@@ -101,11 +113,6 @@ public class Issue {
 
         public IssueBuilder setIssueKey(String key) {
             Issue.this.issueKey = key;
-            return this;
-        }
-
-        public IssueBuilder setProjectId(int id) {
-            Issue.this.projectId = id;
             return this;
         }
 
@@ -124,13 +131,18 @@ public class Issue {
             return this;
         }
 
-        public IssueBuilder setStartDate(Date startDate) {
+        public IssueBuilder setStartDate(LocalDate startDate) {
             Issue.this.startDate = startDate;
             return this;
         }
 
-        public IssueBuilder setDueDate(Date dueDate) {
+        public IssueBuilder setDueDate(LocalDate dueDate) {
             Issue.this.dueDate = dueDate;
+            return this;
+        }
+
+        public IssueBuilder setProjectId(int id) {
+            Issue.this.projectId = id;
             return this;
         }
 
@@ -145,7 +157,18 @@ public class Issue {
         }
 
         public IssueBuilder setCommit(Commit commit) {
-            Issue.this.commit = commit;
+            if (Issue.this.commits == null) {
+                Issue.this.commits = new HashSet<>();
+            }
+            Issue.this.commits.add(commit);
+            return this;
+        }
+
+        public IssueBuilder setCommits(Set<Commit> commits) {
+            if (Issue.this.commits == null) {
+                Issue.this.commits = new HashSet<>();
+            }
+            Issue.this.commits.addAll(commits);
             return this;
         }
 
