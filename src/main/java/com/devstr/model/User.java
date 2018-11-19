@@ -1,8 +1,7 @@
 package com.devstr.model;
 
 import com.devstr.model.enumerations.UserRole;
-
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,15 +9,15 @@ public class User {
 
     private int userId;
     private String login;
-    private String firstName;
-    private String lastName;
-    private Set<Review> reviews;
     private String password;
     private String email;
+    private String firstName;
+    private String lastName;
     private UserRole role;
-    private int projectId;
-    private Date hireDate;
+    private LocalDate hireDate;
     private boolean status;
+    private Set<Integer> reviewsId;
+    private int projectId;
 
     private User() {
     }
@@ -31,18 +30,6 @@ public class User {
         return login;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Set<Review> getReviews() {
-        return reviews;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -51,20 +38,50 @@ public class User {
         return email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
     public UserRole getRole() {
         return role;
+    }
+
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public Set<Integer> getReviewsId() {
+        return reviewsId;
     }
 
     public int getProjectId() {
         return projectId;
     }
 
-    public Date getHireDate() {
-        return hireDate;
+    public void setReviewId(int reviewId) {
+        if (this.reviewsId == null) {
+            this.reviewsId = new HashSet<>();
+        }
+        this.reviewsId.add(reviewId);
     }
 
-    public boolean isStatus() {
-        return status;
+    public void setReviewsId(Set<Integer> reviewsId) {
+        if (this.reviewsId == null) {
+            this.reviewsId = new HashSet<>();
+        }
+        this.reviewsId.addAll(reviewsId);
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public static UserBuilder builder() {
@@ -78,15 +95,12 @@ public class User {
 
         User user = (User) o;
 
-        if (userId != user.userId) return false;
-        return login.equals(user.login);
+        return getUserId() == user.getUserId();
     }
 
     @Override
     public int hashCode() {
-        int result = userId;
-        result = 31 * result + login.hashCode();
-        return result;
+        return getUserId();
     }
 
     public class UserBuilder {
@@ -104,32 +118,6 @@ public class User {
             return this;
         }
 
-        public UserBuilder setFirstName(String firstName) {
-            User.this.firstName = firstName;
-            return this;
-        }
-
-        public UserBuilder setLastName(String lastName) {
-            User.this.lastName = lastName;
-            return this;
-        }
-
-        public UserBuilder setReview(Review review) {
-            if (User.this.reviews == null) {
-                User.this.reviews = new HashSet<>();
-            }
-            User.this.reviews.add(review);
-            return this;
-        }
-
-        public UserBuilder setReviews(Set<Review> reviews) {
-            if (User.this.reviews == null) {
-                User.this.reviews = new HashSet<>();
-            }
-            User.this.reviews.addAll(reviews);
-            return this;
-        }
-
         public UserBuilder setPassword(String password) {
             User.this.password = password;
             return this;
@@ -140,23 +128,49 @@ public class User {
             return this;
         }
 
+        public UserBuilder setFirstName(String firstName) {
+            User.this.firstName = firstName;
+            return this;
+        }
+
+        public UserBuilder setLastName(String lastName) {
+            User.this.lastName = lastName;
+            return this;
+        }
+
         public UserBuilder setRole(UserRole role) {
             User.this.role = role;
             return this;
         }
 
-        public UserBuilder setProjectId(int projectId) {
-            User.this.projectId = projectId;
-            return this;
-        }
-
-        public UserBuilder setHireDate(Date hireDate) {
+        public UserBuilder setHireDate(LocalDate hireDate) {
             User.this.hireDate = hireDate;
             return this;
         }
 
         public UserBuilder setStatus(boolean status) {
             User.this.status = status;
+            return this;
+        }
+
+        public UserBuilder setReviewId(int reviewId) {
+            if (User.this.reviewsId == null) {
+                User.this.reviewsId = new HashSet<>();
+            }
+            User.this.reviewsId.add(reviewId);
+            return this;
+        }
+
+        public UserBuilder setReviewsId(Set<Integer> reviewsId) {
+            if (User.this.reviewsId == null) {
+                User.this.reviewsId = new HashSet<>();
+            }
+            User.this.reviewsId.addAll(reviewsId);
+            return this;
+        }
+
+        public UserBuilder setProjectId(int projectId) {
+            User.this.projectId = projectId;
             return this;
         }
 
