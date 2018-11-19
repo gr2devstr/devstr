@@ -15,7 +15,7 @@ public enum IssueType {
         this.issueType = issueType;
     }
 
-    public String getIssueType() {
+    public String getFullName() {
         return issueType;
     }
 

@@ -1,6 +1,6 @@
 package com.devstr.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +9,7 @@ public class Commit {
     private int commitId;
     private int userId;
     private String sha;
-    private Date date;
+    private LocalDate date;
     private Set<CommitClass> commitClasses;
     private boolean buildStatus;
     private String buildSha;
@@ -29,7 +29,7 @@ public class Commit {
         return sha;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -37,12 +37,26 @@ public class Commit {
         return commitClasses;
     }
 
-    public boolean isBuildStatus() {
+    public boolean getBuildStatus() {
         return buildStatus;
     }
 
     public String getBuildSha() {
         return buildSha;
+    }
+
+    public void setCommitClass(CommitClass commitClass) {
+        if (this.commitClasses == null) {
+            this.commitClasses = new HashSet<>();
+        }
+        this.commitClasses.add(commitClass);
+    }
+
+    public void setCommitClasses(Set<CommitClass> commitClasses) {
+        if (this.commitClasses == null) {
+            this.commitClasses = new HashSet<>();
+        }
+        this.commitClasses.addAll(commitClasses);
     }
 
     public static CommitBuilder builder() {
@@ -56,15 +70,12 @@ public class Commit {
 
         Commit commit = (Commit) o;
 
-        if (commitId != commit.commitId) return false;
-        return sha.equals(commit.sha);
+        return getCommitId() == commit.getCommitId();
     }
 
     @Override
     public int hashCode() {
-        int result = commitId;
-        result = 31 * result + sha.hashCode();
-        return result;
+        return getCommitId();
     }
 
     public class CommitBuilder {
@@ -87,7 +98,7 @@ public class Commit {
             return this;
         }
 
-        public CommitBuilder setDate(Date date) {
+        public CommitBuilder setDate(LocalDate date) {
             Commit.this.date = date;
             return this;
         }
