@@ -1,6 +1,6 @@
 package com.devstr.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,8 +17,8 @@ public class Project {
     private String gitPassword;
     private String jiraLogin;
     private String jiraPassword;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private Date fromDate;
+    private Date toDate;
     private boolean status;
     private Set<Integer> reviewsId;
 
@@ -69,11 +69,11 @@ public class Project {
         return jiraPassword;
     }
 
-    public LocalDate getFromDate() {
+    public Date getFromDate() {
         return fromDate;
     }
 
-    public LocalDate getToDate() {
+    public Date getToDate() {
         return toDate;
     }
 
@@ -200,12 +200,12 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setFromDate(LocalDate fromDate) {
+        public ProjectBuilder setFromDate(Date fromDate) {
             Project.this.fromDate = fromDate;
             return this;
         }
 
-        public ProjectBuilder setToDate(LocalDate toDate) {
+        public ProjectBuilder setToDate(Date toDate) {
             Project.this.toDate = toDate;
             return this;
         }
