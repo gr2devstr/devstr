@@ -37,18 +37,18 @@ public class CommitClass {
 
         CommitClass that = (CommitClass) o;
 
-        if (numberOfLinesAdded != that.numberOfLinesAdded) return false;
-        if (numberOfLinesChanged != that.numberOfLinesChanged) return false;
-        if (numberOfLinesDeleted != that.numberOfLinesDeleted) return false;
-        return className.equals(that.className);
+        if (getNumberOfLinesAdded() != that.getNumberOfLinesAdded()) return false;
+        if (getNumberOfLinesChanged() != that.getNumberOfLinesChanged()) return false;
+        if (getNumberOfLinesDeleted() != that.getNumberOfLinesDeleted()) return false;
+        return getClassName() != null ? getClassName().equals(that.getClassName()) : that.getClassName() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = className.hashCode();
-        result = 31 * result + numberOfLinesAdded;
-        result = 31 * result + numberOfLinesChanged;
-        result = 31 * result + numberOfLinesDeleted;
+        int result = getClassName() != null ? getClassName().hashCode() : 0;
+        result = 31 * result + getNumberOfLinesAdded();
+        result = 31 * result + getNumberOfLinesChanged();
+        result = 31 * result + getNumberOfLinesDeleted();
         return result;
     }
 
