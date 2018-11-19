@@ -37,26 +37,12 @@ public class Commit {
         return commitClasses;
     }
 
-    public boolean getBuildStatus() {
+    public boolean isBuildStatus() {
         return buildStatus;
     }
 
     public String getBuildSha() {
         return buildSha;
-    }
-
-    public void setCommitClass(CommitClass commitClass) {
-        if (this.commitClasses == null) {
-            this.commitClasses = new HashSet<>();
-        }
-        this.commitClasses.add(commitClass);
-    }
-
-    public void setCommitClasses(Set<CommitClass> commitClasses) {
-        if (this.commitClasses == null) {
-            this.commitClasses = new HashSet<>();
-        }
-        this.commitClasses.addAll(commitClasses);
     }
 
     public static CommitBuilder builder() {
@@ -70,12 +56,15 @@ public class Commit {
 
         Commit commit = (Commit) o;
 
-        return getCommitId() == commit.getCommitId();
+        if (commitId != commit.commitId) return false;
+        return sha.equals(commit.sha);
     }
 
     @Override
     public int hashCode() {
-        return getCommitId();
+        int result = commitId;
+        result = 31 * result + sha.hashCode();
+        return result;
     }
 
     public class CommitBuilder {

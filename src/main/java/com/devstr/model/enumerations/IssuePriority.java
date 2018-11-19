@@ -15,7 +15,7 @@ public enum IssuePriority {
         this.issuePriority = issuePriority;
     }
 
-    public String getFullName() {
+    public String getIssuePriority() {
         return issuePriority;
     }
 
