@@ -30,7 +30,6 @@ public class Project {
     }
 
     public String getProjectName() {
-
         return projectName;
     }
 
