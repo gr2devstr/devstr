@@ -15,17 +15,17 @@ public class ProjectRowMapper implements RowMapper<Project> {
     public Project mapRow(ResultSet resultSet, int i) throws SQLException {
         return Project.builder()
                 .setProjectId(resultSet.getInt("OBJECT_ID"))
-                .setProjectName(resultSet.getString(EnumRowMapper.PROJECT.getFullName()))
+                .setProjectName(resultSet.getString(AttributeNameEnum.PROJECT.getId()))
                 .setProjectManagerId(resultSet.getInt("OBJECT_TYPE_ID"))
                 .setTechnicalManagerId(resultSet.getInt("OBJECT_TYPE_ID"))
-                .setFromDate(resultSet.getDate(EnumRowMapper.CREATION_DATE.getFullName()))
-                .setToDate(resultSet.getDate(EnumRowMapper.TO_DATE.getFullName()))
-                .setStatus(resultSet.getBoolean(EnumRowMapper.STATUS.getFullName()))
-                .setRepoName(resultSet.getString(EnumRowMapper.REPOSITORY_NAME.getFullName()))
-                .setGitLogin(resultSet.getString(EnumRowMapper.GIT_LOGIN.getFullName()))
-                .setGitPassword(resultSet.getString(EnumRowMapper.GIT_PASSWORD.getFullName()))
-                .setJiraLogin(resultSet.getString(EnumRowMapper.JIRA_LOGIN.getFullName()))
-                .setJiraPassword(resultSet.getString(EnumRowMapper.JIRA_PASSWORD.getFullName()))
+                .setFromDate(resultSet.getDate(AttributeNameEnum.CREATION_DATE.getId()))
+                .setToDate(resultSet.getDate(AttributeNameEnum.TO_DATE.getId()))
+                .setStatus(resultSet.getBoolean(AttributeNameEnum.STATUS.getId()))
+                .setRepoName(resultSet.getString(AttributeNameEnum.REPOSITORY_NAME.getId()))
+                .setGitLogin(resultSet.getString(AttributeNameEnum.GIT_LOGIN.getId()))
+                .setGitPassword(resultSet.getString(AttributeNameEnum.GIT_PASSWORD.getId()))
+                .setJiraLogin(resultSet.getString(AttributeNameEnum.JIRA_LOGIN.getId()))
+                .setJiraPassword(resultSet.getString(AttributeNameEnum.JIRA_PASSWORD.getId()))
                 .build();
 
     }
