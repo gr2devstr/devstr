@@ -1,28 +1,30 @@
 package com.devstr.model;
 
 import com.devstr.model.enumerations.UserRole;
-import java.time.LocalDate;
+
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class User {
 
-    private int userId;
+    private BigInteger userId;
     private String login;
     private String password;
     private String email;
     private String firstName;
     private String lastName;
     private UserRole role;
-    private LocalDate hireDate;
+    private Date hireDate;
     private boolean status;
-    private Set<Integer> reviewsId;
-    private int projectId;
+    private Set<BigInteger> reviewsId;
+    private BigInteger projectId;
 
     private User() {
     }
 
-    public int getUserId() {
+    public BigInteger getUserId() {
         return userId;
     }
 
@@ -50,7 +52,7 @@ public class User {
         return role;
     }
 
-    public LocalDate getHireDate() {
+    public Date getHireDate() {
         return hireDate;
     }
 
@@ -58,29 +60,29 @@ public class User {
         return status;
     }
 
-    public Set<Integer> getReviewsId() {
+    public Set<BigInteger> getReviewsId() {
         return reviewsId;
     }
 
-    public int getProjectId() {
+    public BigInteger getProjectId() {
         return projectId;
     }
 
-    public void setReviewId(int reviewId) {
+    public void setReviewId(BigInteger reviewId) {
         if (this.reviewsId == null) {
             this.reviewsId = new HashSet<>();
         }
         this.reviewsId.add(reviewId);
     }
 
-    public void setReviewsId(Set<Integer> reviewsId) {
+    public void setReviewsId(Set<BigInteger> reviewsId) {
         if (this.reviewsId == null) {
             this.reviewsId = new HashSet<>();
         }
         this.reviewsId.addAll(reviewsId);
     }
 
-    public void setProjectId(int projectId) {
+    public void setProjectId(BigInteger projectId) {
         this.projectId = projectId;
     }
 
@@ -95,12 +97,12 @@ public class User {
 
         User user = (User) o;
 
-        return getUserId() == user.getUserId();
+        return getUserId().equals(user.getUserId());
     }
 
     @Override
     public int hashCode() {
-        return getUserId();
+        return getUserId().hashCode();
     }
 
     public class UserBuilder {
@@ -108,7 +110,7 @@ public class User {
         private UserBuilder() {
         }
 
-        public UserBuilder setUserId(int userId) {
+        public UserBuilder setUserId(BigInteger userId) {
             User.this.userId = userId;
             return this;
         }
@@ -143,7 +145,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setHireDate(LocalDate hireDate) {
+        public UserBuilder setHireDate(Date hireDate) {
             User.this.hireDate = hireDate;
             return this;
         }
@@ -153,7 +155,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setReviewId(int reviewId) {
+        public UserBuilder setReviewId(BigInteger reviewId) {
             if (User.this.reviewsId == null) {
                 User.this.reviewsId = new HashSet<>();
             }
@@ -161,7 +163,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setReviewsId(Set<Integer> reviewsId) {
+        public UserBuilder setReviewsId(Set<BigInteger> reviewsId) {
             if (User.this.reviewsId == null) {
                 User.this.reviewsId = new HashSet<>();
             }
@@ -169,7 +171,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setProjectId(int projectId) {
+        public UserBuilder setProjectId(BigInteger projectId) {
             User.this.projectId = projectId;
             return this;
         }
