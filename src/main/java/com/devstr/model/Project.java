@@ -1,17 +1,18 @@
 package com.devstr.model;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Project {
 
-    private int projectId;
+    private BigInteger projectId;
     private String projectName;
-    private int projectManagerId;
-    private int technicalManagerId;
-    private Set<Integer> developersId;
-    private Set<Integer> issuesId;
+    private BigInteger projectManagerId;
+    private BigInteger technicalManagerId;
+    private Set<BigInteger> developersId;
+    private Set<BigInteger> issuesId;
     private String repoName;
     private String gitLogin;
     private String gitPassword;
@@ -20,12 +21,12 @@ public class Project {
     private Date fromDate;
     private Date toDate;
     private boolean status;
-    private Set<Integer> reviewsId;
+    private Set<BigInteger> reviewsId;
 
     private Project() {
     }
 
-    public int getProjectId() {
+    public BigInteger getProjectId() {
         return projectId;
     }
 
@@ -33,19 +34,19 @@ public class Project {
         return projectName;
     }
 
-    public int getProjectManagerId() {
+    public BigInteger getProjectManagerId() {
         return projectManagerId;
     }
 
-    public int getTechnicalManagerId() {
+    public BigInteger getTechnicalManagerId() {
         return technicalManagerId;
     }
 
-    public Set<Integer> getDevelopersId() {
+    public Set<BigInteger> getDevelopersId() {
         return developersId;
     }
 
-    public Set<Integer> getIssuesId() {
+    public Set<BigInteger> getIssuesId() {
         return issuesId;
     }
 
@@ -81,18 +82,18 @@ public class Project {
         return status;
     }
 
-    public Set<Integer> getReviewsId() {
+    public Set<BigInteger> getReviewsId() {
         return reviewsId;
     }
 
-    public void setReviewId(int reviewId) {
+    public void setReviewId(BigInteger reviewId) {
         if (this.reviewsId == null) {
             this.reviewsId = new HashSet<>();
         }
         this.reviewsId.add(reviewId);
     }
 
-    public void setReviewsId(Set<Integer> reviewsId) {
+    public void setReviewsId(Set<BigInteger> reviewsId) {
         if (this.reviewsId == null) {
             this.reviewsId = new HashSet<>();
         }
@@ -110,12 +111,12 @@ public class Project {
 
         Project project = (Project) o;
 
-        return getProjectId() == project.getProjectId();
+        return getProjectId().equals(project.getProjectId());
     }
 
     @Override
     public int hashCode() {
-        return getProjectId();
+        return getProjectId().hashCode();
     }
 
     public class ProjectBuilder {
@@ -123,7 +124,7 @@ public class Project {
         private ProjectBuilder() {
         }
 
-        public ProjectBuilder setProjectId(int id) {
+        public ProjectBuilder setProjectId(BigInteger id) {
             Project.this.projectId = id;
             return this;
         }
@@ -133,17 +134,17 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setProjectManagerId(int id) {
+        public ProjectBuilder setProjectManagerId(BigInteger id) {
             Project.this.projectManagerId = id;
             return this;
         }
 
-        public ProjectBuilder setTechnicalManagerId(int id) {
+        public ProjectBuilder setTechnicalManagerId(BigInteger id) {
             Project.this.technicalManagerId = id;
             return this;
         }
 
-        public ProjectBuilder setDeveloperId(int id) {
+        public ProjectBuilder setDeveloperId(BigInteger id) {
             if (Project.this.developersId == null) {
                 Project.this.developersId = new HashSet<>();
             }
@@ -151,7 +152,7 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setDevelopersId(Set<Integer> ids) {
+        public ProjectBuilder setDevelopersId(Set<BigInteger> ids) {
             if (Project.this.developersId == null) {
                 Project.this.developersId = new HashSet<>();
             }
@@ -159,7 +160,7 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setIssueId(int id) {
+        public ProjectBuilder setIssueId(BigInteger id) {
             if (Project.this.issuesId == null) {
                 Project.this.issuesId = new HashSet<>();
             }
@@ -167,7 +168,7 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setIssuesId(Set<Integer> ids) {
+        public ProjectBuilder setIssuesId(Set<BigInteger> ids) {
             if (Project.this.issuesId == null) {
                 Project.this.issuesId = new HashSet<>();
             }
@@ -215,7 +216,7 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setReviewId(int reviewId) {
+        public ProjectBuilder setReviewId(BigInteger reviewId) {
             if (Project.this.reviewsId == null) {
                 Project.this.reviewsId = new HashSet<>();
             }
@@ -223,7 +224,7 @@ public class Project {
             return this;
         }
 
-        public ProjectBuilder setReviewsId(Set<Integer> reviewsId) {
+        public ProjectBuilder setReviewsId(Set<BigInteger> reviewsId) {
             if (Project.this.reviewsId == null) {
                 Project.this.reviewsId = new HashSet<>();
             }

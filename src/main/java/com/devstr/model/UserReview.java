@@ -1,11 +1,13 @@
 package com.devstr.model;
 
+import java.math.BigInteger;
+
 public class UserReview extends Review {
 
     private int codeQuality;
     private int codeAmount;
     private int communication;
-    private int projectId;
+    private BigInteger projectId;
 
     private UserReview(){
         super();
@@ -23,7 +25,7 @@ public class UserReview extends Review {
         return communication;
     }
 
-    public int getProjectId() {
+    public BigInteger getProjectId() {
         return projectId;
     }
 
@@ -52,7 +54,7 @@ public class UserReview extends Review {
             return this;
         }
 
-        public UserReviewBuilder setProjectId(int id) {
+        public UserReviewBuilder setProjectId(BigInteger id) {
             UserReview.this.projectId = id;
             return this;
         }

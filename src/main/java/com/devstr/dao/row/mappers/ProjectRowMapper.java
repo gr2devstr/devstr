@@ -14,10 +14,10 @@ public class ProjectRowMapper implements RowMapper<Project> {
     @Override
     public Project mapRow(ResultSet resultSet, int i) throws SQLException {
         return Project.builder()
-                .setProjectId(resultSet.getInt("OBJECT_ID"))
+                .setProjectId(resultSet.getBigDecimal("OBJECT_ID").toBigInteger())
                 .setProjectName(resultSet.getString(AttributeNameEnum.PROJECT.getId()))
-                .setProjectManagerId(resultSet.getInt("OBJECT_TYPE_ID"))
-                .setTechnicalManagerId(resultSet.getInt("OBJECT_TYPE_ID"))
+                .setProjectManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
+                .setTechnicalManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
                 .setFromDate(resultSet.getDate(AttributeNameEnum.CREATION_DATE.getId()))
                 .setToDate(resultSet.getDate(AttributeNameEnum.TO_DATE.getId()))
                 .setStatus(resultSet.getBoolean(AttributeNameEnum.STATUS.getId()))

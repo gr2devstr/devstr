@@ -1,23 +1,24 @@
 package com.devstr.model;
 
-import java.time.LocalDate;
+import java.math.BigInteger;
+import java.util.Date;
 
 public abstract class Review {
 
-    private int reviewId;
-    private int authorId;
+    private BigInteger reviewId;
+    private BigInteger authorId;
     private String authorFullName;
     private String comment;
-    private LocalDate creationDate;
+    private Date creationDate;
 
     Review() {
     }
 
-    public int getReviewId() {
+    public BigInteger getReviewId() {
         return reviewId;
     }
 
-    public int getAuthorId() {
+    public BigInteger getAuthorId() {
         return authorId;
     }
 
@@ -29,7 +30,7 @@ public abstract class Review {
         return comment;
     }
 
-    public LocalDate getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
@@ -40,12 +41,12 @@ public abstract class Review {
 
         Review review = (Review) o;
 
-        return getReviewId() == review.getReviewId();
+        return getReviewId().equals(review.getReviewId());
     }
 
     @Override
     public int hashCode() {
-        return getReviewId();
+        return getReviewId().hashCode();
     }
 
     class ReviewBuilder {
@@ -53,12 +54,12 @@ public abstract class Review {
         ReviewBuilder() {
         }
 
-        public ReviewBuilder setReviewId(int id) {
+        public ReviewBuilder setReviewId(BigInteger id) {
             Review.this.reviewId = id;
             return this;
         }
 
-        public ReviewBuilder setAuthorId(int id) {
+        public ReviewBuilder setAuthorId(BigInteger id) {
             Review.this.authorId = id;
             return this;
         }
@@ -74,10 +75,9 @@ public abstract class Review {
             return this;
         }
 
-        public ReviewBuilder setCreationDate(LocalDate creationDate) {
+        public ReviewBuilder setCreationDate(Date creationDate) {
             Review.this.creationDate = creationDate;
-            return this;
-        }
+            return this;       }
 
         public Review build() {
             return Review.this;

@@ -1,15 +1,16 @@
 package com.devstr.model;
 
-import java.time.LocalDate;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Commit {
 
-    private int commitId;
-    private int userId;
+    private BigInteger commitId;
+    private BigInteger userId;
     private String sha;
-    private LocalDate date;
+    private Date date;
     private Set<CommitClass> commitClasses;
     private boolean buildStatus;
     private String buildSha;
@@ -17,11 +18,11 @@ public class Commit {
     private Commit() {
     }
 
-    public int getCommitId() {
+    public BigInteger getCommitId() {
         return commitId;
     }
 
-    public int getUserId() {
+    public BigInteger getUserId() {
         return userId;
     }
 
@@ -29,7 +30,7 @@ public class Commit {
         return sha;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -70,12 +71,12 @@ public class Commit {
 
         Commit commit = (Commit) o;
 
-        return getCommitId() == commit.getCommitId();
+        return getCommitId().equals(commit.getCommitId());
     }
 
     @Override
     public int hashCode() {
-        return getCommitId();
+        return getCommitId().hashCode();
     }
 
     public class CommitBuilder {
@@ -83,12 +84,12 @@ public class Commit {
         private CommitBuilder() {
         }
 
-        public CommitBuilder setCommitId(int id) {
+        public CommitBuilder setCommitId(BigInteger id) {
             Commit.this.commitId = id;
             return this;
         }
 
-        public CommitBuilder setUserId(int id) {
+        public CommitBuilder setUserId(BigInteger id) {
             Commit.this.userId = id;
             return this;
         }
@@ -98,7 +99,7 @@ public class Commit {
             return this;
         }
 
-        public CommitBuilder setDate(LocalDate date) {
+        public CommitBuilder setDate(Date date) {
             Commit.this.date = date;
             return this;
         }

@@ -3,28 +3,29 @@ package com.devstr.model;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
-import java.time.LocalDate;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Issue {
 
-    private int issueId;
+    private BigInteger issueId;
     private String issueKey;
     private IssueType type;
     private IssueStatus status;
     private IssuePriority priority;
-    private LocalDate startDate;
-    private LocalDate dueDate;
-    private int projectId;
-    private int userId;
+    private Date startDate;
+    private Date dueDate;
+    private BigInteger projectId;
+    private BigInteger userId;
     private String reporter;
     private Set<Commit> commits;
 
     private Issue(){
     }
 
-    public int getIssueId() {
+    public BigInteger getIssueId() {
         return issueId;
     }
 
@@ -44,19 +45,19 @@ public class Issue {
         return priority;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public LocalDate getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public int getProjectId() {
+    public BigInteger getProjectId() {
         return projectId;
     }
 
-    public int getUserId() {
+    public BigInteger getUserId() {
         return userId;
     }
 
@@ -93,12 +94,12 @@ public class Issue {
 
         Issue issue = (Issue) o;
 
-        return getIssueId() == issue.getIssueId();
+        return getIssueId().equals(issue.getIssueId());
     }
 
     @Override
     public int hashCode() {
-        return getIssueId();
+        return getIssueId().hashCode();
     }
 
     public class IssueBuilder {
@@ -106,7 +107,7 @@ public class Issue {
         private IssueBuilder() {
         }
 
-        public IssueBuilder setIssueId(int id) {
+        public IssueBuilder setIssueId(BigInteger id) {
             Issue.this.issueId = id;
             return this;
         }
@@ -131,22 +132,22 @@ public class Issue {
             return this;
         }
 
-        public IssueBuilder setStartDate(LocalDate startDate) {
+        public IssueBuilder setStartDate(Date startDate) {
             Issue.this.startDate = startDate;
             return this;
         }
 
-        public IssueBuilder setDueDate(LocalDate dueDate) {
+        public IssueBuilder setDueDate(Date dueDate) {
             Issue.this.dueDate = dueDate;
             return this;
         }
 
-        public IssueBuilder setProjectId(int id) {
+        public IssueBuilder setProjectId(BigInteger id) {
             Issue.this.projectId = id;
             return this;
         }
 
-        public IssueBuilder setUserId(int id) {
+        public IssueBuilder setUserId(BigInteger id) {
             Issue.this.userId = id;
             return this;
         }
