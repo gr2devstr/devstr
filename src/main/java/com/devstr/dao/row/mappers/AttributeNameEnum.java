@@ -27,7 +27,6 @@ public enum AttributeNameEnum {
     ORGANIZATION(20),
     TIME_MANAGMENT(21),
     SERVICE_NAME(22),
-    TOKEN(23),
     TOKEN_CODE(24),
     REVIEWS(25),
     PROJECT_USERS(26),
@@ -40,7 +39,7 @@ public enum AttributeNameEnum {
         this.id = id;
     }
 
-    int getId() {
+    public int getId() {
         return id;
     }
 
