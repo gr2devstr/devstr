@@ -1,14 +1,16 @@
 package com.devstr.model;
 
+import java.math.BigInteger;
+
 public class Token {
-    private int projectId;
+    private BigInteger projectId;
     private String serviceName;
     private String tokenEncode;
 
     private Token() {
     }
 
-    public int getProjectId() {
+    public BigInteger getProjectId() {
         return projectId;
     }
 
@@ -27,15 +29,13 @@ public class Token {
 
         Token token1 = (Token) o;
 
-        if (projectId != token1.projectId) return false;
+        if (!projectId.equals(token1.projectId)) return false;
         return tokenEncode.equals(token1.tokenEncode);
     }
 
     @Override
     public int hashCode() {
-        int result = projectId;
-        result = 31 * result * tokenEncode.hashCode();
-        return result;
+        return projectId.hashCode() * tokenEncode.hashCode();
     }
 
     public static TokenBuilder builder() {
@@ -46,7 +46,7 @@ public class Token {
         private TokenBuilder() {
         }
 
-        public TokenBuilder setProjectId(int projectId) {
+        public TokenBuilder setProjectId(BigInteger projectId) {
             Token.this.projectId = projectId;
             return this;
         }
@@ -64,5 +64,7 @@ public class Token {
         public Token build() {
             return Token.this;
         }
+
     }
+
 }
