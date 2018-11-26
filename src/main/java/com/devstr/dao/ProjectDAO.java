@@ -5,9 +5,6 @@ import com.devstr.model.Project;
 
 import java.util.Set;
 
-/**
- * Created by Robert in 16.11.2018
- */
 public interface ProjectDAO {
 
 
