@@ -3,6 +3,7 @@ package com.devstr.dao.impl;
 import com.devstr.model.User;
 import com.devstr.dao.UserDAO;
 import com.devstr.model.enumerations.UserRole;
+import com.devstr.model.impl.UserImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -52,7 +53,7 @@ public class UserDAOImpl implements UserDAO {
         if (id.intValue() > jdbcTemplate.getMaxRows()){
             throw new IllegalArgumentException("ID is bigger than size of the table");
         }
-        User.UserBuilder result = User.builder();
+        UserImpl.UserBuilder result = UserImpl.builder();
         String username = jdbcTemplate.queryForObject(SELECT_OBJECT_NAME,
                 new Object[]{id}, String.class);
         result.setUserId(id);
