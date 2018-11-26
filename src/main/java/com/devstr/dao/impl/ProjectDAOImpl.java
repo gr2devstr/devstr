@@ -64,19 +64,19 @@ public class ProjectDAOImpl implements ProjectDAO {
     /*class ProjectMapper implements RowMapper<Project>{
         @Override
         public Project mapRow(ResultSet resultSet, int i) throws SQLException {
-            return  ProjectImpl.Builder(resultSet.getBigDecimal(AttributeNameEnum.PROJECT.getId()),)
+            return  ProjectImpl.Builder(resultSet.getBigDecimal(AttributeID.PROJECT.getId()),)
                     .setProjectId(resultSet.getBigDecimal("OBJECT_ID").toBigInteger())
-                    //.setProjectName(resultSet.getString(AttributeNameEnum.PROJECT.getId()))
+                    //.setProjectName(resultSet.getString(AttributeID.PROJECT.getId()))
                     //.setProjectManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
                     .setTechnicalManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
-                    .setFromDate(resultSet.getDate(AttributeNameEnum.CREATION_DATE.getId()))
-                    .setToDate(resultSet.getDate(AttributeNameEnum.TO_DATE.getId()))
-                    .setStatus(resultSet.getBoolean(AttributeNameEnum.STATUS.getId()))
-                    .setRepoName(resultSet.getString(AttributeNameEnum.REPOSITORY_NAME.getId()))
-                    .setGitLogin(resultSet.getString(AttributeNameEnum.GIT_LOGIN.getId()))
-                    .setGitPassword(resultSet.getString(AttributeNameEnum.GIT_PASSWORD.getId()))
-                    .setJiraLogin(resultSet.getString(AttributeNameEnum.JIRA_LOGIN.getId()))
-                    .setJiraPassword(resultSet.getString(AttributeNameEnum.JIRA_PASSWORD.getId()))
+                    .setFromDate(resultSet.getDate(AttributeID.CREATION_DATE.getId()))
+                    .setToDate(resultSet.getDate(AttributeID.TO_DATE.getId()))
+                    .setStatus(resultSet.getBoolean(AttributeID.STATUS.getId()))
+                    .setRepoName(resultSet.getString(AttributeID.REPOSITORY_NAME.getId()))
+                    .setGitLogin(resultSet.getString(AttributeID.GIT_LOGIN.getId()))
+                    .setGitPassword(resultSet.getString(AttributeID.GIT_PASSWORD.getId()))
+                    .setJiraLogin(resultSet.getString(AttributeID.JIRA_LOGIN.getId()))
+                    .setJiraPassword(resultSet.getString(AttributeID.JIRA_PASSWORD.getId()))
                     .build();
 
         }
