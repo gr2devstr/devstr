@@ -8,7 +8,7 @@ public enum ObjectType {
     PROJECT_REVIEW(5),
     TOKEN(6);
 
-    int objectTypeId;
+    private int objectTypeId;
 
     private ObjectType(int objectTypeId) {
         this.objectTypeId = objectTypeId;

@@ -1,6 +1,7 @@
 package com.devstr.dao.row.mappers;
 
 import com.devstr.model.Project;
+import com.devstr.model.enumerations.AttributeNameEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -13,7 +14,8 @@ public class ProjectRowMapper implements RowMapper<Project> {
 
     @Override
     public Project mapRow(ResultSet resultSet, int i) throws SQLException {
-        return Project.builder()
+        return null;
+        /*return Project.builder()
                 .setProjectId(resultSet.getBigDecimal("OBJECT_ID").toBigInteger())
                 .setProjectName(resultSet.getString(AttributeNameEnum.PROJECT.getId()))
                 .setProjectManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
@@ -26,7 +28,7 @@ public class ProjectRowMapper implements RowMapper<Project> {
                 .setGitPassword(resultSet.getString(AttributeNameEnum.GIT_PASSWORD.getId()))
                 .setJiraLogin(resultSet.getString(AttributeNameEnum.JIRA_LOGIN.getId()))
                 .setJiraPassword(resultSet.getString(AttributeNameEnum.JIRA_PASSWORD.getId()))
-                .build();
+                .build();*/
 
     }
 }
