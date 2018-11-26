@@ -1,16 +1,19 @@
 package com.devstr.model.enumerations;
 
+import java.math.BigInteger;
+
 public enum Status {
-    ACTIVE(5),
-    INACTIVE(6);
 
-    private int listValueId;
+    ACTIVE(BigInteger.valueOf(5L)),
+    INACTIVE(BigInteger.valueOf(6L));
 
-    private Status(int listValueId) {
-        this.listValueId = listValueId;
+    private BigInteger statusId;
+
+    Status(BigInteger statusId) {
+        this.statusId = statusId;
     }
 
-    public int getListValueId() {
-        return listValueId;
+    public BigInteger getId() {
+        return statusId;
     }
 }

@@ -1,22 +1,24 @@
 package com.devstr.model.enumerations;
 
+import java.math.BigInteger;
+
 public enum IssuePriority {
 
-    BLOCKER("BLOCKER"),
-    CRITICAL("CRITICAL"),
-    HIGH("HIGH"),
-    MEDIUM("MEDIUM"),
-    LOW("LOW"),
-    LOWEST("LOWEST");
+    BLOCKER(BigInteger.valueOf(1L)),
+    CRITICAL(BigInteger.valueOf(2L)),
+    HIGH(BigInteger.valueOf(3L)),
+    MEDIUM(BigInteger.valueOf(4L)),
+    LOW(BigInteger.valueOf(5L)),
+    LOWEST(BigInteger.valueOf(6L));
 
-    String issuePriority;
+    private BigInteger priorityId;
 
-    private IssuePriority(String issuePriority) {
-        this.issuePriority = issuePriority;
+    IssuePriority(BigInteger priorityId) {
+        this.priorityId = priorityId;
     }
 
-    public String getFullName() {
-        return issuePriority;
+    public BigInteger getId() {
+        return priorityId;
     }
 
 }

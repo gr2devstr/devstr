@@ -1,21 +1,23 @@
 package com.devstr.model.enumerations;
 
+import java.math.BigInteger;
+
 public enum UserRole {
 
-    DEVELOPER("DEVELOPER"),
-    GROUP_MANAGER("GROUP_MANAGER"),
-    TECHNICAL_MANAGER("TECHNICAL_MANAGER"),
-    PROJECT_MANAGER("PROJECT_MANAGER"),
-    ADMIN("ADMIN");
+    DEVELOPER(BigInteger.valueOf(1L)),
+    GROUP_MANAGER(BigInteger.valueOf(2L)),
+    TECHNICAL_MANAGER(BigInteger.valueOf(3L)),
+    PROJECT_MANAGER(BigInteger.valueOf(4L)),
+    ADMIN(BigInteger.valueOf(7L));
 
-    String userRole;
+    private BigInteger userRoleId;
 
-    private UserRole(String userRole) {
-        this.userRole = userRole;
+    UserRole(BigInteger userRoleId) {
+        this.userRoleId = userRoleId;
     }
 
-    public String getFullName() {
-        return userRole;
+    public BigInteger getId() {
+        return userRoleId;
     }
 
 }

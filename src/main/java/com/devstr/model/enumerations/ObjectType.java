@@ -1,20 +1,24 @@
 package com.devstr.model.enumerations;
 
+import java.math.BigInteger;
+
 public enum ObjectType {
-    USER(1),
-    PROJECT(2),
-    REVIEW(3),
-    USER_REVIEW(4),
-    PROJECT_REVIEW(5),
-    TOKEN(6);
 
-    private int objectTypeId;
+    USER(BigInteger.valueOf(1L)),
+    PROJECT(BigInteger.valueOf(2L)),
+    REVIEW(BigInteger.valueOf(3L)),
+    USER_REVIEW(BigInteger.valueOf(4L)),
+    PROJECT_REVIEW(BigInteger.valueOf(5L)),
+    TOKEN(BigInteger.valueOf(6L));
 
-    private ObjectType(int objectTypeId) {
-        this.objectTypeId = objectTypeId;
+    private BigInteger objTypeId;
+
+    ObjectType(BigInteger objTypeId) {
+        this.objTypeId = objTypeId;
     }
 
-    public int getObjectTypeId() {
-        return objectTypeId;
+    public BigInteger getId() {
+        return objTypeId;
     }
+
 }

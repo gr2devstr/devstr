@@ -1,22 +1,24 @@
 package com.devstr.model.enumerations;
 
+import java.math.BigInteger;
+
 public enum IssueType {
 
-    BUG("BUG"),
-    IMPROVEMENT("IMPROVEMENT"),
-    TASK("TASK"),
-    NEW_FEATURE("NEW_FEATURE"),
-    DESIGN_BUG("DESIGN_BUG"),
-    EPIC("EPIC");
+    BUG(BigInteger.valueOf(1L)),
+    IMPROVEMENT(BigInteger.valueOf(2L)),
+    TASK(BigInteger.valueOf(3L)),
+    NEW_FEATURE(BigInteger.valueOf(4L)),
+    DESIGN_BUG(BigInteger.valueOf(5L)),
+    EPIC(BigInteger.valueOf(6L));
 
-    String issueType;
+    private BigInteger typeId;
 
-    private IssueType(String issueType) {
-        this.issueType = issueType;
+    IssueType(BigInteger typeId) {
+        this.typeId = typeId;
     }
 
-    public String getFullName() {
-        return issueType;
+    public BigInteger getId() {
+        return typeId;
     }
 
 }

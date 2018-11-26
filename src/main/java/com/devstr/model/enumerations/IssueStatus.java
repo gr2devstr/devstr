@@ -1,21 +1,23 @@
 package com.devstr.model.enumerations;
 
+import java.math.BigInteger;
+
 public enum IssueStatus {
 
-    OPEN("OPEN"),
-    IN_PROGRESS("IN_PROGRESS"),
-    READY_FOR_TESTING("READY_FOR_TESTING"),
-    CLOSED("CLOSED"),
-    REOPEN("REOPEN");
+    OPEN(BigInteger.valueOf(1L)),
+    IN_PROGRESS(BigInteger.valueOf(2L)),
+    READY_FOR_TESTING(BigInteger.valueOf(3L)),
+    CLOSED(BigInteger.valueOf(4L)),
+    REOPEN(BigInteger.valueOf(5L));
 
-    String issueStatus;
+    private BigInteger statusId;
 
-    private IssueStatus(String issueStatus) {
-        this.issueStatus = issueStatus;
+    IssueStatus(BigInteger statusId) {
+        this.statusId = statusId;
     }
 
-    public String getFullName() {
-        return issueStatus;
+    public BigInteger getId() {
+        return statusId;
     }
 
 }
