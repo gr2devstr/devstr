@@ -6,9 +6,7 @@ import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class IssueImpl implements Issue {
 
@@ -22,7 +20,7 @@ public class IssueImpl implements Issue {
     private BigInteger projectId;
     private BigInteger userId;
     private String reporter;
-    private Set<Commit> commits;
+    private List<Commit> commits;
 
     @Override
     public BigInteger getIssueId() {
@@ -75,22 +73,22 @@ public class IssueImpl implements Issue {
     }
 
     @Override
-    public Set<Commit> getCommits() {
+    public List<Commit> getCommits() {
         return commits;
     }
 
     @Override
     public void setCommit(Commit commit) {
         if (this.commits == null) {
-            this.commits = new HashSet<>();
+            this.commits = new ArrayList<>();
         }
         this.commits.add(commit);
     }
 
     @Override
-    public void setCommits(Set<Commit> commits) {
+    public void setCommits(List<Commit> commits) {
         if (this.commits == null) {
-            this.commits = new HashSet<>();
+            this.commits = new ArrayList<>();
         }
         this.commits.addAll(commits);
     }
@@ -121,7 +119,7 @@ public class IssueImpl implements Issue {
         private BigInteger projectId;
         private BigInteger userId;
         private String reporter;
-        private Set<Commit> commits;
+        private List<Commit> commits;
 
         private Builder() {}
 
@@ -177,7 +175,7 @@ public class IssueImpl implements Issue {
 
         public Builder setCommit(Commit commit) {
             if (this.commits == null) {
-                this.commits = new HashSet<>();
+                this.commits = new ArrayList<>();
             }
             this.commits.add(commit);
             return this;
@@ -185,7 +183,7 @@ public class IssueImpl implements Issue {
 
         public Builder setCommits(Set<Commit> commits) {
             if (this.commits == null) {
-                this.commits = new HashSet<>();
+                this.commits = new ArrayList<>();
             }
             this.commits.addAll(commits);
             return this;

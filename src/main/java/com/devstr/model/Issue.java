@@ -6,7 +6,7 @@ import com.devstr.model.enumerations.IssueType;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 public interface Issue {
 
@@ -30,9 +30,9 @@ public interface Issue {
 
     String getReporter();
 
-    Set<Commit> getCommits();
+    List<Commit> getCommits();
 
     void setCommit(Commit commit);
 
-    void setCommits(Set<Commit> commits);
+    void setCommits(List<Commit> commits);
 }
