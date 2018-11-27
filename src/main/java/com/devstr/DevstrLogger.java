@@ -90,14 +90,10 @@ public class DevstrLogger extends Log4JLogger {
         if (dataSource != null) {
             try {
                 if (dataSource.getConnection() != null) {
-                    if (message.length() < 2000) {
-                        PreparedStatement statement = dataSource.getConnection().prepareStatement(INSERT_LOG);
-                        statement.setString(1, level);
-                        statement.setString(2, message);
-                        statement.execute();
-                    }
-                    else
-                        this.warn("Log message is to big for the database");
+                    PreparedStatement statement = dataSource.getConnection().prepareStatement(INSERT_LOG);
+                    statement.setString(1, level);
+                    statement.setString(2, message.substring(0, 1998));
+                    statement.execute();
                 }
             } catch (SQLException e) {
                 this.error("Cannot insert into Logger table: ", e);
