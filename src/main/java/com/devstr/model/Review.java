@@ -9,6 +9,8 @@ public interface Review {
 
     BigInteger getAuthorId();
 
+    BigInteger getReceiverId();
+
     String getAuthorFullName();
 
     String getComment();

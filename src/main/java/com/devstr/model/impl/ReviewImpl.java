@@ -8,6 +8,7 @@ class ReviewImpl implements Review {
 
     private BigInteger reviewId;
     private BigInteger authorId;
+    private BigInteger receiverId;
     private String authorFullName;
     private String comment;
     private Date creationDate;
@@ -20,6 +21,11 @@ class ReviewImpl implements Review {
     @Override
     public BigInteger getAuthorId() {
         return authorId;
+    }
+
+    @Override
+    public BigInteger getReceiverId(){
+        return receiverId;
     }
 
     @Override
@@ -56,12 +62,14 @@ class ReviewImpl implements Review {
 
         private BigInteger reviewId;
         private BigInteger authorId;
+        private BigInteger receiverId;
         private String authorFullName;
         private String comment;
         private Date creationDate;
 
-        Builder(BigInteger authorId, String comment) {
+        Builder(BigInteger authorId, BigInteger receiverId, String comment) {
             this.authorId = authorId;
+            this.receiverId = receiverId;
             this.comment = comment;
         }
 
@@ -89,6 +97,7 @@ class ReviewImpl implements Review {
     ReviewImpl(Builder builder) {
         this.reviewId = builder.reviewId;
         this.authorId = builder.authorId;
+        this.receiverId = builder.receiverId;
         this.authorFullName = builder.authorFullName;
         this.comment = builder.comment;
         this.creationDate = builder.creationDate;
