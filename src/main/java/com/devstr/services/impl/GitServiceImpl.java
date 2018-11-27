@@ -2,6 +2,7 @@ package com.devstr.services.impl;
 
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
+import com.devstr.model.impl.CommitClassImpl;
 import com.devstr.services.interfaces.iGitService;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHRepository;
@@ -48,7 +49,7 @@ public class GitServiceImpl implements iGitService {
         List<GHCommit.File> files = getLastGHCommit().getFiles();
 
         for (GHCommit.File file : files) {
-            commitClasses.add(CommitClass.builder()
+            commitClasses.add(CommitClassImpl.builder()
                     .setClassName(file.getFileName())
                     .setAddedLines(file.getLinesAdded())
                     .setChangedLines(file.getLinesChanged())

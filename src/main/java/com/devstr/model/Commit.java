@@ -15,7 +15,7 @@ public interface Commit {
 
     Date getDate();
 
-    Set<CommitClassImpl> getCommitClasses();
+    Set<CommitClass> getCommitClasses();
 
     boolean getBuildStatus();
 

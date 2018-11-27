@@ -1,6 +1,7 @@
 package com.devstr.model.impl;
 
 import com.devstr.model.Commit;
+import com.devstr.model.CommitClass;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -13,7 +14,7 @@ public class CommitImpl  implements Commit {
     private BigInteger userId;
     private String sha;
     private Date date;
-    private Set<CommitClassImpl> commitClasses;
+    private Set<CommitClass> commitClasses;
     private boolean buildStatus;
     private String buildSha;
 
@@ -41,7 +42,7 @@ public class CommitImpl  implements Commit {
     }
 
     @Override
-    public Set<CommitClassImpl> getCommitClasses() {
+    public Set<CommitClass> getCommitClasses() {
         return commitClasses;
     }
 
@@ -115,7 +116,7 @@ public class CommitImpl  implements Commit {
             return this;
         }
 
-        public CommitBuilder setCommitClass(CommitClassImpl commitClass) {
+        public CommitBuilder setCommitClass(CommitClass commitClass) {
             if (CommitImpl.this.commitClasses == null) {
                 CommitImpl.this.commitClasses = new HashSet<>();
             }
@@ -123,7 +124,7 @@ public class CommitImpl  implements Commit {
             return this;
         }
 
-        public CommitBuilder setCommitClasses(Set<CommitClassImpl> commitClasses) {
+        public CommitBuilder setCommitClasses(Set<CommitClass> commitClasses) {
             if (CommitImpl.this.commitClasses == null) {
                 CommitImpl.this.commitClasses = new HashSet<>();
             }
