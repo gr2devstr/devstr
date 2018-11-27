@@ -26,6 +26,7 @@ public enum AttributeID {
     ORGANIZATION(BigInteger.valueOf(20)),
     TIME_MANAGMENT(BigInteger.valueOf(21)),
     SERVICE_NAME(BigInteger.valueOf(22)),
+    TOKEN_PROJECT(BigInteger.valueOf(23)),
     TOKEN_CODE(BigInteger.valueOf(24)),
     REVIEWS(BigInteger.valueOf(25)),
     PROJECT_USERS(BigInteger.valueOf(26)),
