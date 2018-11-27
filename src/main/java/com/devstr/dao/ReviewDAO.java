@@ -1,24 +1,34 @@
 package com.devstr.dao;
 
-import com.devstr.model.Review;
-import com.devstr.model.enumerations.ObjectType;
+import com.devstr.model.*;
 
 import java.math.BigInteger;
 import java.util.List;
 
 public interface ReviewDAO {
+    String INSERT_USER_REVIEW = "INSERT INTO OBJECTS()";
+    String INSERT_UR_ATTRIBUTES = "";
+
     /**
-     * Method that creates new review
+     * Method that writes new user review to the database
      *
      * @param authorId id of the review author
-     * @param recieverId id of recieverId
-     * @param project_id id of project where review where made(equal with recieverId if it is project review)
+     * @param receiverId id of receiver
+     * @param projectId id of project where review where made
      * @param comment text of the review
-     * @param marks 3 or 4 element size array with marks to the project
-     * @param objType object type(USER_REVIEW or PROJECT_REVIEW)
+     * @param marks 3 element size array with marks to the user in order of metrics
      */
-    void createReview(BigInteger authorId, BigInteger recieverId, BigInteger project_id, String comment, int[] marks,
-                      ObjectType objType);
+    void createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks);
+
+    /**
+     * Method that writes new project review to the database
+     *
+     * @param authorId id of the review author
+     * @param receiverId id of receiving project
+     * @param comment text of the review
+     * @param marks 4 element size array with marks from 1 to 10 to the project in order of metrics
+     */
+    void createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks);
 
     /**
      * Method gets the review by review's id
@@ -31,7 +41,7 @@ public interface ReviewDAO {
     /**
      * Gets all reviews of user with specified id
      *
-     * @param id id of user that recieved the reviews
+     * @param id id of user that received the reviews
      * @return list with the reviews
      */
     List<Review> readReviewsByRecId(BigInteger id);
@@ -48,7 +58,15 @@ public interface ReviewDAO {
      * Gets all the reviews of a project(Project reviews only!)
      *
      * @param id id of the project
-     * @return
+     * @return list with reviews of the project
      */
-    List<Review> readReviewsByProjectId(BigInteger id);
+    List<ProjectReview> readReviewsByProjectId(BigInteger id);
+
+    /**
+     * Gets all user reviews left during certain project
+     *
+     * @param id id of the project
+     * @return list with all user reviews written during project
+     */
+    List<UserReview> readUserReviewsByProjectId(BigInteger id);
 }
