@@ -147,16 +147,16 @@ public class UserImpl implements User {
     }
 
     private UserImpl(Builder builder) {
-        login = builder.login;
-        password = builder.password;
-        email = builder.email;
-        firstName = builder.firstName;
-        lastName = builder.lastName;
-        role = builder.role;
-        status = builder.status;
-        userId = builder.userId;
-        hireDate = builder.hireDate;
-        reviewsId = builder.reviewsId;
-        projectId = builder.projectId;
+        this.login = builder.login;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.role = builder.role;
+        this.status = builder.status;
+        this.userId = builder.userId;
+        this.hireDate = builder.hireDate;
+        this.reviewsId = builder.reviewsId;
+        this.projectId = builder.projectId;
     }
 }
