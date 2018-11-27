@@ -21,7 +21,6 @@ public class ProjectImpl implements Project {
     private Date fromDate;
     private Date toDate;
     private Status status;
-    private List<BigInteger> reviewsId;
 
     @Override
     public BigInteger getProjectId() {
@@ -94,19 +93,6 @@ public class ProjectImpl implements Project {
     }
 
     @Override
-    public List<BigInteger> getReviewsId() {
-        return reviewsId;
-    }
-
-    @Override
-    public void setReviewsId(List<BigInteger> reviewsId) {
-        if (this.reviewsId == null) {
-            this.reviewsId = new ArrayList<>();
-        }
-        this.reviewsId.addAll(reviewsId);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -137,7 +123,6 @@ public class ProjectImpl implements Project {
         private Date fromDate;
         private Date toDate;
         private Status status;
-        private List<BigInteger> reviewsId;
 
         public Builder(String projectName, BigInteger projectManagerId) {
             this.projectName = projectName;
@@ -204,11 +189,6 @@ public class ProjectImpl implements Project {
             return this;
         }
 
-        public Builder setReviewsId(List<BigInteger> reviewsId) {
-            this.reviewsId = reviewsId;
-            return this;
-        }
-
         public Project build() {
             return new ProjectImpl(this);
         }
@@ -230,7 +210,6 @@ public class ProjectImpl implements Project {
         this.fromDate = builder.fromDate;
         this.toDate = builder.toDate;
         this.status = builder.status;
-        this.reviewsId = builder.reviewsId;
     }
 
 }

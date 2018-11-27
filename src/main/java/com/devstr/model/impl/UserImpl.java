@@ -21,7 +21,6 @@ public class UserImpl implements User {
     private Date hireDate;
     private Status status;
     private BigInteger projectId;
-    private List<BigInteger> reviewsId;
 
     @Override
     public BigInteger getUserId() {
@@ -74,19 +73,6 @@ public class UserImpl implements User {
     }
 
     @Override
-    public List<BigInteger> getReviewsId() {
-        return reviewsId;
-    }
-
-    @Override
-    public void setReviewsId(List<BigInteger> reviewsId) {
-        if (this.reviewsId == null) {
-            this.reviewsId = new ArrayList<>();
-        }
-        this.reviewsId.addAll(reviewsId);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -113,7 +99,6 @@ public class UserImpl implements User {
         private BigInteger userId;
         private Date hireDate;
         private BigInteger projectId;
-        private List<BigInteger> reviewsId;
 
         public Builder(String login, String password, String email, String firstName, String lastName, UserRole role, Status status) {
             this.login = login;
@@ -135,11 +120,6 @@ public class UserImpl implements User {
             return this;
         }
 
-        public Builder setReviewsId(List<BigInteger> reviewsId) {
-            this.reviewsId = reviewsId;
-            return this;
-        }
-
         public Builder setProjectId(BigInteger projectId) {
             this.projectId = projectId;
             return this;
@@ -156,7 +136,6 @@ public class UserImpl implements User {
         this.status = builder.status;
         this.userId = builder.userId;
         this.hireDate = builder.hireDate;
-        this.reviewsId = builder.reviewsId;
         this.projectId = builder.projectId;
     }
 }

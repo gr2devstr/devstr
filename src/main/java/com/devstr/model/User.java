@@ -5,7 +5,6 @@ import com.devstr.model.enumerations.UserRole;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 
 public interface User {
     BigInteger getUserId();
@@ -27,9 +26,5 @@ public interface User {
     Status getStatus();
 
     BigInteger getProjectId();
-
-    List<BigInteger> getReviewsId();
-
-    void setReviewsId(List<BigInteger> reviewsId);
 
 }

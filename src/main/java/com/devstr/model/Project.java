@@ -36,8 +36,4 @@ public interface Project {
 
     Status getStatus();
 
-    List<BigInteger> getReviewsId();
-
-    void setReviewsId(List<BigInteger> reviewsId);
-
 }
