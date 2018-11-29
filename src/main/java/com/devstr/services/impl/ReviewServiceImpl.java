@@ -1,6 +1,7 @@
 package com.devstr.services.impl;
 
-import com.devstr.DevstrLogger;
+import com.devstr.DevstrFactoryManager;
+import com.devstr.logger.DevstrLogger;
 import com.devstr.dao.ReviewDAO;
 import com.devstr.dao.impl.ReviewDAOImpl;
 import com.devstr.model.ProjectReview;
@@ -14,7 +15,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class ReviewServiceImpl implements ReviewService {
-    private static DevstrLogger LOGGER = new DevstrLogger(ReviewServiceImpl.class.getName());
+    private static DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewServiceImpl.class.getName());
     ReviewDAO reviewDAO;
 
     public ReviewServiceImpl(DataSource dataSource) {

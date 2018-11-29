@@ -1,4 +1,4 @@
-package com.devstr;
+package com.devstr.logger;
 
 import org.apache.commons.logging.impl.Log4JLogger;
 

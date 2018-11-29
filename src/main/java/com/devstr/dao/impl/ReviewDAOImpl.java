@@ -1,6 +1,7 @@
 package com.devstr.dao.impl;
 
-import com.devstr.DevstrLogger;
+import com.devstr.DevstrFactoryManager;
+import com.devstr.logger.DevstrLogger;
 import com.devstr.dao.ReviewDAO;
 import com.devstr.model.ProjectReview;
 import com.devstr.model.Review;
@@ -18,7 +19,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 
     public ReviewDAOImpl(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        LOGGER = new DevstrLogger(ReviewDAOImpl.class.getName(), dataSource);
+        LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewDAOImpl.class.getName(), dataSource);
     }
 
     @Override
