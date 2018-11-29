@@ -12,6 +12,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+
     @Override
     public void createProject(String name, int managerId, int techId, Set<Integer> devs, String repoName, String gitLogin, String gitPass, String jiraLogin, String jiraPass) {
         String sql = "INSERT ALL " +

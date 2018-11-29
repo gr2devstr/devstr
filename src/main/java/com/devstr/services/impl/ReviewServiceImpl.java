@@ -10,17 +10,12 @@ import com.devstr.model.UserReview;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.services.interfaces.ReviewService;
 
-import javax.sql.DataSource;
 import java.math.BigInteger;
 import java.util.List;
 
 public class ReviewServiceImpl implements ReviewService {
     private static DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewServiceImpl.class.getName());
-    ReviewDAO reviewDAO;
-
-    public ReviewServiceImpl(DataSource dataSource) {
-        reviewDAO = new ReviewDAOImpl(dataSource);
-    }
+    private ReviewDAO reviewDAO = new ReviewDAOImpl();
 
     @Override
     public void createReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks, ObjectType objType) {

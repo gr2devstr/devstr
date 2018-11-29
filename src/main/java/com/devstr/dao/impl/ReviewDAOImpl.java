@@ -6,6 +6,7 @@ import com.devstr.dao.ReviewDAO;
 import com.devstr.model.ProjectReview;
 import com.devstr.model.Review;
 import com.devstr.model.UserReview;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -14,13 +15,10 @@ import java.util.List;
 
 public class ReviewDAOImpl implements ReviewDAO {
 
-    private JdbcTemplate jdbcTemplate;
-    private DevstrLogger LOGGER;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
-    public ReviewDAOImpl(DataSource dataSource){
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewDAOImpl.class.getName(), dataSource);
-    }
+    private DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewDAOImpl.class.getName());
 
     @Override
     public void createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks) {
