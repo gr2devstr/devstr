@@ -24,7 +24,7 @@ public class ProjectImpl implements Project {
 
     @Override
     public BigInteger getProjectId() {
-        return null;
+        return projectId;
     }
 
     @Override
