@@ -72,6 +72,10 @@ public class TokenImpl implements Token {
             this.tokenId = tokenId;
             return this;
         }
+
+        public Token builder(){
+            return new TokenImpl(this);
+        }
     }
 
     private TokenImpl(Builder builder) {
