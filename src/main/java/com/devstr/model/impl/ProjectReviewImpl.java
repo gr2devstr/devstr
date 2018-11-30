@@ -53,7 +53,7 @@ public class ProjectReviewImpl extends ReviewImpl implements ProjectReview {
             this.teamSpirit = teamSpirit;
         }
 
-        public Review build() {
+        public ProjectReview build() {
             return new ProjectReviewImpl(this);
         }
 

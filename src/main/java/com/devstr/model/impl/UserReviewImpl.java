@@ -53,7 +53,7 @@ public class UserReviewImpl extends ReviewImpl implements UserReview {
             this.projectId = projectId;
         }
 
-        public Review build() {
+        public UserReview build() {
             return new UserReviewImpl(this);
         }
 
