@@ -26,9 +26,8 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-
     @Override
-    public void createProject(String name, int managerId) {
+    public void createProject(String name, BigInteger managerId) {
         jdbcTemplate.update(CREATE_BASIC_PROJECT, new Object[]{name, managerId});
     }
 
@@ -44,9 +43,9 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
 
     @Override
-    public void updateDevsOnProject(BigInteger projectId, Collection<BigInteger> developersId) {
+    public void addDevsOnProject(BigInteger projectId, Collection<BigInteger> developersId) {
         List<BigInteger> devs = new ArrayList<>(developersId);
-        jdbcTemplate.batchUpdate(UPDATE_PROJECT_DEVS, new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate(ADD_PROJECT_DEVS, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
                 preparedStatement.setLong(1, devs.get(i).longValue());
@@ -66,8 +65,8 @@ public class ProjectDAOImpl implements ProjectDAO {
         jdbcTemplate.batchUpdate(UPDATE_PROJECT_ISSUES, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                preparedStatement.setLong(1, issues.get(i).longValue());
-                preparedStatement.setLong(2, projectId.longValue());
+                preparedStatement.setLong(1, projectId.longValue());
+                preparedStatement.setLong(2, issues.get(i).longValue());
             }
 
             @Override
@@ -78,7 +77,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
 
     @Override
-    public Project readProjectById(int projectID) {
+    public Project readProjectById(BigInteger projectID) {
         RowMapper<Project> mapper = new ProjectMapper();
         return jdbcTemplate.queryForObject(READ_PROJECT_BY_ID, mapper, projectID);
     }
