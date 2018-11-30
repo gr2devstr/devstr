@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Robert in 23.11.2018
- */
 public class GitServiceImpl implements iGitService {
 
     private String repositoryName;

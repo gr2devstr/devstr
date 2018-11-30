@@ -2,11 +2,25 @@ package com.devstr.dao.impl;
 
 import com.devstr.dao.ProjectDAO;
 import com.devstr.model.Project;
+import com.devstr.model.enumerations.Status;
+import com.devstr.model.impl.ProjectImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+@Transactional
+@Repository
 public class ProjectDAOImpl implements ProjectDAO {
 
     @Autowired
@@ -14,72 +28,83 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 
     @Override
-    public void createProject(String name, int managerId, int techId, Set<Integer> devs, String repoName, String gitLogin, String gitPass, String jiraLogin, String jiraPass) {
-        String sql = "INSERT ALL " +
-                "INTO OBJECTS(NAME, OBJECT_TYPE_ID) " +
-                " VALUES(?,2)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, DATE_VALUE)" +
-                "VALUES(5, PROJ_ID, SYSDATE)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, LIST_VALUE_ID)" +
-                "VALUES(7,PROJ_ID,5)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, DATE_VALUE)" +
-                "VALUES(8,PROJ_ID,?)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)" +
-                "VALUES(9,PROJ_ID,?)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)" +
-                "VALUES(10,PROJ_ID,?)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)" +
-                "VALUES(11,PROJ_ID,?)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)" +
-                "VALUES(12,PROJ_ID,?)" +
-                "INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)" +
-                "VALUES(13,PROJ_ID,?)" +
-                "SELECT proj.OBJECT_ID AS PROJ_ID" +
-                "        FROM OBJECTS proj WHERE proj.NAME = ?;";
-        jdbcTemplate.update(sql, new Object[]{
-                name,
-                null,
-                gitLogin,
-                jiraPass,
-                jiraLogin,
-                jiraPass,
-                name
+    public void createProject(String name, int managerId) {
+        jdbcTemplate.update(CREATE_BASIC_PROJECT, new Object[]{name, managerId});
+    }
+
+    @Override
+    public void updateProjectApisParam(BigInteger projectId, String repoName, String gitLogin, String gitPassword, String jiraLogin, String jiraPassword) {
+        jdbcTemplate.update(UPDATE_PROJECT_API_PARAMETERS, new Object[]{
+                projectId, repoName,
+                projectId, gitLogin,
+                projectId, gitPassword,
+                projectId, jiraLogin,
+                projectId, jiraPassword
+        });
+    }
+
+    @Override
+    public void updateDevsOnProject(BigInteger projectId, Collection<BigInteger> developersId) {
+        List<BigInteger> devs = new ArrayList<>(developersId);
+        jdbcTemplate.batchUpdate(UPDATE_PROJECT_DEVS, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                preparedStatement.setLong(1, devs.get(i).longValue());
+                preparedStatement.setLong(2, projectId.longValue());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return devs.size();
+            }
+        });
+    }
+
+    @Override
+    public void updateIssuesOnProject(BigInteger projectId, Collection<BigInteger> issuesId) {
+        List<BigInteger> issues = new ArrayList<>(issuesId);
+        jdbcTemplate.batchUpdate(UPDATE_PROJECT_ISSUES, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                preparedStatement.setLong(1, issues.get(i).longValue());
+                preparedStatement.setLong(2, projectId.longValue());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return issues.size();
+            }
         });
     }
 
     @Override
     public Project readProjectById(int projectID) {
-        return null;
+        RowMapper<Project> mapper = new ProjectMapper();
+        return jdbcTemplate.queryForObject(READ_PROJECT_BY_ID, mapper, projectID);
     }
 
     @Override
     public Project readProjectByName(String projectName) {
-        return null;
+        RowMapper<Project> mapper = new ProjectMapper();
+        return jdbcTemplate.queryForObject(READ_PROJECT_BY_NAME, mapper, projectName);
     }
 
-    @Override
-    public void updateProject(Project project) {
 
-    }
+    class ProjectMapper implements RowMapper<Project> {
 
-    /*class ProjectMapper implements RowMapper<Project>{
         @Override
         public Project mapRow(ResultSet resultSet, int i) throws SQLException {
-            return  ProjectImpl.Builder(resultSet.getBigDecimal(AttributeID.PROJECT.getId()),)
-                    .setProjectId(resultSet.getBigDecimal("OBJECT_ID").toBigInteger())
-                    //.setProjectName(resultSet.getString(AttributeID.PROJECT.getId()))
-                    //.setProjectManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
-                    .setTechnicalManagerId(resultSet.getBigDecimal("OBJECT_TYPE_ID").toBigInteger())
-                    .setFromDate(resultSet.getDate(AttributeID.CREATION_DATE.getId()))
-                    .setToDate(resultSet.getDate(AttributeID.TO_DATE.getId()))
-                    .setStatus(resultSet.getBoolean(AttributeID.STATUS.getId()))
-                    .setRepoName(resultSet.getString(AttributeID.REPOSITORY_NAME.getId()))
-                    .setGitLogin(resultSet.getString(AttributeID.GIT_LOGIN.getId()))
-                    .setGitPassword(resultSet.getString(AttributeID.GIT_PASSWORD.getId()))
-                    .setJiraLogin(resultSet.getString(AttributeID.JIRA_LOGIN.getId()))
-                    .setJiraPassword(resultSet.getString(AttributeID.JIRA_PASSWORD.getId()))
+            return new ProjectImpl.Builder(resultSet.getString(1), BigInteger.valueOf(resultSet.getLong(2)))
+                    .setProjectId(BigInteger.valueOf(resultSet.getLong(3)))
+                    .setTechnicalManagerId(BigInteger.valueOf(resultSet.getLong(4)))
+                    .setFromDate(resultSet.getDate(5))
+                    .setStatus(Status.valueOf(resultSet.getString(6)))
+                    .setRepoName(resultSet.getString(7))
+                    .setGitLogin(resultSet.getString(8))
+                    .setGitPassword(resultSet.getString(9))
+                    .setJiraLogin(resultSet.getString(10))
+                    .setJiraPassword(resultSet.getString(11))
                     .build();
-
         }
-    }*/
+    }
 }

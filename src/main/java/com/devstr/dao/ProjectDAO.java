@@ -3,7 +3,8 @@ package com.devstr.dao;
 
 import com.devstr.model.Project;
 
-import java.util.Set;
+import java.math.BigInteger;
+import java.util.Collection;
 
 public interface ProjectDAO {
 
@@ -11,38 +12,131 @@ public interface ProjectDAO {
     /**
      * The method that creates the new project
      *
-     * @param name      project name
-     * @param managerId project manager id
-     * @param techId    tech manager id
-     * @param devs      state of the devs on the project
-     * @param repoName  GitHub repository name
-     * @param gitLogin  login for GitHub
-     * @param gitPass   password for GitHub
-     * @param jiraLogin login for Jira
-     * @param jiraPass  password for Jira
+     * @param name project name
+     * @param managerId
+     *
      */
-    void createProject(String name, int managerId, int techId, Set<Integer> devs, String repoName, String gitLogin, String gitPass, String jiraLogin, String jiraPass);
+    void createProject(String name, int managerId);
+
+    /**
+     * Add/Update parameters for project API
+     *
+     * @param projectId
+     * @param repoName GitHub repository name
+     * @param gitLogin
+     * @param gitPassword
+     * @param jiraLogin
+     * @param jiraPassword
+     */
+    void updateProjectApisParam(BigInteger projectId, String repoName, String gitLogin, String gitPassword, String jiraLogin, String jiraPassword);
+
+    /**
+     * Add/Update developers on project
+     *
+     * @param developersId
+     */
+    void updateDevsOnProject(BigInteger projectId, Collection<BigInteger> developersId);
+
+    /**
+     * Add/Update issues on project
+     *
+     * @param issuesId
+     */
+    void updateIssuesOnProject(BigInteger projectId, Collection<BigInteger> issuesId);
 
     /**
      * Method to get the project by ID
      *
-     * @param projectID  project id for find
+     * @param projectID project id for find
      * @return found project
      */
     Project readProjectById(int projectID);
 
     /**
-     *
      * @param projectName project name for find
      * @return found project
      */
     Project readProjectByName(String projectName);
 
-    /**
-     * Method for update project fields
-     *
-     * @param project project for update
-     */
-    void updateProject(Project project);
+
+    String CREATE_BASIC_PROJECT = "begin" +
+            "INSERT INTO OBJECTS(NAME, OBJECT_TYPE_ID)VALUES(?,2);" +
+            "INSERT all" +
+            "    INTO OBJREFERENCE (ATTRN_ID,REFERENCE, OBJECT_ID)VALUES(26,?,OBJ_ID.currval)" +
+            "    into ATTRIBUTES (ATTRN_ID, OBJECT_ID, DATE_VALUE)values (5,OBJ_ID.currval,sysdate)" +
+            "    INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, LIST_VALUE_ID) VALUES(7,OBJ_ID.currval,5)" +
+            "select * from dual;" +
+            "END;";
+    String UPDATE_PROJECT_API_PARAMETERS = "INSERT ALL" +
+            "  INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)VALUES(13,?,?)" +
+            "  INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)VALUES(9,?,?)" +
+            "  INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)VALUES(10,?,?)" +
+            "  INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)VALUES(11,?,?)" +
+            "  INTO ATTRIBUTES(ATTRN_ID, OBJECT_ID, VALUE)VALUES(12,?,?)" +
+            "  SELECT *FROM dual ;";
+    String UPDATE_PROJECT_DEVS = "INSERT INTO OBJREFERENCE (ATTRN_ID,REFERENCE, OBJECT_ID)VALUES(26,?,?);";
+    String UPDATE_PROJECT_ISSUES = "INSERT INTO ISSUES (ISSUE_ID,PROJECT_ID)VALUES(?,?);";
+
+    String READ_PROJECT_BY_ID = "SELECT proj.NAME, pmid.OBJECT_ID, proj.OBJECT_ID, tmid.OBJECT_ID, proj_create_date.DATE_VALUE, status_value.VALUE, rep_name.VALUE," +
+            "git_login.VALUE, git_pass.VALUE, jira_login.VALUE, jira_pas.VALUE" +
+            "from OBJECTS proj, OBJECTS pmid, OBJECTS tmid, OBJREFERENCE pm_to_proj, OBJREFERENCE tm_to_proj, ATTRIBUTES attr_pm_rol," +
+            "ATTRIBUTES attr_tm_rol, ATTRIBUTES proj_create_date, ATTRIBUTES proj_status, LISTS status_value, ATTRIBUTES rep_name," +
+            "ATTRIBUTES git_login, ATTRIBUTES git_pass, ATTRIBUTES jira_login, ATTRIBUTES jira_pas" +
+            "WHERE proj.OBJECT_ID = ?" +
+            "and pm_to_proj.OBJECT_ID = proj.OBJECT_ID" +
+            "and pmid.OBJECT_ID = pm_to_proj.REFERENCE" +
+            "and attr_pm_rol.OBJECT_ID = pmid.OBJECT_ID" +
+            "and attr_pm_rol.LIST_VALUE_ID = 1" +
+            "and tm_to_proj.OBJECT_ID = proj.OBJECT_ID" +
+            "and tmid.OBJECT_ID = tm_to_proj.REFERENCE" +
+            "and attr_tm_rol.OBJECT_ID = tmid.OBJECT_ID" +
+            "and attr_tm_rol.LIST_VALUE_ID = 2" +
+            "and proj_create_date.OBJECT_ID = proj.OBJECT_ID" +
+            "and proj_create_date.ATTRN_ID = 5" +
+            "and proj_status.OBJECT_ID = proj.OBJECT_ID" +
+            "and proj_status.ATTRN_ID = 7" +
+            "and status_value.LIST_VALUE_ID = proj_status.LIST_VALUE_ID" +
+            "and rep_name.OBJECT_ID = proj.OBJECT_ID" +
+            "and rep_name.ATTRN_ID = 13" +
+            "and git_login.OBJECT_ID = proj.OBJECT_ID" +
+            "and git_login.ATTRN_ID = 9" +
+            "and git_pass.OBJECT_ID = proj.OBJECT_ID" +
+            "and git_pass.ATTRN_ID = 10" +
+            "and jira_login.OBJECT_ID = proj.OBJECT_ID" +
+            "and jira_login.ATTRN_ID = 11" +
+            "and jira_pas.OBJECT_ID = proj.OBJECT_ID" +
+            "and jira_pas.ATTRN_ID = 12;";
+
+    String READ_PROJECT_BY_NAME = "SELECT proj.NAME, pmid.OBJECT_ID, proj.OBJECT_ID, tmid.OBJECT_ID, proj_create_date.DATE_VALUE, status_value.VALUE, rep_name.VALUE," +
+            "git_login.VALUE, git_pass.VALUE, jira_login.VALUE, jira_pas.VALUE" +
+            "from OBJECTS proj, OBJECTS pmid, OBJECTS tmid, OBJREFERENCE pm_to_proj, OBJREFERENCE tm_to_proj, ATTRIBUTES attr_pm_rol," +
+            "ATTRIBUTES attr_tm_rol, ATTRIBUTES proj_create_date, ATTRIBUTES proj_status, LISTS status_value, ATTRIBUTES rep_name," +
+            "ATTRIBUTES git_login, ATTRIBUTES git_pass, ATTRIBUTES jira_login, ATTRIBUTES jira_pas" +
+            "WHERE proj.NAME = ?" +
+            "and pm_to_proj.OBJECT_ID = proj.OBJECT_ID" +
+            "and pmid.OBJECT_ID = pm_to_proj.REFERENCE" +
+            "and attr_pm_rol.OBJECT_ID = pmid.OBJECT_ID" +
+            "and attr_pm_rol.LIST_VALUE_ID = 1" +
+            "and tm_to_proj.OBJECT_ID = proj.OBJECT_ID" +
+            "and tmid.OBJECT_ID = tm_to_proj.REFERENCE" +
+            "and attr_tm_rol.OBJECT_ID = tmid.OBJECT_ID" +
+            "and attr_tm_rol.LIST_VALUE_ID = 2" +
+            "and proj_create_date.OBJECT_ID = proj.OBJECT_ID" +
+            "and proj_create_date.ATTRN_ID = 5" +
+            "and proj_status.OBJECT_ID = proj.OBJECT_ID" +
+            "and proj_status.ATTRN_ID = 7" +
+            "and status_value.LIST_VALUE_ID = proj_status.LIST_VALUE_ID" +
+            "and rep_name.OBJECT_ID = proj.OBJECT_ID" +
+            "and rep_name.ATTRN_ID = 13" +
+            "and git_login.OBJECT_ID = proj.OBJECT_ID" +
+            "and git_login.ATTRN_ID = 9" +
+            "and git_pass.OBJECT_ID = proj.OBJECT_ID" +
+            "and git_pass.ATTRN_ID = 10" +
+            "and jira_login.OBJECT_ID = proj.OBJECT_ID" +
+            "and jira_login.ATTRN_ID = 11" +
+            "and jira_pas.OBJECT_ID = proj.OBJECT_ID" +
+            "and jira_pas.ATTRN_ID = 12;";
+
+
 
 }

@@ -9,9 +9,6 @@ import org.kohsuke.github.GHUser;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by Robert in 23.11.2018
- */
 public interface iGitService {
 
     GHRepository getGHRepository() throws IOException;
