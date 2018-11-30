@@ -3,11 +3,8 @@ package com.devstr.model.impl;
 import com.devstr.model.User;
 import com.devstr.model.enumerations.Status;
 import com.devstr.model.enumerations.UserRole;
-
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class UserImpl implements User {
 
@@ -115,8 +112,8 @@ public class UserImpl implements User {
             return this;
         }
 
-        public Builder setHiraDate(Date hiraDate) {
-            this.hireDate = hiraDate;
+        public Builder setHireDate(Date hireDate) {
+            this.hireDate = hireDate;
             return this;
         }
 
@@ -124,6 +121,11 @@ public class UserImpl implements User {
             this.projectId = projectId;
             return this;
         }
+
+        public User build() {
+            return new UserImpl(this);
+        }
+
     }
 
     private UserImpl(Builder builder) {
@@ -138,4 +140,5 @@ public class UserImpl implements User {
         this.hireDate = builder.hireDate;
         this.projectId = builder.projectId;
     }
+
 }
