@@ -19,7 +19,7 @@ public class IssueImpl implements Issue {
     private Date dueDate;
     private BigInteger projectId;
     private BigInteger userId;
-    private String reporter;
+    private BigInteger reporterId;
     private List<Commit> commits;
 
     @Override
@@ -68,8 +68,8 @@ public class IssueImpl implements Issue {
     }
 
     @Override
-    public String getReporter() {
-        return reporter;
+    public BigInteger getReporterId() {
+        return reporterId;
     }
 
     @Override
@@ -118,10 +118,10 @@ public class IssueImpl implements Issue {
         private Date dueDate;
         private BigInteger projectId;
         private BigInteger userId;
-        private String reporter;
+        private BigInteger reporterId;
         private List<Commit> commits;
 
-        private Builder() {}
+        public Builder() {}
 
         public Builder setIssueId(BigInteger id) {
             this.issueId = id;
@@ -168,8 +168,8 @@ public class IssueImpl implements Issue {
             return this;
         }
 
-        public Builder setReporter(String reporter) {
-            this.reporter = reporter;
+        public Builder setReporterId(BigInteger reporterId) {
+            this.reporterId = reporterId;
             return this;
         }
 
@@ -205,7 +205,7 @@ public class IssueImpl implements Issue {
         this.dueDate = builder.dueDate;
         this.projectId = builder.projectId;
         this.userId = builder.userId;
-        this.reporter = builder.reporter;
+        this.reporterId = builder.reporterId;
         this.commits = builder.commits;
     }
 }

@@ -40,5 +40,7 @@ public interface IssueDAO {
      */
     void updateIssue(Issue issue);
 
-
+    String CREATE_ISSUE = "INSERT " +
+            "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID)" +
+                "VALUES(?,?,?,?,?,?,?,?,?);";
 }

@@ -28,7 +28,7 @@ public interface Issue {
 
     BigInteger getUserId();
 
-    String getReporter();
+    BigInteger getReporterId();
 
     List<Commit> getCommits();
 
