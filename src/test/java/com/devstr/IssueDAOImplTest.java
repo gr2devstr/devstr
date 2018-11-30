@@ -1,22 +1,23 @@
 package com.devstr;
 
-import com.devstr.dao.IssueDAO;
 import com.devstr.dao.impl.IssueDAOImpl;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
 import com.devstr.model.impl.IssueImpl;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Locale;
+
 @Ignore
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,6 +26,10 @@ public class IssueDAOImplTest {
     @Autowired
     IssueDAOImpl issueDAO;
 
+    @Before
+    public void setUp() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
     @Test
     public void createIssueTest(){
 
