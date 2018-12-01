@@ -4,12 +4,12 @@ import java.math.BigInteger;
 
 public enum IssuePriority {
 
-    BLOCKER(BigInteger.valueOf(124L)),
-    CRITICAL(BigInteger.valueOf(125L)),
-    HIGH(BigInteger.valueOf(126L)),
-    MEDIUM(BigInteger.valueOf(127L)),
-    LOW(BigInteger.valueOf(128L)),
-    LOWEST(BigInteger.valueOf(129L));
+    BLOCKER(BigInteger.valueOf(19L)),
+    CRITICAL(BigInteger.valueOf(20L)),
+    HIGH(BigInteger.valueOf(21L)),
+    MEDIUM(BigInteger.valueOf(22L)),
+    LOW(BigInteger.valueOf(23L)),
+    LOWEST(BigInteger.valueOf(24L));
 
     private BigInteger priorityId;
 

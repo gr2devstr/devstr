@@ -4,12 +4,12 @@ import java.math.BigInteger;
 
 public enum IssueType {
 
-    BUG(BigInteger.valueOf(113L)),
-    IMPROVEMENT(BigInteger.valueOf(114L)),
-    TASK(BigInteger.valueOf(115L)),
-    NEW_FEATURE(BigInteger.valueOf(116L)),
-    DESIGN_BUG(BigInteger.valueOf(117L)),
-    EPIC(BigInteger.valueOf(118L));
+    BUG(BigInteger.valueOf(8L)),
+    IMPROVEMENT(BigInteger.valueOf(9L)),
+    TASK(BigInteger.valueOf(10L)),
+    NEW_FEATURE(BigInteger.valueOf(11L)),
+    DESIGN_BUG(BigInteger.valueOf(12L)),
+    EPIC(BigInteger.valueOf(13L));
 
     private BigInteger typeId;
 
