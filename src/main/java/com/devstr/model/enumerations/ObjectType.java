@@ -4,12 +4,12 @@ import java.math.BigInteger;
 
 public enum ObjectType {
 
-    USER(BigInteger.valueOf(100L)),
-    PROJECT(BigInteger.valueOf(101L)),
-    REVIEW(BigInteger.valueOf(102L)),
-    USER_REVIEW(BigInteger.valueOf(103L)),
-    PROJECT_REVIEW(BigInteger.valueOf(104L)),
-    TOKEN(BigInteger.valueOf(105L));
+    USER(BigInteger.valueOf(1L)),
+    PROJECT(BigInteger.valueOf(2L)),
+    REVIEW(BigInteger.valueOf(3L)),
+    USER_REVIEW(BigInteger.valueOf(4L)),
+    PROJECT_REVIEW(BigInteger.valueOf(5L)),
+    TOKEN(BigInteger.valueOf(6L));
 
     private BigInteger objTypeId;
 
