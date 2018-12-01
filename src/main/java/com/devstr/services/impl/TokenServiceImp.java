@@ -1,6 +1,6 @@
 package com.devstr.services.impl;
 
-import com.devstr.services.EncryptionToken;
+import com.devstr.services.TokenService;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.*;
@@ -11,15 +11,16 @@ import java.nio.ByteBuffer;
 import java.security.AlgorithmParameters;
 import java.security.SecureRandom;
 
-public class EncryptionTokenImp implements EncryptionToken {
+public class TokenServiceImp implements TokenService {
+
     private String password="mazepinzi16391709bendery";
 
     @Override
     public String encrypt(String text) throws Exception {
         byte[] ivBytes;
-        SecureRandom rendom = new SecureRandom();
+        SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[20];
-        rendom.nextBytes(bytes);
+        random.nextBytes(bytes);
         byte[] saltBytes = bytes;
 
         SecretKeyFactory facroty = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
