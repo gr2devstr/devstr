@@ -1,6 +1,4 @@
 CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
-  TYPE object_row IS TABLE OF OBJECTS%ROWTYPE;
-  TYPE attribute_row IS TABLE OF ATTRIBUTES%ROWTYPE;
   FUNCTION insert_object(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
   PROCEDURE delete_object(a_object_id NUMBER);
   PROCEDURE insert_objreference(a_attrn_id NUMBER, a_object_id NUMBER, a_reference NUMBER);
@@ -11,9 +9,13 @@ CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   PROCEDURE update_attribute_value(a_attrn_id NUMBER, a_object_id NUMBER, new_value VARCHAR2);
   PROCEDURE update_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER, new_date DATE);
   PROCEDURE update_attribute_list_value(a_attrn_id NUMBER, a_object_id NUMBER, new_list_value_id NUMBER);
-  FUNCTION select_object(id NUMBER) RETURN object_row;
-  FUNCTION select_object(a_name VARCHAR2) RETURN object_row;
-  FUNCTION select_attribute(a_attrn_id NUMBER, a_object_id NUMBER) RETURN attribute_row;
+  FUNCTION select_object_name(id NUMBER) RETURN VARCHAR2;
+  FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
+  FUNCTION select_attribute_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
+  FUNCTION select_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN DATE;
+  FUNCTION select_attribute_list_value_id(a_attrn_id NUMBER, a_object_id NUMBER) RETURN NUMBER;
+  FUNCTION select_objreference_obj(a_attrn_id NUMBER, a_reference NUMBER) RETURN sys_refcursor;
+  FUNCTION select_objreference_ref(a_attrn_id NUMBER, a_object_id NUMBER) RETURN sys_refcursor;
 END abstract_eav_pkg;
 /
 
@@ -84,23 +86,49 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
     UPDATE ATTRIBUTES SET LIST_VALUE_ID = new_list_value_id WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id;
 	logger_pkg.log('INFO', SQL%ROWCOUNT||' rows updated');
   END;
-  FUNCTION select_object(id NUMBER) RETURN object_row IS
-  res object_row;
+  FUNCTION select_object_name(id NUMBER) RETURN VARCHAR2 IS
+  res VARCHAR2(2000 BYTE);
   BEGIN
-    -- SELECT * INTO res FROM OBJECTS WHERE OBJECT_ID = id;
+    SELECT NAME INTO res FROM OBJECTS WHERE OBJECT_ID = id;
 	RETURN res;
   END;
-  FUNCTION select_object(a_name VARCHAR2) RETURN object_row IS
-  res object_row;
+  FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
+  res NUMBER;
   BEGIN
-    -- SELECT * INTO res FROM OBJECTS WHERE NAME = a_name;
+    SELECT object_id INTO res FROM OBJECTS WHERE object_type_id = a_object_type_id AND NAME = a_name;
 	RETURN res;
   END;
-  FUNCTION select_attribute(a_attrn_id NUMBER, a_object_id NUMBER) RETURN attribute_row IS
-  res attribute_row;
+  FUNCTION select_attribute_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2 IS
+  res VARCHAR2(4000 BYTE);
   BEGIN
-   -- SELECT * INTO res FROM ATTRIBUTES WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id;
-	RETURN res;
+    SELECT VALUE INTO res FROM ATTRIBUTES WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id; 
+    RETURN res;
+  END;
+  FUNCTION select_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN DATE IS
+  res VARCHAR2(4000 BYTE);
+  BEGIN
+    SELECT DATE_VALUE INTO res FROM ATTRIBUTES WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id; 
+    RETURN res;
+  END;
+  FUNCTION select_attribute_list_value_id(a_attrn_id NUMBER, a_object_id NUMBER) RETURN NUMBER IS
+  res VARCHAR2(4000 BYTE);
+  BEGIN
+    SELECT LIST_VALUE_ID INTO res FROM ATTRIBUTES WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id; 
+    RETURN res;
+  END;
+  FUNCTION select_objreference_obj(a_attrn_id NUMBER, a_reference NUMBER) RETURN sys_refcursor IS
+    c sys_refcursor;
+  BEGIN
+    OPEN c FOR SELECT OBJECT_ID FROM OBJREFERENCE 
+	                           WHERE ATTRN_ID = a_attrn_id AND REFERENCE = a_reference;
+	RETURN c;
+  END;
+  FUNCTION select_objreference_ref(a_attrn_id NUMBER, a_object_id NUMBER) RETURN sys_refcursor IS
+  c sys_refcursor;
+  BEGIN
+    OPEN c FOR  SELECT REFERENCE FROM OBJREFERENCE 
+	                            WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id;
+	RETURN c;
   END;
 END abstract_eav_pkg;
 /

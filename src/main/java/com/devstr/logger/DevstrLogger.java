@@ -80,7 +80,7 @@ public class DevstrLogger extends Log4JLogger {
         jdbcTemplate.update("exec logger_pkg.set_level(?)", level);
     }
 
-    public String getLoggingLevel() {
+    public String getDBLoggingLevel() {
         return jdbcTemplate.queryForObject("select logger_pkg.get_level from dual", String.class);
     }
 
