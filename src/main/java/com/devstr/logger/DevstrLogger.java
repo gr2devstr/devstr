@@ -4,20 +4,34 @@ import org.apache.commons.logging.impl.Log4JLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 
 public class DevstrLogger extends Log4JLogger {
-
-    private static String INSERT_LOG = "INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES(?, ?, SYSDATE)";
-    private static String CLEAR_LOG = "DELETE FROM LOGGER";
-    private static String DROP_SEQ = "DROP SEQUENCE log_id_seq";
-    private static String CREATE_SEQ = "CREATE SEQUENCE log_id_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE";
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     public DevstrLogger(String name) {
         super(name);
+    }
+
+    @Override
+    public void warn(Object message) {
+        logInDB("WARN", message.toString());
+        super.warn(message);
+    }
+
+    @Override
+    public void error(Object message) {
+        logInDB("ERROR", message.toString());
+        super.error(message);
+    }
+
+    @Override
+    public void fatal(Object message) {
+        logInDB("FATAL", message.toString());
+        super.fatal(message);
     }
 
     @Override
@@ -44,7 +58,7 @@ public class DevstrLogger extends Log4JLogger {
     @Override
     public void warn(Object message, Throwable t) {
         if (SQLException.class.isAssignableFrom(t.getClass()))
-            logInDB("WARNING", message + t.getMessage());
+            logInDB("WARN", message + t.getMessage());
         super.warn(message, t);
     }
 
@@ -62,21 +76,35 @@ public class DevstrLogger extends Log4JLogger {
         super.fatal(message, t);
     }
 
+    public void setDBLoggingLevel(String level) {
+        jdbcTemplate.update("exec logger_pkg.set_level(?)", level);
+    }
+
+    public String getLoggingLevel() {
+        return jdbcTemplate.queryForObject("select logger_pkg.get_level from dual", String.class);
+    }
+
+    public void setThreshold(BigInteger threshold) {
+        jdbcTemplate.update("exec logger_pkg.set_threshold(?)", threshold);
+    }
+
+    public BigInteger getThreshold() {
+        return jdbcTemplate.queryForObject("select logger_pkg.get_threshold from dual", BigInteger.class);
+    }
+
     public void logDB(String level, String message) {
         logInDB(level, message);
     }
 
     public void setClearLog() {
         if (jdbcTemplate != null) {
-            jdbcTemplate.execute(CLEAR_LOG);
-            jdbcTemplate.execute(DROP_SEQ);
-            jdbcTemplate.execute(CREATE_SEQ);
+            jdbcTemplate.execute("exec logger_pkg.set_clear_log");
         }
     }
 
     private void logInDB(String level, String message) {
         if (jdbcTemplate != null) {
-            jdbcTemplate.update(INSERT_LOG, level, message.substring(0, 1998));
+            jdbcTemplate.update("exec logger_pkg.log(?,?)", level, message.substring(0, 1998));
         }
     }
 }

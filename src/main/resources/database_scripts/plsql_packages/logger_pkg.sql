@@ -6,6 +6,7 @@ CREATE OR REPLACE PACKAGE logger_pkg AS
   PROCEDURE set_level(new_level VARCHAR2);
   FUNCTION get_threshold RETURN NUMBER;
   PROCEDURE set_threshold(new_threshold NUMBER);
+  PROCEDURE set_clear_log;
 END logger_pkg;
 /
 
@@ -58,7 +59,7 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
 	      INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
 		  p_size := p_size + 1;
 		ELSE
-		  DELETE FROM LOGGER WHERE LOG_DATE = (select MIN(LOG_DATE) FROM LOGGER);
+		  DELETE FROM LOGGER WHERE LOG_ID = (select MIN(LOG_ID) FROM LOGGER);
 		  INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
 		END IF;
 	  END IF;
@@ -79,7 +80,7 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
     IF new_threshold > 0 THEN
 	  IF new_threshold < threshold THEN
 	    WHILE p_size > new_threshold LOOP
-		  DELETE FROM LOGGER WHERE LOG_DATE = (select MIN(LOG_DATE) FROM LOGGER);
+		  DELETE FROM LOGGER WHERE LOG_ID = (select MIN(LOG_ID) FROM LOGGER);
 		  p_size := p_size -1;
 		END LOOP;
 	  END IF;
@@ -89,6 +90,20 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
   FUNCTION get_threshold RETURN NUMBER IS
   BEGIN
     RETURN threshold;
+  END;
+  PROCEDURE set_clear_log IS
+  BEGIN
+    DELETE FROM LOGGER;
+	p_size := 0;
+	EXECUTE IMMEDIATE 'DROP SEQUENCE log_id_seq';
+	EXECUTE IMMEDIATE 'CREATE SEQUENCE log_id_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE';
+  EXCEPTION
+    WHEN OTHERS THEN
+    IF SQLCODE != -2289 THEN
+      RAISE;
+	ELSE
+	  EXECUTE IMMEDIATE 'CREATE SEQUENCE log_id_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE';
+    END IF;
   END;
 END logger_pkg;
 /
