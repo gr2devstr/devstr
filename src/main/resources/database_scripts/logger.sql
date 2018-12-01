@@ -42,14 +42,3 @@ begin
     from dual;
 end;
 /
-
-CREATE OR REPLACE PACKAGE logger_pkg AS
-    level VARCHAR2(30) := 'INFO';
-    threshold NUMBER(10) := 2000;
-  PROCEDURE log(msg_level VARCHAR2, message VARCHAR2);
-  FUNCTION get_level RETURN VARCHAR2;
-  PROCEDURE set_level(new_level VARCHAR2);
-  FUNCTION get_threshold RETURN NUMBER;
-  PROCEDURE set_threshold(new_threshold NUMBER);
-END logger_pkg;
-/
