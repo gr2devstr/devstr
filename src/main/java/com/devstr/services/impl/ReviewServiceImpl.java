@@ -8,7 +8,7 @@ import com.devstr.model.ProjectReview;
 import com.devstr.model.Review;
 import com.devstr.model.UserReview;
 import com.devstr.model.enumerations.ObjectType;
-import com.devstr.services.interfaces.ReviewService;
+import com.devstr.services.ReviewService;
 
 import java.math.BigInteger;
 import java.util.List;

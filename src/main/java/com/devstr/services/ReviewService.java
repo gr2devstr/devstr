@@ -1,4 +1,4 @@
-package com.devstr.services.interfaces;
+package com.devstr.services;
 
 import com.devstr.model.ProjectReview;
 import com.devstr.model.Review;

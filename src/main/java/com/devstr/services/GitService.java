@@ -1,4 +1,4 @@
-package com.devstr.services.interfaces;
+package com.devstr.services;
 
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
@@ -9,7 +9,7 @@ import org.kohsuke.github.GHUser;
 import java.io.IOException;
 import java.util.List;
 
-public interface iGitService {
+public interface GitService {
 
     GHRepository getGHRepository() throws IOException;
 

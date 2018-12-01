@@ -3,7 +3,7 @@ package com.devstr.services.impl;
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
 import com.devstr.model.impl.CommitClassImpl;
-import com.devstr.services.interfaces.iGitService;
+import com.devstr.services.GitService;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GitServiceImpl implements iGitService {
+public class GitServiceImpl implements GitService {
 
     private String repositoryName;
     private String token;
