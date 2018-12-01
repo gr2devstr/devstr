@@ -60,6 +60,7 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
 		ELSE
 		  DELETE FROM LOGGER WHERE LOG_DATE = (select MIN(LOG_DATE) FROM LOGGER);
 		  INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
+		END IF;
 	  END IF;
   END;
   PROCEDURE set_level(new_level VARCHAR2)
@@ -75,7 +76,13 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
   END;
   PROCEDURE set_threshold(new_threshold NUMBER) IS
   BEGIN
-    IF new_threshold>0 THEN
+    IF new_threshold > 0 THEN
+	  IF new_threshold < threshold THEN
+	    WHILE p_size > new_threshold LOOP
+		  DELETE FROM LOGGER WHERE LOG_DATE = (select MIN(LOG_DATE) FROM LOGGER);
+		  p_size := p_size -1;
+		END LOOP;
+	  END IF;
       threshold := new_threshold;
 	END IF;
   END;
