@@ -2,8 +2,10 @@ package com.devstr.model.impl;
 
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
+import com.devstr.model.enumerations.BuildStatus;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,8 +16,8 @@ public class CommitImpl  implements Commit {
     private BigInteger userId;
     private String sha;
     private Date date;
-    private Set<CommitClass> commitClasses;
-    private boolean buildStatus;
+    private Collection<CommitClass> commitClasses;
+    private BuildStatus buildStatus;
     private String buildSha;
 
     private CommitImpl() {
@@ -42,12 +44,12 @@ public class CommitImpl  implements Commit {
     }
 
     @Override
-    public Set<CommitClass> getCommitClasses() {
+    public Collection<CommitClass> getCommitClasses() {
         return commitClasses;
     }
 
     @Override
-    public boolean getBuildStatus() {
+    public BuildStatus getBuildStatus() {
         return buildStatus;
     }
 
@@ -124,7 +126,7 @@ public class CommitImpl  implements Commit {
             return this;
         }
 
-        public CommitBuilder setCommitClasses(Set<CommitClass> commitClasses) {
+        public CommitBuilder setCommitClasses(Collection<CommitClass> commitClasses) {
             if (CommitImpl.this.commitClasses == null) {
                 CommitImpl.this.commitClasses = new HashSet<>();
             }
@@ -132,7 +134,7 @@ public class CommitImpl  implements Commit {
             return this;
         }
 
-        public CommitBuilder setBuildStatus(boolean status) {
+        public CommitBuilder setBuildStatus(BuildStatus status) {
             CommitImpl.this.buildStatus = status;
             return this;
         }

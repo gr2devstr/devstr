@@ -56,6 +56,11 @@ public class IssueDAOImpl implements IssueDAO {
 
     }
 
+    @Override
+    public String getShaLastCommitOnProject() {
+        return jdbcTemplate.queryForObject(GET_COMMIT_SHA, String.class);
+    }
+
     class IssueMapper implements RowMapper<Issue>{
 
         @Override

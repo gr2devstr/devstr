@@ -1,8 +1,10 @@
 package com.devstr.model;
 
+import com.devstr.model.enumerations.BuildStatus;
 import com.devstr.model.impl.CommitClassImpl;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,9 +17,9 @@ public interface Commit {
 
     Date getDate();
 
-    Set<CommitClass> getCommitClasses();
+    Collection<CommitClass> getCommitClasses();
 
-    boolean getBuildStatus();
+    BuildStatus getBuildStatus();
 
     String getBuildSha();
 

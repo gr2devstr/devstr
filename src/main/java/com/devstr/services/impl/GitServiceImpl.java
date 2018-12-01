@@ -1,13 +1,17 @@
 package com.devstr.services.impl;
 
+import com.devstr.dao.impl.IssueDAOImpl;
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
+import com.devstr.model.enumerations.BuildStatus;
 import com.devstr.model.impl.CommitClassImpl;
+import com.devstr.model.impl.CommitImpl;
 import com.devstr.services.GitService;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
+import org.kohsuke.github.PagedIterable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +21,9 @@ public class GitServiceImpl implements GitService {
 
     private String repositoryName;
     private String token;
+
+    @Autowired
+    IssueDAOImpl issueDAO;
 
 
     public GitServiceImpl(String repositoryName, String token) {
@@ -30,21 +37,14 @@ public class GitServiceImpl implements GitService {
     }
 
     @Override
-    public GHCommit getLastGHCommit() throws IOException {
-        return getGHRepository().listCommits().asList().get(0);
+    public List<GHCommit> getAllGHCommits() throws IOException {
+        return getGHRepository().listCommits().asList();
     }
 
     @Override
-    public GHCommit getGHCommit(String commitSHA) throws IOException {
-        return getGHRepository().getCommit(commitSHA);
-    }
-
-    @Override
-    public List<CommitClass> getAllCommitClasses(GHCommit commit) throws IOException {
-
+    public List<CommitClass> getClassesFromCommit(GHCommit commit) throws IOException {
         List<CommitClass> commitClasses = new ArrayList<>();
-        List<GHCommit.File> files = getLastGHCommit().getFiles();
-
+        List<GHCommit.File> files = commit.getFiles();
         for (GHCommit.File file : files) {
             commitClasses.add(CommitClassImpl.builder()
                     .setClassName(file.getFileName())
@@ -57,12 +57,32 @@ public class GitServiceImpl implements GitService {
     }
 
     @Override
-    public GHUser getCommiter(GHCommit commit) {
-        return null;
+    public Commit getCommit(GHCommit commit) throws IOException {
+        BuildStatus status = getBuildStatus(commit);
+        return CommitImpl.builder()
+                //.setUserId()//some method in UserDaoImpl  some(commit.getCommitter().getEmail())
+                .setSha(commit.getSHA1())
+                .setDate(commit.getCommitDate())
+                .setCommitClasses(getClassesFromCommit(commit))
+                .setBuildStatus(status)
+                .build();
     }
 
+
     @Override
-    public Commit getCommit() {
-        return null;
+    public List<Commit> getAllCommits() throws IOException {
+        List<Commit> commits = new ArrayList<>();
+        PagedIterable<GHCommit> ghcommits = getGHRepository().listCommits();
+        for (GHCommit commit : ghcommits) {
+            commits.add(getCommit(commit));
+        }
+        return commits;
+    }
+
+    private BuildStatus getBuildStatus(GHCommit commit) throws IOException {
+        String currentStatus = commit.getLastStatus().getState().toString();
+        if (currentStatus.equals(BuildStatus.SUCCESS.toString())) return BuildStatus.SUCCESS;
+        if (currentStatus.equals(BuildStatus.FAILURE.toString())) return BuildStatus.FAILURE;
+        return BuildStatus.PENDING;
     }
 }

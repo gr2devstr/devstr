@@ -40,6 +40,15 @@ public interface IssueDAO {
      */
     void updateIssue(Issue issue);
 
+    /**
+     * The method returns the sha of the last commit from the database
+     *
+     * @return sha
+     */
+    String getShaLastCommitOnProject();
+
+    String GET_COMMIT_SHA = "SELECT c.SHA FROM COMMITS c where c.COMMIT_ID = (select max(c.COMMIT_ID) from COMMITS c)";
+
     String CREATE_ISSUE = "INSERT " +
             "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID)" +
                 "VALUES(?,?,?,?,?,?,?,?,?);";
