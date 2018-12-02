@@ -4,6 +4,7 @@ import com.devstr.model.enumerations.AttributeID;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.enumerations.Status;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AbstractDaoTest extends AbstractDAOImpl{
