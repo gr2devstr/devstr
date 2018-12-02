@@ -16,7 +16,7 @@ CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   FUNCTION select_attribute_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
   FUNCTION select_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN DATE;
   FUNCTION select_attribute_list_value_id(a_attrn_id NUMBER, a_object_id NUMBER) RETURN NUMBER;
-  FUNCTION select_attribute_list_value_name(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
+  FUNCTION select_attr_list_value_name(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
   FUNCTION select_objreference_obj(a_attrn_id NUMBER, a_reference NUMBER) RETURN sys_refcursor;
   FUNCTION select_objreference_ref(a_attrn_id NUMBER, a_object_id NUMBER) RETURN sys_refcursor;
 END abstract_eav_pkg;
@@ -27,7 +27,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
     l_object_id NUMBER;
 	temp_id NUMBER;
     BEGIN
-	  IF a_object_type_id BETWEEN 1 AND 2 THEN 
+	  IF a_object_type_id BETWEEN 29 AND 30 THEN 
 	    temp_id := select_object_id(a_object_type_id, a_name);
 		IF temp_id IS NULL THEN
 		  INSERT INTO OBJECTS(object_type_id, name) VALUES (a_object_type_id, a_name)
@@ -183,7 +183,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
   FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
   res NUMBER;
   BEGIN
-    IF object_type_id NOT BETWEEN 1 AND 2 THEN
+    IF a_object_type_id NOT BETWEEN 29 AND 30 THEN
 	  logger_pkg.log('WARN', 'Only projects and users have unique names');
 	  RETURN NULL;
 	END IF;
@@ -248,7 +248,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
 		RAISE;
   END;
   
-  FUNCTION select_attribute_list_value_name(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2 IS
+  FUNCTION select_attr_list_value_name(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2 IS
   res VARCHAR2(2000 BYTE);
   BEGIN
     SELECT LISTS.VALUE INTO res FROM LISTS, ATTRIBUTES a WHERE a.ATTRN_ID = a_attrn_id AND a.OBJECT_ID = a_object_id AND a.LIST_VALUE_ID = LISTS.LIST_VALUE_ID; 
