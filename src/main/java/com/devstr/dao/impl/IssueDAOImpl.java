@@ -17,7 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Transactional
 @Repository
 public class IssueDAOImpl implements IssueDAO {
 
@@ -25,35 +24,37 @@ public class IssueDAOImpl implements IssueDAO {
     JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional
     public void createIssue(Issue issue) {
-        jdbcTemplate.update(CREATE_ISSUE,new Object[]{
-                issue.getIssueKey(), issue.getProjectId(),
-                issue.getType(), issue.getStatus(), issue.getPriority(),
+           jdbcTemplate.update(CREATE_ISSUE, issue.getIssueKey(), issue.getProjectId().longValue(),
+                issue.getType().getId().longValue(), issue.getStatus().getId().longValue(), issue.getPriority().getId().longValue(),
                 issue.getStartDate(), issue.getDueDate(),
-                issue.getUserId(), issue.getReporterId()
-        });
+                issue.getUserId().longValue(), issue.getReporterId().longValue());
     }
 
     @Override
+    @Transactional
     public List<Issue> readIssuesByProject(BigInteger projectId) {
-        return jdbcTemplate.queryForList(READ_ISSUES_BY_PROJECT,new Object[]{projectId},Issue.class);
+        return jdbcTemplate.query(READ_ISSUES_BY_PROJECT,new Object[]{projectId.longValue()}, new IssueMapper());
     }
 
     @Override
+    @Transactional
     public List<Issue> readIssuesByUser(BigInteger userId) {
-        return jdbcTemplate.queryForList(READ_ISSUES_BY_USER,new Object[]{userId},Issue.class);
+        return jdbcTemplate.queryForList(READ_ISSUES_BY_USER,new Object[]{userId.longValue()},Issue.class);
     }
 
     @Override
+    @Transactional
     public Issue readIssueById(BigInteger id) {
         RowMapper<Issue> mapper = new IssueMapper();
-        return jdbcTemplate.query(READ_ISSUE_BY_ID,new Object[]{id},mapper)
-                .get(0);
+        return jdbcTemplate.queryForObject(READ_ISSUE_BY_ID,mapper,id.longValue());
     }
 
     @Override
+    @Transactional
     public void updateIssue(Issue issue) {
-
+//        jdbcTemplate.update();
     }
 
     @Override
@@ -69,9 +70,9 @@ public class IssueDAOImpl implements IssueDAO {
                     .setIssueId(BigInteger.valueOf(resultSet.getLong(1)))
                     .setIssueKey(resultSet.getString(2))
                     .setProjectId(BigInteger.valueOf(resultSet.getLong(3)))
-                    .setIssueType(IssueType.values()[resultSet.getInt(4)])
-                    .setIssueStatus(IssueStatus.values()[resultSet.getInt(5)])
-                    .setIssuePriority(IssuePriority.values()[resultSet.getInt(6)])
+                    .setIssueType(IssueType.valueOf(resultSet.getString(4)))
+                    .setIssueStatus(IssueStatus.valueOf(resultSet.getString(5)))
+                    .setIssuePriority(IssuePriority.valueOf(resultSet.getString(6)))
                     .setStartDate(resultSet.getDate(7))
                     .setDueDate(resultSet.getDate(8))
                     .setUserId(BigInteger.valueOf(resultSet.getLong(9)))
