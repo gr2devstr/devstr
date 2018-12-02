@@ -29,22 +29,64 @@ public class ProjectDAOImplTest {
         Locale.setDefault(Locale.ENGLISH);
     }
 
+    @Ignore
     @Test
     public void createProjectTest() {
         Project project = new ProjectImpl.Builder("DEVSTR", BigInteger.valueOf(78)).build();
         BigInteger id = projectDAO.createProject(project.getProjectName(), project.getProjectManagerId());
-        //assertEquals(BigInteger.valueOf(92L),id);
+        assertEquals(BigInteger.valueOf(92L), id);
     }
 
     @Test
     public void updateProjectRepositoryName() {
-        projectDAO.updateProjectRepositoryName(BigInteger.valueOf(81L), "TestProjDaoRepoName");
+        projectDAO.updateProjectRepositoryName(BigInteger.valueOf(81L), "devstr");
     }
 
     @Test
+    public void updateProjectGitLogin() {
+        projectDAO.updateProjectGitLogin(BigInteger.valueOf(81L), "git login");
+    }
+
+    @Test
+    public void updateProjectGitPassword() {
+        projectDAO.updateProjectGitPassword(BigInteger.valueOf(81L), "git pass");
+    }
+
+    @Test
+    public void updateProjectJiraLogin() {
+        projectDAO.updateProjectJiraLogin(BigInteger.valueOf(81L), "jira login");
+    }
+
+    @Test
+    public void updateProjectJiraPassword() {
+        projectDAO.updateProjectJiraPassword(BigInteger.valueOf(81L), "jira pass");
+    }
+
+    @Test
+    public void addDevOnProject() {
+        BigInteger projID = BigInteger.valueOf(81);
+        BigInteger devID = BigInteger.valueOf(80);
+        projectDAO.addDevOnProject(projID, devID);
+    }
+
+
+    @Test
     public void readProjectById() {
-        Project project = projectDAO.readProjectById(BigInteger.valueOf(81L));
-        assertEquals("DEVSTR", project.getProjectName());
+        String projName = "DEVSTR";
+        BigInteger projid = BigInteger.valueOf(81L);
+
+        Project project = projectDAO.readProjectById(projid);
+        assertEquals(projName, project.getProjectName());
+    }
+
+    @Ignore
+    @Test
+    public void readProjectByName() {
+        String projName = "DEVSTR";
+        BigInteger projid = BigInteger.valueOf(81L);
+
+        Project project = projectDAO.readProjectByName(projName);
+        assertEquals(projid, project.getProjectId());
     }
 
     @Test
