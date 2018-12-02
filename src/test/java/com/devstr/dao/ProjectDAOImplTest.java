@@ -4,6 +4,7 @@ import com.devstr.dao.impl.ProjectDAOImpl;
 import com.devstr.model.Project;
 import com.devstr.model.impl.ProjectImpl;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
-
+@Ignore
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProjectDAOImplTest {
