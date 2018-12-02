@@ -1,9 +1,4 @@
 CREATE OR REPLACE PACKAGE user_dao AS
-  TYPE full_user IS RECORD(user_id NUMBER, username VARCHAR2(100 CHAR), first_name VARCHAR2(100 CHAR), last_name VARCHAR2(100 CHAR), email VARCHAR2(100 CHAR),
-                              user_role_id NUMBER, creation_date DATE, password VARCHAR2(100 CHAR), status_id NUMBER,
-							  active_project_id NUMBER);
-  TYPE basic_user IS RECORD(user_id NUMBER, username VARCHAR2(100 CHAR), first_name VARCHAR2(100 CHAR), last_name VARCHAR2(100 CHAR), email VARCHAR2(100 CHAR),
-                              user_role_id NUMBER, password VARCHAR2(100 CHAR), status_id NUMBER);
   PROCEDURE insert_user(username VARCHAR2, first_name VARCHAR2, last_name VARCHAR2, email VARCHAR2,
                        user_role_id NUMBER, password VARCHAR2, status_id NUMBER);
   PROCEDURE update_user_first_name(user_id NUMBER, new_first_name VARCHAR2);
@@ -14,10 +9,6 @@ CREATE OR REPLACE PACKAGE user_dao AS
   PROCEDURE activate_user(user_id NUMBER);
   PROCEDURE inactvate_user(user_id NUMBER);
   PROCEDURE delete_user(user_id NUMBER);
-  FUNCTION select_full_user_by_id(user_id NUMBER) RETURN full_user;
-  FUNCTION select_full_user_by_login(login VARCHAR2) RETURN full_user;
-  FUNCTION select_basic_user_by_id(user_id NUMBER) RETURN basic_user;
-  FUNCTION select_basic_user_by_login(login VARCHAR2) RETURN basic_user;
 END user_dao;
 /
 
@@ -69,28 +60,6 @@ CREATE OR REPLACE PACKAGE BODY user_dao AS
   PROCEDURE delete_user(user_id NUMBER) IS
   BEGIN
     abstract_eav_pkg.delete_object(user_id);
-  END;
-  FUNCTION select_full_user_by_id(user_id NUMBER) RETURN full_user IS
-  res full_user;
-  BEGIN
-    RETURN res;
-  END;
-  FUNCTION select_full_user_by_login(login VARCHAR2) RETURN full_user IS
-  l_object_id NUMBER;
-  BEGIN
-    l_object_id := abstract_eav_pkg.select_object_id(1, login); /*user*/
-    RETURN select_full_user_by_id(l_object_id);
-  END;
-  FUNCTION select_basic_user_by_id(user_id NUMBER) RETURN basic_user IS
-  res basic_user;
-  BEGIN
-    RETURN res;
-  END;
-  FUNCTION select_basic_user_by_login(login VARCHAR2) RETURN basic_user IS
-  l_object_id NUMBER;
-  BEGIN
-    l_object_id := abstract_eav_pkg.select_object_id(1, login); /*user*/
-    RETURN select_basic_user_by_id(l_object_id);
   END;
 END user_dao;
 /
