@@ -4,8 +4,8 @@ import java.math.BigInteger;
 
 public enum Status {
 
-    ACTIVE(BigInteger.valueOf(5L)),
-    INACTIVE(BigInteger.valueOf(6L));
+    ACTIVE(BigInteger.valueOf(39L)),
+    INACTIVE(BigInteger.valueOf(40L));
 
     private BigInteger statusId;
 
