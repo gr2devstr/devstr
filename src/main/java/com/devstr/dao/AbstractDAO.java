@@ -156,12 +156,12 @@ public interface AbstractDAO {
     /**
      * abstract_eav.select_object_id(id NUMBER) RETURN;
      */
-    String READ_OBJECT_BY_ID = "SELECT abstract_eav.select_object_id(?) FROM dual;";
+    String READ_OBJECT_BY_ID = "SELECT abstract_eav.select_object_name(?) FROM dual;";
 
     /**
      * abstract_eav.select_object_name(a_object_type_id NUMBER, a_name VARCHAR2) RETURN;
      */
-    String READ_OBJECT_BY_NAME = "SELECT abstract_eav.select_object_name(?, ?) FROM dual;";
+    String READ_OBJECT_BY_NAME = "SELECT abstract_eav.select_object_id(?, ?) FROM dual;";
 
     /**
      * delete_object(a_object_id NUMBER);
