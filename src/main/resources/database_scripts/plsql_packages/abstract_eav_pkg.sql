@@ -16,6 +16,7 @@ CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   FUNCTION select_attribute_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
   FUNCTION select_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN DATE;
   FUNCTION select_attribute_list_value_id(a_attrn_id NUMBER, a_object_id NUMBER) RETURN NUMBER;
+  FUNCTION select_attribute_list_value_name(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
   FUNCTION select_objreference_obj(a_attrn_id NUMBER, a_reference NUMBER) RETURN sys_refcursor;
   FUNCTION select_objreference_ref(a_attrn_id NUMBER, a_object_id NUMBER) RETURN sys_refcursor;
 END abstract_eav_pkg;
@@ -182,6 +183,10 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
   FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
   res NUMBER;
   BEGIN
+    IF object_type_id NOT BETWEEN 1 AND 2 THEN
+	  logger_pkg.log('WARN', 'Only projects and users have unique names');
+	  RETURN NULL;
+	END IF;
     SELECT object_id INTO res FROM OBJECTS WHERE object_type_id = a_object_type_id AND NAME = a_name;
 	RETURN res;
 	EXCEPTION
@@ -228,7 +233,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
   END;
   
   FUNCTION select_attribute_list_value_id(a_attrn_id NUMBER, a_object_id NUMBER) RETURN NUMBER IS
-  res VARCHAR2(4000 BYTE);
+  res NUMBER;
   BEGIN
     SELECT LIST_VALUE_ID INTO res FROM ATTRIBUTES WHERE ATTRN_ID = a_attrn_id AND OBJECT_ID = a_object_id; 
     RETURN res;
@@ -240,6 +245,22 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
 		err_code := SQLCODE;
 		err_message := SQLERRM;
 	    logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to select list attribute with attrn_id '||a_attrn_id||' and a_object_id '||a_object_id);
+		RAISE;
+  END;
+  
+  FUNCTION select_attribute_list_value_name(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2 IS
+  res VARCHAR2(2000 BYTE);
+  BEGIN
+    SELECT LISTS.VALUE INTO res FROM LISTS, ATTRIBUTES a WHERE a.ATTRN_ID = a_attrn_id AND a.OBJECT_ID = a_object_id AND a.LIST_VALUE_ID = LISTS.LIST_VALUE_ID; 
+    RETURN res;
+	EXCEPTION
+	  WHEN NO_DATA_FOUND THEN
+	    logger_pkg.log('INFO', 'no list attributes selected by attrn_id '||a_attrn_id||' and object_id '||a_object_id);
+	    RETURN NULL;
+	  WHEN OTHERS THEN
+		err_code := SQLCODE;
+		err_message := SQLERRM;
+	    logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to select list attribute name with attrn_id '||a_attrn_id||' and a_object_id '||a_object_id);
 		RAISE;
   END;
   
