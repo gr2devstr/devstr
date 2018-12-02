@@ -3,103 +3,105 @@ package com.devstr.dao.impl;
 import com.devstr.dao.UserDAO;
 import com.devstr.model.User;
 import com.devstr.model.enumerations.AttributeID;
+import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.enumerations.Status;
 import com.devstr.model.enumerations.UserRole;
 import com.devstr.model.impl.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Date;
 
 @Transactional
 @Repository
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public void createUser(String login,
-                           String firstName,
-                           String lastName,
-                           String email,
-                           UserRole userRole,
-                           String password) {
-        jdbcTemplate.update(CREATE_USER, new Object[]{
-                login,
-                firstName,
-                lastName,
-                email,
-                userRole.getId().longValue(),
-                password
-        });
+    public void createUser(String login, String firstName, String lastName, String email, String password, UserRole userRole) {
+        BigInteger userId = createObject(ObjectType.USER.getId(), login);
+        createAttributeValue(AttributeID.FIRST_NAME.getId(), userId, firstName);
+        createAttributeValue(AttributeID.LAST_NAME.getId(), userId, lastName);
+        createAttributeValue(AttributeID.FIRST_NAME.getId(), userId, firstName);
+        createAttributeValue(AttributeID.EMAIL.getId(), userId, email);
+        createAttributeValue(AttributeID.PASSWORD.getId(), userId, password);
+        createAttributeDateValue(AttributeID.CREATION_DATE.getId(), userId, new Date());
+        createAttributeListValue(AttributeID.ROLE.getId(), userId, userRole.getId());
+        createAttributeListValue(AttributeID.STATUS.getId(), userId, Status.ACTIVE.getId());
     }
 
     @Override
-    public User readUserById(BigInteger id) {
-        RowMapper<User> mapper = new UserRowMapper();
-        return jdbcTemplate.queryForObject(READ_USER_BY_ID, mapper, new Object[]{
-                id.longValue(),
-                id.longValue(),
-                id.longValue()
-        });
+    public User readBasicUserById(BigInteger id) {
+        return new UserImpl.Builder(
+                readObjectNameById(id),
+                readAttributeValue(AttributeID.PASSWORD.getId(), id),
+                readAttributeValue(AttributeID.EMAIL.getId(), id),
+                readAttributeValue(AttributeID.FIRST_NAME.getId(), id),
+                readAttributeValue(AttributeID.LAST_NAME.getId(), id),
+                UserRole.valueOf(readAttributeListValue(AttributeID.ROLE.getId(), id)),
+                Status.valueOf(readAttributeListValue(AttributeID.STATUS.getId(), id)))
+                .setUserId(id)
+                .build();
     }
 
     @Override
-    public User readUserByLogin(String login) {
-        RowMapper<User> mapper = new UserRowMapper();
-        return jdbcTemplate.queryForObject(READ_USER_BY_ID, mapper, new Object[]{
-                login,
-                login,
-                login
-        });
+    public User readFullUserById(BigInteger id) {
+        return new UserImpl.Builder(
+                readObjectNameById(id),
+                readAttributeValue(AttributeID.PASSWORD.getId(), id),
+                readAttributeValue(AttributeID.EMAIL.getId(), id),
+                readAttributeValue(AttributeID.FIRST_NAME.getId(), id),
+                readAttributeValue(AttributeID.LAST_NAME.getId(), id),
+                UserRole.valueOf(readAttributeListValue(AttributeID.ROLE.getId(), id)),
+                Status.valueOf(readAttributeListValue(AttributeID.STATUS.getId(), id)))
+                .setUserId(id)
+                .setHireDate(readAttributeDateValue(AttributeID.CREATION_DATE.getId(), id))
+                .setProjectId(BigInteger.valueOf(Long.parseLong(readAttributeValue(AttributeID.PROJECT.getId(), id))))
+                .build();
+    }
+
+    @Override
+    public BigInteger readUserIdByLogin(String login) {
+        return readObjectIdByName(ObjectType.USER.getId(), login);
     }
 
     @Override
     public void updateUserPassword(BigInteger id, String password) {
-        jdbcTemplate.update(UPDATE_USER_PASSWORD, id.longValue(), password);
+        updateAttributeValue(AttributeID.PASSWORD.getId(), id, password);
+    }
+
+    @Override
+    public void updateUserEmail(BigInteger id, String email) {
+        updateAttributeValue(AttributeID.EMAIL.getId(), id, email);
     }
 
     @Override
     public void updateUserFirstName(BigInteger id, String firstName) {
-        jdbcTemplate.update(UPDATE_USER_FIRST_NAME, id.longValue(), firstName);
+        updateAttributeValue(AttributeID.FIRST_NAME.getId(), id, firstName);
     }
 
     @Override
     public void updateUserLastName(BigInteger id, String lastName) {
-        jdbcTemplate.update(UPDATE_USER_FIRST_NAME, id.longValue(), lastName);
+        updateAttributeValue(AttributeID.LAST_NAME.getId(), id, lastName);
     }
 
     @Override
     public void updateUserRole(BigInteger id, UserRole role) {
-        jdbcTemplate.update(UPDATE_USER_ROLE, id.longValue(), role.getId().longValue());
+        updateAttributeListValue(AttributeID.ROLE.getId(), id, role.getId());
+    }
+
+    @Override
+    public void updateUserProjectId(BigInteger id, BigInteger projectId) {
+        updateAttributeValue(AttributeID.PROJECT.getId(), id, projectId.toString());
     }
 
     @Override
     public void inactivateUser(BigInteger id) {
-        jdbcTemplate.update(INACTIVE_USER, id.longValue());
-    }
-
-    class UserRowMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            return new UserImpl
-                    .Builder(resultSet.getString(2),
-                             resultSet.getString(3),
-                             resultSet.getString(4),
-                             resultSet.getString(5),
-                             resultSet.getString(6),
-                             UserRole.valueOf(resultSet.getString(7)),
-                             Status.valueOf(resultSet.getString(9)))
-                    .setUserId(BigInteger.valueOf(resultSet.getLong(1)))
-                    .setHireDate(resultSet.getDate(8))
-                    .setProjectId(BigInteger.valueOf(resultSet.getLong(10)))
-                    .build();
-        }
+        updateAttributeListValue(AttributeID.STATUS.getId(), id, Status.INACTIVE.getId());
     }
 
 }

@@ -86,6 +86,8 @@ public class UserImpl implements User {
     }
 
     public static class Builder {
+
+        private BigInteger userId;
         private String login;
         private String password;
         private String email;
@@ -93,7 +95,6 @@ public class UserImpl implements User {
         private String lastName;
         private UserRole role;
         private Status status;
-        private BigInteger userId;
         private Date hireDate;
         private BigInteger projectId;
 
