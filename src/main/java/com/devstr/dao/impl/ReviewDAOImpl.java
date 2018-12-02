@@ -9,35 +9,48 @@ import com.devstr.model.UserReview;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.impl.ProjectReviewImpl;
 import com.devstr.model.impl.UserReviewImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository
 @Transactional
-public class ReviewDAOImpl implements ReviewDAO {
+public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    private DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewDAOImpl.class.getName());
+    private static DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewDAOImpl.class.getName());
 
     @Override
+    @Transactional
     public void createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks) {
-        jdbcTemplate.update(INSERT_USER_REVIEW, comment, marks[0], marks[1], marks[2], receiverId, authorId, projectId);
+        BigInteger id = createObject(BigInteger.valueOf(32L), "UR" + authorId + receiverId);
+        createAttributeDateValue(BigInteger.valueOf(5L), id, new Date(1));
+        createAttributeValue(BigInteger.valueOf(14L), id, comment);
+        createAttributeValue(BigInteger.valueOf(15L), id, String.valueOf(marks[0]));
+        createAttributeValue(BigInteger.valueOf(16L), id, String.valueOf(marks[1]));
+        createAttributeValue(BigInteger.valueOf(17L), id, String.valueOf(marks[2]));
+        createObjectReference(BigInteger.valueOf(25L), receiverId, id);
+        createObjectReference(BigInteger.valueOf(27L), id, authorId);
+        createObjectReference(BigInteger.valueOf(28L), id, projectId);
     }
 
     @Override
+    @Transactional
     public void createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks) {
-        jdbcTemplate.update(INSERT_PROJECT_REVIEW, comment, marks[0], marks[1], marks[2], marks[3], receiverId, authorId);
+        BigInteger id = createObject(BigInteger.valueOf(33L), "P" + authorId + receiverId);
+        createAttributeDateValue(BigInteger.valueOf(5L), id, new Date(2));
+        createAttributeValue(BigInteger.valueOf(14L), id, comment);
+        createAttributeValue(BigInteger.valueOf(18L), id, String.valueOf(marks[0]));
+        createAttributeValue(BigInteger.valueOf(19L), id, String.valueOf(marks[1]));
+        createAttributeValue(BigInteger.valueOf(20L), id, String.valueOf(marks[2]));
+        createAttributeValue(BigInteger.valueOf(21L), id, String.valueOf(marks[3]));
+        createObjectReference(BigInteger.valueOf(25L), receiverId, id);
+        createObjectReference(BigInteger.valueOf(27L), id, authorId);
     }
 
     @Override
@@ -49,80 +62,59 @@ public class ReviewDAOImpl implements ReviewDAO {
         if (type.equals(ObjectType.PROJECT_REVIEW)) {
             return readProjectReviewById(id);
         }
+        LOGGER.warn("Incompatible object type: required Review, got " + type.toString());
         return null;
     }
 
     private UserReview readUserReviewById(BigInteger id) {
-        return jdbcTemplate.queryForObject(SELECT_USER_REVIEW_BY_ID, new UserReviewRowMapper(), id);
+        Iterator<BigInteger> author = readObjectReferences(BigInteger.valueOf(27L), id).iterator();
+        Iterator<BigInteger> receiver = readObjectByReference(BigInteger.valueOf(25L), id).iterator();
+        Iterator<BigInteger> project = readObjectReferences(BigInteger.valueOf(28L), id).iterator();
+        return new UserReviewImpl.Builder(author.next(), receiver.next(), readAttributeValue(BigInteger.valueOf(14L), id),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(15L), id)),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(16L), id)),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(17L), id)), project.next()).build();
     }
 
     private ProjectReview readProjectReviewById(BigInteger id) {
-        return jdbcTemplate.queryForObject(SELECT_PROJECT_REVIEW_BY_ID, new ProjectReviewRowMapper(), id);
+        Iterator<BigInteger> author = readObjectReferences(BigInteger.valueOf(27L), id).iterator();
+        Iterator<BigInteger> receiver = readObjectByReference(BigInteger.valueOf(25L), id).iterator();
+        return new ProjectReviewImpl.Builder(author.next(), receiver.next(), readAttributeValue(BigInteger.valueOf(14L), id),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(18L), id)),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(19L), id)),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(20L), id)),
+                Integer.valueOf(readAttributeValue(BigInteger.valueOf(21L), id))).build();
     }
 
     @Override
     public List<Review> readReviewsByRecId(BigInteger id) {
         List<Review> reviews = new ArrayList<>();
-        ObjectType type = getObjectTypeById(id);
-        if (type.equals(ObjectType.USER_REVIEW)) {
-            reviews.addAll(jdbcTemplate.query(SELECT_USER_REVIEWS_BY_REC, new Object[] {}, new ProjectReviewRowMapper()));
-        }
-        if (type.equals(ObjectType.PROJECT_REVIEW)) {
-            reviews.addAll(jdbcTemplate.query(SELECT_PROJECT_REVIEWS_BY_REC, new Object[] {}, new ProjectReviewRowMapper()));
+        Collection<BigInteger> reviewIds = readObjectByReference(BigInteger.valueOf(25L), id);
+        for (BigInteger reviewId : reviewIds) {
+            reviews.add(readReviewById(reviewId));
         }
         return reviews;
     }
 
     @Override
     public List<Review> readReviewsByAuthorId(BigInteger id) {
-        List<BigInteger> reviewIds = jdbcTemplate.queryForList(SELECT_REVIEWS_ID_BY_AUTHOR, new Object[] {id}, BigInteger.class);
         List<Review> result = new ArrayList<>();
-        for (BigInteger reviewId: reviewIds) {
+        for (BigInteger reviewId : readObjectReferences(BigInteger.valueOf(27L), id)) {
             result.add(readReviewById(reviewId));
         }
         return result;
     }
 
-    @Override
-    public List<ProjectReview> readReviewsByProjectId(BigInteger id) {
-        return jdbcTemplate.query(SELECT_PROJECT_REVIEWS_BY_PROJECT_ID, new Object[] {}, new ProjectReviewRowMapper());
-    }
 
     @Override
     public List<UserReview> readUserReviewsByProjectId(BigInteger id) {
-        return jdbcTemplate.query(SELECT_USER_REVIEWS_BY_PROJECT_ID ,new Object[] {}, new UserReviewRowMapper());
-    }
-
-    class UserReviewRowMapper implements RowMapper<UserReview> {
-
-        @Override
-        public UserReview mapRow(ResultSet resultSet, int i) throws SQLException {
-            String text = resultSet.getString("COMMENT");
-            BigInteger id = BigInteger.valueOf(resultSet.getLong("REVIEW_ID"));
-            BigInteger authorId = BigInteger.valueOf(resultSet.getLong("AUTHOR"));
-            BigInteger receiverId = BigInteger.valueOf(resultSet.getLong("RECEIVER"));
-            BigInteger projectId = BigInteger.valueOf(resultSet.getLong("PROJECT"));
-            int quality = resultSet.getInt("QUALITY");
-            int amount = resultSet.getInt("AMOUNT");
-            int communication = resultSet.getInt("COMMUNICATION");
-            return new UserReviewImpl.Builder(authorId, receiverId, text, quality, amount, communication, projectId).build();
+        List<UserReview> result = new ArrayList<>();
+        for (BigInteger reviewId : readObjectReferences(BigInteger.valueOf(28L), id)) {
+            result.add(readUserReviewById(reviewId));
         }
+        return result;
     }
-    class ProjectReviewRowMapper implements RowMapper<ProjectReview> {
 
-        @Override
-        public ProjectReview mapRow(ResultSet resultSet, int i) throws SQLException {
-            String text = resultSet.getString("COMMENT");
-            BigInteger id = BigInteger.valueOf(resultSet.getLong("REVIEW_ID"));
-            BigInteger authorId = BigInteger.valueOf(resultSet.getLong("AUTHOR"));
-            BigInteger receiverId = BigInteger.valueOf(resultSet.getLong("RECEIVER"));
-            int xp = resultSet.getInt("XP");
-            int organization = resultSet.getInt("ORGANIZATION");
-            int time_mg = resultSet.getInt("TIME_MG");
-            int team_spirit = resultSet.getInt("SPIRIT");
-            return new ProjectReviewImpl.Builder(authorId, receiverId, text, xp, organization, time_mg, team_spirit).build();
-        }
-    }
     private ObjectType getObjectTypeById(BigInteger id) {
         return ObjectType.valueOf(jdbcTemplate.queryForObject(SELECT_OBJECT_TYPE_BY_OBJECT_ID, new Object[]{id}, String.class));
     }

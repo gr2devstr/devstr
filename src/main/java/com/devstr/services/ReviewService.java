@@ -48,14 +48,6 @@ public interface ReviewService {
     List<Review> readReviewsByAuthorId(BigInteger id);
 
     /**
-     * Gets all the reviews of a project(Project reviews only!)
-     *
-     * @param id id of the project
-     * @return
-     */
-    List<ProjectReview> readReviewsByProjectId(BigInteger id);
-
-    /**
      * Gets all user reviews left during certain project
      *
      * @param id id of the project

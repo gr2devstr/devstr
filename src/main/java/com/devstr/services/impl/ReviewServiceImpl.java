@@ -62,14 +62,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ProjectReview> readReviewsByProjectId(BigInteger id) {
-        if (id != null)
-            return reviewDAO.readReviewsByProjectId(id);
-        LOGGER.warn("Id is null");
-        return null;
-    }
-
-    @Override
     public List<UserReview> readUserReviewsByProjectId(BigInteger id) {
         if (id != null) {
             return reviewDAO.readUserReviewsByProjectId(id);
