@@ -1,4 +1,4 @@
-package com.devstr;
+package com.devstr.dao;
 
 import com.devstr.dao.impl.IssueDAOImpl;
 import com.devstr.model.Issue;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;

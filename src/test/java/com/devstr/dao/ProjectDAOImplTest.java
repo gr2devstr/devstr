@@ -2,7 +2,8 @@ package com.devstr.dao;
 
 import com.devstr.dao.impl.ProjectDAOImpl;
 import com.devstr.model.Project;
-import com.devstr.model.impl.ProjectImpl;
+import com.devstr.model.enumerations.AttributeID;
+import com.devstr.model.enumerations.ObjectType;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,11 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProjectDAOImplTest {
@@ -29,46 +31,110 @@ public class ProjectDAOImplTest {
         Locale.setDefault(Locale.ENGLISH);
     }
 
-    @Ignore
+
     @Test
     public void createProjectTest() {
-        Project project = new ProjectImpl.Builder("DEVSTR", BigInteger.valueOf(78)).build();
-        BigInteger id = projectDAO.createProject(project.getProjectName(), project.getProjectManagerId());
-        assertEquals(BigInteger.valueOf(92L), id);
+
+        String projectName = "DEVSTR_TEST";
+        BigInteger pmID = BigInteger.valueOf(78L);
+
+        BigInteger idCreate = projectDAO.createProject(projectName, pmID);
+        BigInteger attrTypeId = ObjectType.PROJECT.getId();
+        BigInteger getID = projectDAO.readObjectIdByName(attrTypeId, projectName);
+
+        assertEquals(getID, idCreate);
+
+        projectDAO.deleteObjectById(idCreate);
     }
 
     @Test
     public void updateProjectRepositoryNameTest() {
-        projectDAO.updateProjectRepositoryName(BigInteger.valueOf(81L), "devstr");
+        String value = "devstr";
+        BigInteger projectID = BigInteger.valueOf(81L);
+
+        projectDAO.updateProjectRepositoryName(projectID, value);
+
+        BigInteger attrnId = AttributeID.REPOSITORY_NAME.getId();
+
+        String getValue = projectDAO.readAttributeValue(attrnId, projectID);
+
+        assertEquals(value, getValue);
     }
 
     @Test
     public void updateProjectGitLoginTest() {
-        projectDAO.updateProjectGitLogin(BigInteger.valueOf(81L), "git login");
+        String value = "git login";
+        BigInteger projectID = BigInteger.valueOf(81L);
+
+        projectDAO.updateProjectGitLogin(projectID, value);
+
+        BigInteger attrnId = AttributeID.GIT_LOGIN.getId();
+
+        String getValue = projectDAO.readAttributeValue(attrnId, projectID);
+
+        assertEquals(value, getValue);
     }
 
     @Test
     public void updateProjectGitPasswordTest() {
-        projectDAO.updateProjectGitPassword(BigInteger.valueOf(81L), "git pass");
+        String value = "git pass";
+        BigInteger projectID = BigInteger.valueOf(81L);
+
+        projectDAO.updateProjectGitPassword(projectID, value);
+
+        BigInteger attrnId = AttributeID.GIT_PASSWORD.getId();
+
+        String getValue = projectDAO.readAttributeValue(attrnId, projectID);
+
+        assertEquals(value, getValue);
     }
 
     @Test
     public void updateProjectJiraLoginTest() {
-        projectDAO.updateProjectJiraLogin(BigInteger.valueOf(81L), "jira login");
+        String value = "jira login";
+        BigInteger projectID = BigInteger.valueOf(81L);
+
+        projectDAO.updateProjectJiraLogin(projectID, value);
+
+        BigInteger attrnId = AttributeID.JIRA_LOGIN.getId();
+
+        String getValue = projectDAO.readAttributeValue(attrnId, projectID);
+
+        assertEquals(value, getValue);
     }
 
     @Test
     public void updateProjectJiraPasswordTest() {
-        projectDAO.updateProjectJiraPassword(BigInteger.valueOf(81L), "jira pass");
+        String value = "jira pass";
+        BigInteger projectID = BigInteger.valueOf(81L);
+
+        projectDAO.updateProjectJiraPassword(projectID, value);
+
+        BigInteger attrnId = AttributeID.JIRA_PASSWORD.getId();
+
+        String getValue = projectDAO.readAttributeValue(attrnId, projectID);
+
+        assertEquals(value, getValue);
     }
 
     @Test
     public void addDevOnProject() {
-        BigInteger projID = BigInteger.valueOf(81);
-        BigInteger devID = BigInteger.valueOf(80);
+        boolean defaulValue = true;
+
+        BigInteger projID = BigInteger.valueOf(81L);
+        BigInteger devID = BigInteger.valueOf(76L);
         projectDAO.addDevOnProject(projID, devID);
+
+        Collection<BigInteger> ids = projectDAO.readObjectReferences(AttributeID.PROJECT_USERS.getId(), projID);
+
+        boolean newValue = ids.contains(devID);
+
+        assertEquals(defaulValue, newValue);
+
+        projectDAO.deleteObjectReference(AttributeID.PROJECT_USERS.getId(), projID, devID);
     }
 
+    @Ignore
     @Test
     public void deactivateUserOnProjectTest() {
         BigInteger user_id = BigInteger.valueOf(80L);
@@ -94,6 +160,7 @@ public class ProjectDAOImplTest {
         Project project = projectDAO.readProjectByName(projName);
         assertEquals(projid, project.getProjectId());
     }
+
 
     @Test
     public void addIssueOnProjectTest() {
