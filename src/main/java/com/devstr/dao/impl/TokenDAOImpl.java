@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.*;
 
-
 @Transactional
 @Repository
 public class TokenDAOImpl extends AbstractDAOImpl implements TokenDAO{
@@ -25,7 +24,7 @@ public class TokenDAOImpl extends AbstractDAOImpl implements TokenDAO{
         BigInteger tokenId = createObject(ObjectType.TOKEN.getId(),"TOKEN");
         createAttributeValue(AttributeID.SERVICE_NAME.getId(),tokenId,serviceName);
         createAttributeValue(AttributeID.TOKEN_CODE.getId(), tokenId, tokenServiceImp.encrypt(tokenEncode));
-        createObjectReference(AttributeID.PROJECT.getId(), tokenId, projectId);
+        createObjectReference(AttributeID.TOKEN_PROJECT.getId(), tokenId, projectId);
         return tokenId;
     }
 
@@ -33,9 +32,10 @@ public class TokenDAOImpl extends AbstractDAOImpl implements TokenDAO{
     public List<Token> readTokenByProject(BigInteger projectId) {
 
         List<Token> tokenList = new ArrayList<>();
-        Collection<BigInteger> id_token = readObjectByReference(AttributeID.PROJECT.getId(), projectId);
+        Collection<BigInteger> id_token = readObjectByReference(AttributeID.TOKEN_PROJECT.getId(), projectId);
         for (BigInteger token : id_token){
             tokenList.add(getObjIdByRef(token));
+
         }
         return tokenList;
     }
@@ -53,8 +53,16 @@ public class TokenDAOImpl extends AbstractDAOImpl implements TokenDAO{
     }
 
     public Token getObjIdByRef(BigInteger tokenId){
-        return new TokenImpl.Builder(tokenId,
+        Iterator<BigInteger> project = readObjectReferences(AttributeID.TOKEN_PROJECT.getId(), tokenId).iterator();
+        return new TokenImpl.Builder(project.next(),
                 readAttributeValue(AttributeID.SERVICE_NAME.getId(),tokenId),
-                readAttributeValue(AttributeID.TOKEN_CODE.getId(),tokenId)).builder();
+                readAttributeValue(AttributeID.TOKEN_CODE.getId(),tokenId))
+                .setTokenId(tokenId)
+                .builder();
+    }
+
+    public Collection<BigInteger> getIdProject(BigInteger tokenId){
+
+        return readObjectReferences(AttributeID.TOKEN_PROJECT.getId(), tokenId);
     }
 }
