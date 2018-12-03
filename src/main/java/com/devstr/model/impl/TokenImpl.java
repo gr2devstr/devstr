@@ -10,8 +10,6 @@ public class TokenImpl implements Token {
     private BigInteger projectId;
     private String serviceName;
     private String tokenEncode;
-    private String tokensName;
-
 
     @Override
     public BigInteger getTokenId() {
@@ -31,11 +29,6 @@ public class TokenImpl implements Token {
     @Override
     public String getTokenEncode() {
         return tokenEncode;
-    }
-
-    @Override
-    public String getTokensName() {
-        return tokensName;
     }
 
     @Override
@@ -59,13 +52,11 @@ public class TokenImpl implements Token {
         private BigInteger projectId;
         private String serviceName;
         private String tokenEncode;
-        private String tokensName;
 
-        public Builder(BigInteger projectId, String serviceName, String tokenEncode, String tokensName) {
+        public Builder(BigInteger projectId, String serviceName, String tokenEncode) {
             this.projectId = projectId;
             this.serviceName = serviceName;
             this.tokenEncode = tokenEncode;
-            this.tokensName = tokensName;
         }
 
         public Builder setTokenId(BigInteger tokenId) {
@@ -78,11 +69,10 @@ public class TokenImpl implements Token {
         }
     }
 
-    private TokenImpl(Builder builder) {
+    public TokenImpl(Builder builder) {
         this.tokenId = builder.tokenId;
         this.projectId = builder.projectId;
         this.serviceName = builder.serviceName;
         this.tokenEncode = builder.tokenEncode;
-        this.tokensName = builder.tokensName;
     }
 }

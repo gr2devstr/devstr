@@ -11,5 +11,4 @@ public interface Token {
 
     String getTokenEncode();
 
-    String getTokensName();
 }
