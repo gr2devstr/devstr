@@ -2,51 +2,59 @@ package com.devstr.dao.impl;
 
 import com.devstr.dao.TokenDAO;
 import com.devstr.model.Token;
+import com.devstr.model.enumerations.AttributeID;
+import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.impl.TokenImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import com.devstr.services.impl.TokenServiceImp;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.*;
+
 
 @Transactional
 @Repository
-public class TokenDAOImpl implements TokenDAO {
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+public class TokenDAOImpl extends AbstractDAOImpl implements TokenDAO{
 
     @Override
-    public void createToken(int projectId, String tokensName, String serviceName, String tokenEncode) {
-        jdbcTemplate.update(CREATE_TOKEN, new Object[]{tokensName, serviceName, tokenEncode, projectId});
+    public BigInteger createToken(BigInteger projectId, String serviceName, String tokenEncode) throws Exception {
+
+        TokenServiceImp tokenServiceImp = new TokenServiceImp();
+
+        BigInteger tokenId = createObject(ObjectType.TOKEN.getId(),"TOKEN");
+        createAttributeValue(AttributeID.SERVICE_NAME.getId(),tokenId,serviceName);
+        createAttributeValue(AttributeID.TOKEN_CODE.getId(), tokenId, tokenServiceImp.encrypt(tokenEncode));
+        createObjectReference(AttributeID.PROJECT.getId(), tokenId, projectId);
+        return tokenId;
     }
 
     @Override
-    public Token readTokenByProject(int projectId) {
-        RowMapper<Token> mapper = new TokenMapper();
-        jdbcTemplate.update(READ_TOKEN_BY_PROJECT_ID, mapper, projectId);
-        return null;
-    }
+    public List<Token> readTokenByProject(BigInteger projectId) {
 
-    @Override
-    public void updateToken(int projectId, String serviceName, String tokenEncode) {
-        jdbcTemplate.update(UPDATE_TOKEN, new Object[]{tokenEncode,serviceName, projectId});
-    }
-
-    class TokenMapper implements RowMapper<Token>{
-
-        @Override
-        public Token mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new TokenImpl.Builder(BigInteger.valueOf(resultSet.getLong(1))
-                    ,resultSet.getString(2)
-                    ,resultSet.getString(3)
-                    ,resultSet.getString(4))
-                    .setTokenId(BigInteger.valueOf(resultSet.getLong(5)))
-                    .builder();
+        List<Token> tokenList = new ArrayList<>();
+        Collection<BigInteger> id_token = readObjectByReference(AttributeID.PROJECT.getId(), projectId);
+        for (BigInteger token : id_token){
+            tokenList.add(getObjIdByRef(token));
         }
+        return tokenList;
+    }
+
+    @Override
+    public void updateToken(BigInteger tokenId, String tokenEncode) {
+        updateAttributeValue(AttributeID.TOKEN_CODE.getId(),tokenId, tokenEncode);
+
+    }
+
+    @Override
+    public void updateServiceName(BigInteger tokenId, String serviceName) {
+        updateAttributeValue(AttributeID.SERVICE_NAME.getId(),tokenId,serviceName);
+
+    }
+
+    public Token getObjIdByRef(BigInteger tokenId){
+        return new TokenImpl.Builder(tokenId,
+                readAttributeValue(AttributeID.SERVICE_NAME.getId(),tokenId),
+                readAttributeValue(AttributeID.TOKEN_CODE.getId(),tokenId)).builder();
     }
 }
