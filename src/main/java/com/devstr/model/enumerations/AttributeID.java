@@ -31,7 +31,8 @@ public enum AttributeID {
     REVIEWS(BigInteger.valueOf(25)),
     PROJECT_USERS(BigInteger.valueOf(26)),
     REVIEW_AUTHOR(BigInteger.valueOf(27)),
-    PROJECT(BigInteger.valueOf(28));
+    PROJECT(BigInteger.valueOf(28)),
+    USER_PROJECT(BigInteger.valueOf(500));/*When the database is updated, change the ID to 29*/
 
     private BigInteger id;
 
