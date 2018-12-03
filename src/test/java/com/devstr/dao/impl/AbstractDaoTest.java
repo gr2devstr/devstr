@@ -4,19 +4,17 @@ import com.devstr.model.enumerations.AttributeID;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.enumerations.Status;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.*;
-
 import static org.junit.Assert.*;
 
-@Ignore
 @SpringBootTest
+@Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AbstractDaoTest extends AbstractDAOImpl{
 
@@ -24,7 +22,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     public void setUp() throws Exception {
     }
 
-    @Autowired
+
     @Test
     public void createObjectTest(){
         String tUser = "user_test";
@@ -43,7 +41,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         deleteObjectById(projId);
     }
 
-    @Autowired
+
     @Test
     public void readObjectNameByIdTest(){
         String loginHn = "holinkonik";
@@ -62,7 +60,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         assertEquals(loginRa, dbRa);
     }
 
-    @Autowired
+
     @Test
     public void deleteObjectByIdTest(){
         String tUser = "user_test";
@@ -75,7 +73,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         assertNull(delUser);
     }
 
-    @Autowired
+
     @Test
     public void createAndReadAttributesTest(){
         String tProject = "project_test";
@@ -107,7 +105,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         deleteObjectById(projId);
     }
 
-    @Autowired
+
     @Test
     public void updateAttributesTest(){
         String tProject = "project_gg";
@@ -133,7 +131,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         deleteObjectById(projId);
     }
 
-    @Autowired
+
     @Test
     public void getReferencesByObjectId() {
         BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), "holinkonik");
