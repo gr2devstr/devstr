@@ -21,6 +21,7 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public BigInteger createProject(String name, BigInteger managerId) {
 
@@ -56,6 +57,7 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
         updateAttributeValue(AttributeID.JIRA_PASSWORD.getId(), projectId, jiraPassword);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void addDevOnProject(BigInteger projectId, BigInteger developerId) {
         createObjectReference(AttributeID.PROJECT_USERS.getId(), projectId, developerId);
@@ -90,6 +92,7 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
                 .build();
     }
 
+    @Deprecated
     @Override
     public Project readProjectByName(String projectName) {
         BigInteger projectID = readObjectIdByName(ObjectType.PROJECT.getId(), projectName);
