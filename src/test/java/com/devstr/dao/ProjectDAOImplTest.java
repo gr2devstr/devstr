@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
-
+@Ignore
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProjectDAOImplTest {
