@@ -38,27 +38,27 @@ public class ProjectDAOImplTest {
     }
 
     @Test
-    public void updateProjectRepositoryName() {
+    public void updateProjectRepositoryNameTest() {
         projectDAO.updateProjectRepositoryName(BigInteger.valueOf(81L), "devstr");
     }
 
     @Test
-    public void updateProjectGitLogin() {
+    public void updateProjectGitLoginTest() {
         projectDAO.updateProjectGitLogin(BigInteger.valueOf(81L), "git login");
     }
 
     @Test
-    public void updateProjectGitPassword() {
+    public void updateProjectGitPasswordTest() {
         projectDAO.updateProjectGitPassword(BigInteger.valueOf(81L), "git pass");
     }
 
     @Test
-    public void updateProjectJiraLogin() {
+    public void updateProjectJiraLoginTest() {
         projectDAO.updateProjectJiraLogin(BigInteger.valueOf(81L), "jira login");
     }
 
     @Test
-    public void updateProjectJiraPassword() {
+    public void updateProjectJiraPasswordTest() {
         projectDAO.updateProjectJiraPassword(BigInteger.valueOf(81L), "jira pass");
     }
 
@@ -69,9 +69,15 @@ public class ProjectDAOImplTest {
         projectDAO.addDevOnProject(projID, devID);
     }
 
+    @Test
+    public void deactivateUserOnProjectTest() {
+        BigInteger user_id = BigInteger.valueOf(80L);
+        projectDAO.deactivateUserOnProject(user_id);
+    }
+
 
     @Test
-    public void readProjectById() {
+    public void readProjectByIdTest() {
         String projName = "DEVSTR";
         BigInteger projid = BigInteger.valueOf(81L);
 
@@ -81,7 +87,7 @@ public class ProjectDAOImplTest {
 
     @Ignore
     @Test
-    public void readProjectByName() {
+    public void readProjectByNameTest() {
         String projName = "DEVSTR";
         BigInteger projid = BigInteger.valueOf(81L);
 
@@ -90,7 +96,7 @@ public class ProjectDAOImplTest {
     }
 
     @Test
-    public void addIssueOnProject() {
+    public void addIssueOnProjectTest() {
         projectDAO.addIssueOnProject(BigInteger.valueOf(93), BigInteger.valueOf(89));
     }
 }

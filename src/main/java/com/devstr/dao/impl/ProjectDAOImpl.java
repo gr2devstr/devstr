@@ -59,12 +59,12 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     @Override
     public void addDevOnProject(BigInteger projectId, BigInteger developerId) {
         createObjectReference(AttributeID.PROJECT_USERS.getId(), projectId, developerId);
-        updateAttributeValue(AttributeID.PROJECT.getId(), developerId, projectId.toString());
+        updateAttributeValue(AttributeID.USER_PROJECT.getId(), developerId, projectId.toString());
     }
 
     @Override
     public void deactivateUserOnProject(BigInteger developerId) {
-        updateAttributeValue(AttributeID.PROJECT.getId(), developerId, "0");
+        updateAttributeValue(AttributeID.USER_PROJECT.getId(), developerId, "0");
     }
 
     @Override
