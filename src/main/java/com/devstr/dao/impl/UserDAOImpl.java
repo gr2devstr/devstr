@@ -22,6 +22,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
     JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createUser(String login, String firstName, String lastName, String email, String password, UserRole userRole) {
         BigInteger userId = createObject(ObjectType.USER.getId(), login);
         createAttributeValue(AttributeID.FIRST_NAME.getId(), userId, firstName);
@@ -67,6 +68,11 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
     @Override
     public BigInteger readUserIdByLogin(String login) {
         return readObjectIdByName(ObjectType.USER.getId(), login);
+    }
+
+    @Override
+    public BigInteger readUserIdByEmail(String email) {
+        return jdbcTemplate.queryForObject(READ_ID_BY_EMAIL, new Object[]{email}, BigInteger.class);
     }
 
     @Override

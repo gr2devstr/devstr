@@ -44,6 +44,14 @@ public interface UserDAO {
     BigInteger readUserIdByLogin(String login);
 
     /**
+     * Reads user ID by email from the DB
+     *
+     * @param email user's email in the DB (attributes.value)
+     * @return user's ID if exists
+     */
+    BigInteger readUserIdByEmail(String email);
+
+    /**
      * Updates user password in the DB by user ID
      *
      * @param id       user's ID in the DB (objects.object_id)
@@ -97,5 +105,7 @@ public interface UserDAO {
      * @param id user's ID in the DB (objects.object_id)
      */
     void inactivateUser(BigInteger id);
+
+    String READ_ID_BY_EMAIL = "SELECT a.object_id FROM attributes a WHERE a.attrn_id = 3 AND a.value = ?";
 
 }
