@@ -1,3 +1,13 @@
+/*
+Package for usage of devstr logger.
+
+level - current minimum level, stores at table LOGGER_CONFIG,
+threshold - maximum value of rows in table LOGGER, stores at LOGGER_CONFIG,
+PROCEDURE log(a_msg_levelm, a_message) - add new log to table LOGGER, use two varchar2 args: level and message
+get/set_level/threshold - getters and setters for global variables. Updates table LOGGER_CONFIG. 
+
+*/
+
 CREATE OR REPLACE PACKAGE logger_pkg AS
     level VARCHAR2(30) := 'INFO';
     threshold NUMBER(10) := 2000;
@@ -12,6 +22,24 @@ END logger_pkg;
 
 CREATE OR REPLACE PACKAGE BODY logger_pkg AS
     p_size NUMBER(10) := 0;
+  PROCEDURE initialize IS
+  BEGIN
+    SELECT M_LEVEL INTO level FROM LOGGER_CONFIG WHERE CONFIG_ID = 1;
+    SELECT DL_THRESHOLD INTO threshold FROM LOGGER_CONFIG WHERE CONFIG_ID = 1;
+    SELECT DL_CURR_SIZE INTO p_size FROM LOGGER_CONFIG WHERE CONFIG_ID = 1;
+  END;
+  PROCEDURE update_level(new_level VARCHAR2) IS
+  BEGIN
+    UPDATE LOGGER_CONFIG SET M_LEVEL = new_level WHERE CONFIG_ID = 1;
+  END;
+  PROCEDURE update_threshold(new_threshold NUMBER) IS
+  BEGIN
+    UPDATE LOGGER_CONFIG SET DL_THRESHOLD = new_threshold WHERE CONFIG_ID = 1;
+  END;
+  PROCEDURE update_size(new_size NUMBER) IS
+  BEGIN
+    UPDATE LOGGER_CONFIG SET DL_CURR_SIZE = new_size WHERE CONFIG_ID = 1;
+  END;
   FUNCTION is_higher (a_msg_level VARCHAR2) RETURN BOOLEAN
   IS
   BEGIN
@@ -54,10 +82,12 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
   PROCEDURE log(a_msg_level VARCHAR2, a_message VARCHAR2)
   IS
   BEGIN
+      initialize;
       IF is_higher(a_msg_level) THEN
 	    IF p_size < threshold THEN
 	      INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
 		  p_size := p_size + 1;
+		  update_size(p_size);
 		ELSE
 		  DELETE FROM LOGGER WHERE LOG_ID = (select MIN(LOG_ID) FROM LOGGER);
 		  INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
@@ -69,10 +99,12 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
   BEGIN
     IF regexp_like(new_level, '(^TRACE$)|(^DEBUG$)|(^INFO$)|(^WARN$)|(^ERROR$)|(^FATAL$)') THEN
 	  level := new_level;
+	  update_level(new_level);
 	END IF;
   END;
   FUNCTION get_level RETURN VARCHAR2 IS
   BEGIN
+    initialize;
     RETURN level;
   END;
   PROCEDURE set_threshold(new_threshold NUMBER) IS
@@ -83,18 +115,23 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
 		  DELETE FROM LOGGER WHERE LOG_ID = (select MIN(LOG_ID) FROM LOGGER);
 		  p_size := p_size -1;
 		END LOOP;
+		update_size(p_size);
+		update_threshold(new_threshold);
 	  END IF;
       threshold := new_threshold;
+	  update_threshold(new_threshold);
 	END IF;
   END;
   FUNCTION get_threshold RETURN NUMBER IS
   BEGIN
+    initialize;
     RETURN threshold;
   END;
   PROCEDURE set_clear_log IS
   BEGIN
     DELETE FROM LOGGER;
 	p_size := 0;
+	update_size(p_size);
 	EXECUTE IMMEDIATE 'DROP SEQUENCE log_id_seq';
 	EXECUTE IMMEDIATE 'CREATE SEQUENCE log_id_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE';
   EXCEPTION
