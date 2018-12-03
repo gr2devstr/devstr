@@ -10,14 +10,46 @@ import java.util.List;
 
 public interface GitService {
 
+    /**
+     * The method creates a ghrepository object
+     *
+     * @return ghrepository object
+     * @throws IOException
+     */
     GHRepository getGHRepository() throws IOException;
 
+    /**
+     * The method returns a list of ghcommits from the repository
+     *
+     * @return list github commits
+     * @throws IOException
+     */
     List<GHCommit> getAllGHCommits() throws IOException;
 
+    /**
+     * The method returns a list of classes from commit
+     *
+     * @param commit ghcommit
+     * @return class list in ghcommit
+     * @throws IOException
+     */
     List<CommitClass> getClassesFromCommit(GHCommit commit) throws IOException;
 
+    /**
+     * The method creates an instance of the Commit class
+     *
+     * @param commit ghcommit
+     * @return Object Commit
+     * @throws IOException
+     */
     Commit getCommit(GHCommit commit) throws IOException;
 
+    /**
+     * The method returns a list of commit class objects
+     *
+     * @return commit list
+     * @throws IOException
+     */
     List<Commit> getAllCommits() throws IOException;
 
 }
