@@ -82,4 +82,6 @@ public interface IssueDAO {
 
     String GET_COMMITS_BY_ISSUE_ID = "SELECT * FROM COMMITS WHERE ISSUE_ID = ?";
 
+//    String UPDATE_ISSUE_TYPE =
+
 }

@@ -53,7 +53,7 @@ public class IssueDAOImplTest {
     public void createIssueTest() throws Exception {
         issueDAO.createIssue(issue);
     }
-    @Ignore
+
     @Test
     public void getIssuesByProjectTest(){
         List<Issue> issues = issueDAO.readIssuesByProject(BigInteger.valueOf(81));
