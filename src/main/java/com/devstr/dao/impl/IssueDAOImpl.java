@@ -41,20 +41,43 @@ public class IssueDAOImpl implements IssueDAO {
     @Override
     @Transactional
     public List<Issue> readIssuesByUser(BigInteger userId) {
-        return jdbcTemplate.queryForList(READ_ISSUES_BY_USER,new Object[]{userId.longValue()},Issue.class);
+        return jdbcTemplate.query(READ_ISSUES_BY_USER,new Object[]{userId.longValue()},new IssueMapper());
     }
 
     @Override
     @Transactional
     public Issue readIssueById(BigInteger id) {
-        RowMapper<Issue> mapper = new IssueMapper();
-        return jdbcTemplate.queryForObject(READ_ISSUE_BY_ID,mapper,id.longValue());
+        return jdbcTemplate.queryForObject(READ_ISSUE_BY_ID,new IssueMapper(),id.longValue());
     }
 
     @Override
     @Transactional
-    public void updateIssue(Issue issue) {
-//        jdbcTemplate.update();
+    public void updateIssueType(BigInteger id, IssueType type) {
+        jdbcTemplate.update(UPDATE_ISSUE_TYPE,type.getId().longValue(),id.longValue());
+    }
+
+    @Override
+    @Transactional
+    public void updateIssueStatus(BigInteger id, IssueStatus status) {
+        jdbcTemplate.update(UPDATE_ISSUE_STATUS,status.getId().longValue(),id.longValue());
+    }
+
+    @Override
+    @Transactional
+    public void updateIssuePriority(BigInteger id, IssuePriority priority) {
+        jdbcTemplate.update(UPDATE_ISSUE_PRIORITY,priority.getId().longValue(),id.longValue());
+    }
+
+    @Override
+    @Transactional
+    public void updateIssueUser(BigInteger id, BigInteger userId) {
+        jdbcTemplate.update(UPDATE_ISSUE_USER,userId.longValue(),id.longValue());
+    }
+
+    @Override
+    @Transactional
+    public void deleteIssueById(BigInteger id) {
+        jdbcTemplate.update(DELETE_ISSUE,id.longValue());
     }
 
     @Override

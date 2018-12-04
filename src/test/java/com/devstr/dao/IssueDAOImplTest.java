@@ -6,24 +6,19 @@ import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
 import com.devstr.model.impl.IssueImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-@Ignore
 @SpringBootTest
-@Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class IssueDAOImplTest {
 
@@ -31,14 +26,19 @@ public class IssueDAOImplTest {
     IssueDAOImpl issueDAO;
 
     private Issue issue;
+    private  Issue updatedIssue;
+
+    @BeforeClass
+    public static void setUp() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     @Before
-    public void setUp() {
-        Locale.setDefault(Locale.ENGLISH);
+    public void setIssue(){
         issue = new IssueImpl.Builder()
-                .setIssueId(BigInteger.valueOf(242))
+                .setIssueId(BigInteger.valueOf(769))
                 .setIssueKey("kes")
-                .setIssueType(IssueType.TASK)
+                .setIssueType(IssueType.BUG)
                 .setIssuePriority(IssuePriority.HIGH)
                 .setIssueStatus(IssueStatus.OPEN)
                 .setStartDate(new Date())
@@ -47,34 +47,58 @@ public class IssueDAOImplTest {
                 .setReporterId(BigInteger.valueOf(78))
                 .setUserId(BigInteger.valueOf(76))
                 .build();
-
+        issueDAO.createIssue(issue);
+        List<Issue> issues = issueDAO.readIssuesByProject(issue.getProjectId());
+        updatedIssue = issues.get(issues.size()-1);
     }
 
+    @After
+    public void deleteIssue(){
+        issueDAO.deleteIssueById(updatedIssue.getIssueId());
+    }
+    @Ignore
     @Test
-    public void createIssueTest(){
+    public void createIssueTest() throws Exception {
         issueDAO.createIssue(issue);
     }
 
     @Test
-    public void getIssuesByProjectTest(){
-        List<Issue> issues = issueDAO.readIssuesByProject(BigInteger.valueOf(81));
-        Issue lastIssue = issues.get(issues.size()-1);
+    public void updateIssueTest() {
+        List<Issue> issues = issueDAO.readIssuesByProject(issue.getProjectId());
+        BigInteger id = issues.get(issues.size()-1).getIssueId();
+        issueDAO.updateIssueType(id,IssueType.EPIC);
+        issueDAO.updateIssueStatus(id,IssueStatus.READY_FOR_TESTING);
+        issueDAO.updateIssuePriority(id,IssuePriority.BLOCKER);
+        issueDAO.updateIssueUser(id,BigInteger.valueOf(80));
+        updatedIssue = issueDAO.readIssueById(id);
+        Assert.assertNotEquals(updatedIssue.getType(),issue.getType());
+        Assert.assertNotEquals(updatedIssue.getStatus(),issue.getStatus());
+        Assert.assertNotEquals(updatedIssue.getPriority(),issue.getPriority());
+        Assert.assertNotEquals(updatedIssue.getUserId(),issue.getUserId());
 
-        Assert.assertEquals(lastIssue.getIssueKey(),issue.getIssueKey());
+        issueDAO.deleteIssueById(id);
+    }
+
+    @Test
+    public void getIssuesByProjectTest(){
+        List<Issue> issues = issueDAO.readIssuesByProject(updatedIssue.getProjectId());
+
+        Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),updatedIssue.getIssueKey());
     }
 
     @Test
     public void getIssuesByUserTest(){
-        List<Issue> issues = issueDAO.readIssuesByUser(BigInteger.valueOf(76));
+        List<Issue> issues = issueDAO.readIssuesByUser(updatedIssue.getUserId());
 
-        Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),issue.getIssueKey());
+        Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),updatedIssue.getIssueKey());
     }
 
     @Test
     public void getIssueByIdTest(){
-        Issue issue1 = issueDAO.readIssueById(BigInteger.valueOf(242));
+        Issue issue1 = issueDAO.readIssueById(updatedIssue.getIssueId());
 
         Assert.assertEquals(issue1.getIssueKey(),issue.getIssueKey());
     }
+
 
 }

@@ -1,6 +1,9 @@
 package com.devstr.dao;
 
 import com.devstr.model.Issue;
+import com.devstr.model.enumerations.IssuePriority;
+import com.devstr.model.enumerations.IssueStatus;
+import com.devstr.model.enumerations.IssueType;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -35,10 +38,38 @@ public interface IssueDAO {
     Issue readIssueById(BigInteger id);
 
     /**
-     * Update issue
-     * @param issue edited issue
+     * Update issue type
+     * @param id issue id
+     * @param type new issue type
      */
-    void updateIssue(Issue issue);
+    void updateIssueType(BigInteger id, IssueType type);
+
+    /**
+     * Update issue status
+     * @param id issue id
+     * @param status new issue status
+     */
+    void updateIssueStatus(BigInteger id, IssueStatus status);
+
+    /**
+     * Update issue priority
+     * @param id issue id
+     * @param priority new issue priority
+     */
+    void updateIssuePriority(BigInteger id, IssuePriority priority);
+
+    /**
+     * Update issue user
+     * @param id issue id
+     * @param userId user id
+     */
+    void updateIssueUser(BigInteger id, BigInteger userId);
+
+    /**
+     *
+     * @param id issue id
+     */
+    void deleteIssueById(BigInteger id);
 
     /**
      * The method returns the sha of the last commit from the database
@@ -82,6 +113,11 @@ public interface IssueDAO {
 
     String GET_COMMITS_BY_ISSUE_ID = "SELECT * FROM COMMITS WHERE ISSUE_ID = ?";
 
-//    String UPDATE_ISSUE_TYPE =
+    String UPDATE_ISSUE_TYPE = "UPDATE ISSUES SET TYPE_ID = ? WHERE ISSUE_ID = ?";
+    String UPDATE_ISSUE_PRIORITY = "UPDATE ISSUES SET PRIORITY_ID = ? WHERE ISSUE_ID = ?";
+    String UPDATE_ISSUE_STATUS = "UPDATE ISSUES SET STATUS_ID = ? WHERE ISSUE_ID = ?";
+    String UPDATE_ISSUE_USER = "UPDATE ISSUES SET USER_ID = ? WHERE ISSUE_ID = ?";
+
+    String DELETE_ISSUE = "DELETE FROM ISSUES WHERE ISSUE_ID = ?";
 
 }
