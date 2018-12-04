@@ -57,8 +57,9 @@ public class IssueDAOImplTest {
     @Test
     public void getIssuesByProjectTest(){
         List<Issue> issues = issueDAO.readIssuesByProject(BigInteger.valueOf(81));
+        Issue lastIssue = issues.get(issues.size()-1);
 
-        Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),issue.getIssueKey());
+        Assert.assertEquals(lastIssue.getIssueKey(),issue.getIssueKey());
     }
     @Ignore
     @Test
