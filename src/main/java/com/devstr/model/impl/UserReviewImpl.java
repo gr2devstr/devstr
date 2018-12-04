@@ -33,8 +33,12 @@ public class UserReviewImpl extends ReviewImpl implements UserReview {
     }
 
     @Override
-    public float getAverageMark() {
-        return ((float) getCodeAmount() + getCodeQuality() + getCommunication()) / 3;
+    public int[] getAllMarksAsArray() {
+        int[] result = new int[3];
+        result[0] = codeQuality;
+        result[1] = codeAmount;
+        result[2] = communication;
+        return result;
     }
 
     public static class Builder extends com.devstr.model.impl.ReviewImpl.Builder {

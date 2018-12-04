@@ -10,6 +10,7 @@ import com.devstr.model.UserReview;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.services.ReviewService;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -68,5 +69,15 @@ public class ReviewServiceImpl implements ReviewService {
         }
         LOGGER.warn("Id is null");
         return null;
+    }
+
+    @Override
+    public double getAverageUserMark(UserReview review) {
+        return ((double) review.getCodeAmount() + review.getCodeQuality() + review.getCommunication()) / 3;
+    }
+
+    @Override
+    public double getAverageProjectMark(ProjectReview review) {
+        return ((double) review.getExperienceQuality() + review.getOrganisationLevel() + review.getTeamSpirit() + review.getTimeManagement()) / 4;
     }
 }

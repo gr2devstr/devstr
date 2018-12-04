@@ -25,7 +25,7 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
 
     @Override
     @Transactional
-    public void createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks) {
+    public BigInteger createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks) {
         BigInteger id = createObject(ObjectType.USER_REVIEW.getId(), "UR" + authorId + receiverId);
         createAttributeDateValue(AttributeID.CREATION_DATE.getId(), id, new Date(Calendar.getInstance().getTime().getTime()));
         createAttributeValue(AttributeID.REVIEW_TEXT.getId(), id, comment);
@@ -35,11 +35,12 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
         createObjectReference(AttributeID.REVIEWS.getId(), receiverId, id);
         createObjectReference(AttributeID.REVIEW_AUTHOR.getId(), id, authorId);
         createObjectReference(AttributeID.PROJECT.getId(), id, projectId);
+        return id;
     }
 
     @Override
     @Transactional
-    public void createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks) {
+    public BigInteger createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks) {
         BigInteger id = createObject(ObjectType.PROJECT_REVIEW.getId(), "P" + authorId + receiverId);
         createAttributeDateValue(AttributeID.CREATION_DATE.getId(), id, new Date(Calendar.getInstance().getTime().getTime()));
         createAttributeValue(AttributeID.REVIEW_TEXT.getId(), id, comment);
@@ -49,6 +50,7 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
         createAttributeValue(AttributeID.TIME_MANAGMENT.getId(), id, String.valueOf(marks[3]));
         createObjectReference(AttributeID.REVIEWS.getId(), receiverId, id);
         createObjectReference(AttributeID.REVIEW_AUTHOR.getId(), id, authorId);
+        return id;
     }
 
     @Override

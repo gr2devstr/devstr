@@ -11,5 +11,5 @@ public interface UserReview extends Review {
 
     BigInteger getProjectId();
 
-    float getAverageMark();
+    int[] getAllMarksAsArray();
 }

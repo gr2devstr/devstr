@@ -15,7 +15,7 @@ public interface ReviewDAO {
      * @param comment text of the review
      * @param marks 3 element size array with marks to the user in order of metrics
      */
-    void createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks);
+    BigInteger createUserReview(BigInteger authorId, BigInteger receiverId, BigInteger projectId, String comment, int[] marks);
 
     /**
      * Method that writes new project review to the database
@@ -25,7 +25,7 @@ public interface ReviewDAO {
      * @param comment text of the review
      * @param marks 4 element size array with marks from 1 to 10 to the project in order of metrics
      */
-    void createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks);
+    BigInteger createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks);
 
     /**
      * Method gets the review by review's id

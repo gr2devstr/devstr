@@ -54,4 +54,8 @@ public interface ReviewService {
      * @return list with all user reviews written during project
      */
     List<UserReview> readUserReviewsByProjectId(BigInteger id);
+
+    double getAverageUserMark(UserReview review);
+
+    double getAverageProjectMark(ProjectReview review);
 }

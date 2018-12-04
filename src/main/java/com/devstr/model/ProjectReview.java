@@ -7,5 +7,5 @@ public interface ProjectReview extends Review {
     int getOrganisationLevel();
     int getTimeManagement();
     int getTeamSpirit();
-    float getAverageMark();
+    int[] getAllMarksAsArray();
 }

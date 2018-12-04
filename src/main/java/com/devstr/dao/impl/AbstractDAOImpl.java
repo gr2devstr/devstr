@@ -189,7 +189,7 @@ abstract class AbstractDAOImpl implements AbstractDAO {
         SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
                 .withCatalogName("abstract_eav_pkg")
                 .withFunctionName("select_objreference_ref")
-                .declareParameters(new SqlOutParameter("return", OracleTypes.CURSOR,
+                .declareParameters(new SqlOutParameter("return", OracleTypes.ARRAY,
                         new RowMapper<BigInteger>() {
                             @Override
                             public BigInteger mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -208,7 +208,7 @@ abstract class AbstractDAOImpl implements AbstractDAO {
         SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
                 .withCatalogName("abstract_eav_pkg")
                 .withFunctionName("select_objreference_obj")
-                .declareParameters(new SqlOutParameter("return", OracleTypes.CURSOR,
+                .declareParameters(new SqlOutParameter("return", OracleTypes.ARRAY,
                         new RowMapper<BigInteger>() {
                             @Override
                             public BigInteger mapRow(ResultSet resultSet, int i) throws SQLException {

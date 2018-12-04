@@ -33,8 +33,13 @@ public class ProjectReviewImpl extends ReviewImpl implements ProjectReview {
     }
 
     @Override
-    public float getAverageMark() {
-        return ((float) getExperienceQuality() + getOrganisationLevel() + getTeamSpirit() + getTimeManagement()) / 4;
+    public int[] getAllMarksAsArray() {
+        int[] result = new int[4];
+        result[0] = experienceQuality;
+        result[1] = teamSpirit;
+        result[2] = organisationLevel;
+        result[3] = timeManagement;
+        return result;
     }
 
     public static class Builder extends com.devstr.model.impl.ReviewImpl.Builder {
