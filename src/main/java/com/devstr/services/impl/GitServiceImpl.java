@@ -59,7 +59,7 @@ public class GitServiceImpl implements GitService {
     @Override
     public Commit getCommit(GHCommit commit) throws IOException {
         BuildStatus status = getBuildStatus(commit);
-        return CommitImpl.builder()
+        return new CommitImpl.CommitBuilder()
                 //.setUserId()//some method in UserDaoImpl  some(commit.getCommitter().getEmail())
                 .setSha(commit.getSHA1())
                 .setDate(commit.getCommitDate())

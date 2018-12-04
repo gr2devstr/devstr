@@ -57,6 +57,7 @@ public class IssueDAOImplTest {
     public void deleteIssue(){
         issueDAO.deleteIssueById(updatedIssue.getIssueId());
     }
+
     @Ignore
     @Test
     public void createIssueTest() throws Exception {
@@ -77,7 +78,6 @@ public class IssueDAOImplTest {
         Assert.assertNotEquals(updatedIssue.getPriority(),issue.getPriority());
         Assert.assertNotEquals(updatedIssue.getUserId(),issue.getUserId());
 
-        issueDAO.deleteIssueById(id);
     }
 
     @Test
