@@ -144,10 +144,3 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
   END;
 END logger_pkg;
 /
-
-BEGIN
-For i in 1..10000 LOOP
-logger_pkg.log('WARN', 'High voltage!');
-END LOOP;
-END;
-/
