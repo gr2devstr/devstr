@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@Ignore
 @SpringBootTest
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,7 +51,7 @@ public class IssueDAOImplTest {
     }
 
     @Test
-    public void createIssueTest() throws Exception {
+    public void createIssueTest(){
         issueDAO.createIssue(issue);
     }
 
@@ -61,14 +62,14 @@ public class IssueDAOImplTest {
 
         Assert.assertEquals(lastIssue.getIssueKey(),issue.getIssueKey());
     }
-    @Ignore
+
     @Test
     public void getIssuesByUserTest(){
         List<Issue> issues = issueDAO.readIssuesByUser(BigInteger.valueOf(76));
 
         Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),issue.getIssueKey());
     }
-    @Ignore
+
     @Test
     public void getIssueByIdTest(){
         Issue issue1 = issueDAO.readIssueById(BigInteger.valueOf(242));
