@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@Ignore
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class IssueDAOImplTest {
