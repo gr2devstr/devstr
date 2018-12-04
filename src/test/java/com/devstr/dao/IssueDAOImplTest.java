@@ -52,6 +52,7 @@ public class IssueDAOImplTest {
     @Test
     public void createIssueTest() throws Exception {
         issueDAO.createIssue(issue);
+        throw new RuntimeException();
     }
     @Ignore
     @Test
