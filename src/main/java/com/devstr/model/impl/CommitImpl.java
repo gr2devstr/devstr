@@ -20,8 +20,6 @@ public class CommitImpl  implements Commit {
     private BuildStatus buildStatus;
     private String buildSha;
 
-    private CommitImpl() {
-    }
 
     @Override
     public BigInteger getCommitId() {
@@ -74,10 +72,6 @@ public class CommitImpl  implements Commit {
         this.commitClasses.addAll(commitClasses);
     }
 
-    public static CommitBuilder builder() {
-        return new CommitImpl().new CommitBuilder();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,61 +87,79 @@ public class CommitImpl  implements Commit {
         return getCommitId().hashCode();
     }
 
-    public class CommitBuilder {
+    public static class CommitBuilder {
 
-        private CommitBuilder() {
+        private BigInteger commitId;
+        private BigInteger userId;
+        private String sha;
+        private Date date;
+        private Collection<CommitClass> commitClasses;
+        private BuildStatus buildStatus;
+        private String buildSha;
+
+        public CommitBuilder() {
         }
 
         public CommitBuilder setCommitId(BigInteger id) {
-            CommitImpl.this.commitId = id;
+            this.commitId = id;
             return this;
         }
 
         public CommitBuilder setUserId(BigInteger id) {
-            CommitImpl.this.userId = id;
+            this.userId = id;
             return this;
         }
 
         public CommitBuilder setSha(String sha) {
-            CommitImpl.this.sha = sha;
+            this.sha = sha;
             return this;
         }
 
         public CommitBuilder setDate(Date date) {
-            CommitImpl.this.date = date;
+            this.date = date;
             return this;
         }
 
         public CommitBuilder setCommitClass(CommitClass commitClass) {
-            if (CommitImpl.this.commitClasses == null) {
-                CommitImpl.this.commitClasses = new HashSet<>();
+            if (this.commitClasses == null) {
+                this.commitClasses = new HashSet<>();
             }
-            CommitImpl.this.commitClasses.add(commitClass);
+            this.commitClasses.add(commitClass);
             return this;
         }
 
         public CommitBuilder setCommitClasses(Collection<CommitClass> commitClasses) {
-            if (CommitImpl.this.commitClasses == null) {
-                CommitImpl.this.commitClasses = new HashSet<>();
+            if (this.commitClasses == null) {
+                this.commitClasses = new HashSet<>();
             }
-            CommitImpl.this.commitClasses.addAll(commitClasses);
+            this.commitClasses.addAll(commitClasses);
             return this;
         }
 
         public CommitBuilder setBuildStatus(BuildStatus status) {
-            CommitImpl.this.buildStatus = status;
+            this.buildStatus = status;
             return this;
         }
 
         public CommitBuilder setBuildSha(String buildSha) {
-            CommitImpl.this.buildSha = buildSha;
+            this.buildSha = buildSha;
             return this;
         }
 
-        public CommitImpl build() {
-            return CommitImpl.this;
+        public Commit build() {
+            return new CommitImpl(this);
         }
 
+    }
+
+    private CommitImpl(CommitBuilder builder){
+        this.commitId = builder.commitId;
+        this.userId = builder.userId;
+        this.sha = builder.sha;
+        this.date = builder.date;
+        this.buildStatus = builder.buildStatus;
+        this.buildSha = builder.buildSha;
+        this.commitClasses = builder.commitClasses;
     }
 
 }

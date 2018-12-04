@@ -1,10 +1,13 @@
 package com.devstr.dao.impl;
 
 import com.devstr.dao.IssueDAO;
+import com.devstr.model.Commit;
 import com.devstr.model.Issue;
+import com.devstr.model.enumerations.BuildStatus;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
+import com.devstr.model.impl.CommitImpl;
 import com.devstr.model.impl.IssueImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -81,6 +84,12 @@ public class IssueDAOImpl implements IssueDAO {
     }
 
     @Override
+    @Transactional
+    public List<Commit> readCommitsByIssue(BigInteger issueId){
+        return jdbcTemplate.query(GET_COMMITS_BY_ISSUE_ID,new Object[]{issueId.longValue()},new CommitMapper());
+    }
+
+    @Override
     public String getShaLastCommitOnProject() {
         return jdbcTemplate.queryForObject(GET_COMMIT_SHA, String.class);
     }
@@ -104,4 +113,17 @@ public class IssueDAOImpl implements IssueDAO {
         }
     }
 
+    class CommitMapper implements RowMapper<Commit>{
+
+        @Override
+        public Commit mapRow(ResultSet resultSet, int i) throws SQLException {
+            return new CommitImpl.CommitBuilder()
+                    .setCommitId(BigInteger.valueOf(resultSet.getLong(1)))
+                    .setUserId(BigInteger.valueOf(resultSet.getLong(2)))
+                    .setSha(resultSet.getString(3))
+                    .setDate(resultSet.getDate(4))
+                    .setBuildStatus(BuildStatus.valueOf(resultSet.getString(5)))
+                    .build();
+        }
+    }
 }

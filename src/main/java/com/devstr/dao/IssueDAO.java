@@ -1,5 +1,6 @@
 package com.devstr.dao;
 
+import com.devstr.model.Commit;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
@@ -18,24 +19,31 @@ public interface IssueDAO {
 
     /**
      * Get project's issues
-     * @param projectId project's id
+     * @param projectId project id
      * @return list of issues
      */
     List<Issue> readIssuesByProject(BigInteger projectId);
 
     /**
      * Get user's issues
-     * @param userId user's id
+     * @param userId user id
      * @return list of issues
      */
     List<Issue> readIssuesByUser(BigInteger userId);
 
     /**
      * Get issue by id
-     * @param id issue's id
+     * @param id issue id
      * @return issue by id
      */
     Issue readIssueById(BigInteger id);
+
+    /**
+     *  Get commits by issue id
+     * @param issueId issue id
+     * @return  list of commits
+     */
+    List<Commit> readCommitsByIssue(BigInteger issueId);
 
     /**
      * Update issue type
