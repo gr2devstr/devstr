@@ -14,14 +14,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-@Ignore
 @SpringBootTest
+@Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class IssueDAOImplTest {
 
@@ -35,7 +36,7 @@ public class IssueDAOImplTest {
         Locale.setDefault(Locale.ENGLISH);
         issue = new IssueImpl.Builder()
                 .setIssueId(BigInteger.valueOf(242))
-                .setIssueKey("ker")
+                .setIssueKey("kes")
                 .setIssueType(IssueType.TASK)
                 .setIssuePriority(IssuePriority.HIGH)
                 .setIssueStatus(IssueStatus.OPEN)
@@ -47,26 +48,26 @@ public class IssueDAOImplTest {
                 .build();
 
     }
-    @Ignore
+
     @Test
-    public void createIssueTest(){
+    public void createIssueTest() throws Exception {
         issueDAO.createIssue(issue);
     }
-
+    @Ignore
     @Test
     public void getIssuesByProjectTest(){
         List<Issue> issues = issueDAO.readIssuesByProject(BigInteger.valueOf(81));
 
         Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),issue.getIssueKey());
     }
-
+    @Ignore
     @Test
     public void getIssuesByUserTest(){
         List<Issue> issues = issueDAO.readIssuesByUser(BigInteger.valueOf(76));
 
         Assert.assertEquals(issues.get(issues.size()-1).getIssueKey(),issue.getIssueKey());
     }
-
+    @Ignore
     @Test
     public void getIssueByIdTest(){
         Issue issue1 = issueDAO.readIssueById(BigInteger.valueOf(242));
