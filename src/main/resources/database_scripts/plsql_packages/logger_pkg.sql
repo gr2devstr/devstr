@@ -31,14 +31,17 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
   PROCEDURE update_level(new_level VARCHAR2) IS
   BEGIN
     UPDATE LOGGER_CONFIG SET C_VALUE = new_level WHERE CONFIG_ID = 1;
+	COMMIT;
   END;
   PROCEDURE update_threshold(new_threshold NUMBER) IS
   BEGIN
     UPDATE LOGGER_CONFIG SET C_VALUE = new_threshold WHERE CONFIG_ID = 2;
+	COMMIT;
   END;
   PROCEDURE update_size(new_size NUMBER) IS
   BEGIN
     UPDATE LOGGER_CONFIG SET C_VALUE = new_size WHERE CONFIG_ID = 3;
+	COMMIT;
   END;
   FUNCTION is_higher (a_msg_level VARCHAR2) RETURN BOOLEAN
   IS
@@ -86,11 +89,13 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
       IF is_higher(a_msg_level) THEN
 	    IF p_size < threshold THEN
 	      INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
+		  COMMIT;
 		  p_size := p_size + 1;
 		  update_size(p_size);
 		ELSE
 		  DELETE FROM LOGGER WHERE LOG_ID = (select MIN(LOG_ID) FROM LOGGER);
 		  INSERT INTO LOGGER(MSG_LEVEL, MESSAGE, LOG_DATE) VALUES (a_msg_level, a_message, SYSDATE);
+		  COMMIT;
 		END IF;
 	  END IF;
   END;
@@ -134,6 +139,7 @@ CREATE OR REPLACE PACKAGE BODY logger_pkg AS
 	update_size(p_size);
 	EXECUTE IMMEDIATE 'DROP SEQUENCE log_id_seq';
 	EXECUTE IMMEDIATE 'CREATE SEQUENCE log_id_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE';
+	COMMIT;
   EXCEPTION
     WHEN OTHERS THEN
     IF SQLCODE != -2289 THEN
