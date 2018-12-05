@@ -4,7 +4,6 @@ import com.devstr.model.enumerations.AttributeID;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.enumerations.Status;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +13,6 @@ import java.math.BigInteger;
 import java.util.*;
 import static org.junit.Assert.*;
 
-@Ignore
 @SpringBootTest
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
