@@ -61,7 +61,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
                 Status.valueOf(readAttributeListValue(AttributeID.STATUS.getId(), id)))
                 .setUserId(id)
                 .setHireDate(readAttributeDateValue(AttributeID.CREATION_DATE.getId(), id))
-                .setProjectId(BigInteger.valueOf(Long.parseLong(readAttributeValue(AttributeID.PROJECT.getId(), id))))
+                .setProjectId(BigInteger.valueOf(Long.parseLong(readAttributeValue(AttributeID.USER_PROJECT.getId(), id))))
                 .build();
     }
 
@@ -102,7 +102,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 
     @Override
     public void updateUserProjectId(BigInteger id, BigInteger projectId) {
-        updateAttributeValue(AttributeID.PROJECT.getId(), id, projectId.toString());
+        updateAttributeValue(AttributeID.USER_PROJECT.getId(), id, projectId.toString());
     }
 
     @Override
