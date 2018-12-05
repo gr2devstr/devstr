@@ -22,7 +22,6 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     public void setUp() throws Exception {
     }
 
-
     @Test
     public void createObjectTest(){
         String tUser = "user_test";
@@ -40,7 +39,6 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         deleteObjectById(userId);
         deleteObjectById(projId);
     }
-
 
     @Test
     public void readObjectNameByIdTest(){
@@ -60,7 +58,6 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         assertEquals(loginRa, dbRa);
     }
 
-
     @Test
     public void deleteObjectByIdTest(){
         String tUser = "user_test";
@@ -72,7 +69,6 @@ public class AbstractDaoTest extends AbstractDAOImpl{
 
         assertNull(delUser);
     }
-
 
     @Test
     public void createAndReadAttributesTest(){
@@ -105,7 +101,6 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         deleteObjectById(projId);
     }
 
-
     @Test
     public void updateAttributesTest(){
         String tProject = "project_gg";
@@ -131,20 +126,17 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         deleteObjectById(projId);
     }
 
-
     @Test
     public void getReferencesByObjectId() {
         BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), "holinkonik");
         Collection<BigInteger> reviews = readObjectReferences(AttributeID.REVIEWS.getId(), userId);
 
-        BigInteger reviewId1 = BigInteger.valueOf(82L);
-        BigInteger reviewId2 = BigInteger.valueOf(83L);
+        BigInteger reviewId1 = BigInteger.valueOf(87L);
 
         List<BigInteger> dbReviews = new ArrayList<>(reviews);
         Collections.sort(dbReviews);
 
         assertEquals(reviewId1, dbReviews.get(0));
-        assertEquals(reviewId2, dbReviews.get(1));
     }
 
 }
