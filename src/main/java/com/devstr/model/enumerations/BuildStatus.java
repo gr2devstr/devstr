@@ -17,4 +17,5 @@ public enum BuildStatus {
     public BigInteger getStatus() {
         return status;
     }
+
 }

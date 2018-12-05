@@ -4,11 +4,11 @@ import java.math.BigInteger;
 
 public enum UserRole {
 
-    PROJECT_MANAGER(BigInteger.valueOf(35L)),
-    TECHNICAL_MANAGER(BigInteger.valueOf(36L)),
-    GROUP_MANAGER(BigInteger.valueOf(37L)),
-    DEVELOPER(BigInteger.valueOf(38L)),
-    ADMIN(BigInteger.valueOf(41L));
+    PROJECT_MANAGER(BigInteger.valueOf(36L)),
+    TECHNICAL_MANAGER(BigInteger.valueOf(37L)),
+    GROUP_MANAGER(BigInteger.valueOf(38L)),
+    DEVELOPER(BigInteger.valueOf(39L)),
+    ADMIN(BigInteger.valueOf(42L));
 
     private BigInteger userRoleId;
 
