@@ -4,50 +4,66 @@ import com.devstr.dao.IssueDAO;
 import com.devstr.model.Commit;
 import com.devstr.model.Issue;
 import com.devstr.model.Project;
+import com.devstr.model.enumerations.BuildStatus;
+import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.services.StatisticService;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class StatisticServiceImpl implements StatisticService {
     private IssueDAO issueDAO;
+
     @Override
     public double reopenRate(Project project, BigInteger userId) {
+        long reopenNumber = countByStatus(project.getIssuesId(), userId, IssueStatus.REOPEN);
+        return (double) reopenNumber/countProjectReopens(project);
+    }
 
+    @Override
+    public long countClosedIssues(Project project, BigInteger userId) {
+        return countByStatus(project.getIssuesId(), userId, IssueStatus.CLOSED);
+    }
+
+    @Override
+    public double countClosedIssuesWithPriority(Project project, BigInteger userId) {
+        Map<IssuePriority, Integer> issuePriorityMap = getClosedIssuesWithPriorityMap(project.getIssuesId(), userId);
+        Set<Map.Entry<IssuePriority, Integer>> entrySet = issuePriorityMap.entrySet();
+        double result = 0;
+        for (Map.Entry<IssuePriority, Integer> e : entrySet) {
+            result+= e.getValue()*getWeight(e.getKey());
+        }
+        return result;
+    }
+
+    @Override
+    public double countIssueMarkPrioritized(Project project, BigInteger userId) {
+        return countClosedIssuesWithPriority(project, userId) / getProjectTotalWeight(project);
+    }
+
+    @Override
+    public long countOverDates(List<Issue> issues) {
         return 0;
     }
 
     @Override
-    public BigInteger countClosedIssues(Project project, BigInteger userId) {
-        return count(project.getIssuesId(), userId);
+    public long countFailBuildsOnProjectOfUser(Project project, BigInteger userId) {
+        long result = 0;
+        for (BigInteger issueId : project.getIssuesId()) {
+            Issue issue = issueDAO.readIssueById(issueId);
+            result += countFailsOfUser(issue.getCommits(), userId);
+        }
+        return result;
     }
 
     @Override
-    public BigDecimal countClosedIssuesWithPriority(Project project, BigInteger userId) {
-        return null;
-    }
-
-    @Override
-    public BigInteger countOverDates(List<Issue> issues) {
-        return null;
-    }
-
-    @Override
-    public BigInteger countFailBuilds(Issue issue) {
-        return countFails(issue.getCommits());
-    }
-
-    @Override
-    public BigInteger countFailBuildsOnProjectOfUser(Project project, BigInteger user) {
-        return null;
-    }
-
-    @Override
-    public BigInteger countFailBuildsOnProjectOfGroupUsers(Project project, List<BigInteger> users) {
-        return null;
+    public long countFailBuildsOnProjectOfGroupUsers(Project project, List<BigInteger> users) {
+        long result = 0;
+        for (BigInteger userId : users) {
+            result += countFailBuildsOnProjectOfUser(project, userId);
+        }
+        return result;
     }
 
     @Override
@@ -55,22 +71,77 @@ public class StatisticServiceImpl implements StatisticService {
         return 0;
     }
 
-    private BigInteger count(Collection<BigInteger> issues, BigInteger userId) {
-        BigInteger counter = BigInteger.ZERO;
+    private long countByStatus(Collection<BigInteger> issues, BigInteger userId, IssueStatus issueStatus) {
+        long counter = 0;
         for (BigInteger issueId : issues) {
             Issue issue = issueDAO.readIssueById(issueId);
-            if (issue.getUserId().equals(userId) && issue.getStatus().equals(IssueStatus.CLOSED))
-                counter = counter.add(BigInteger.ONE);
+            if (issue.getUserId().equals(userId) && issue.getStatus().equals(issueStatus))
+                counter++;
         }
         return counter;
     }
 
-    private BigInteger countFails(List<Commit> commits) {
-        BigInteger counter = BigInteger.ZERO;
-        for (Commit commit : commits) {
-            if (commit.getBuildStatus().getStatus().equals(BigInteger.ZERO))
-                counter = counter.add(BigInteger.ONE);
+    private long countByStatus(Collection<BigInteger> issues, IssueStatus issueStatus) {
+        long counter = 0;
+        for (BigInteger issueId : issues) {
+            Issue issue = issueDAO.readIssueById(issueId);
+            if (issue.getStatus().equals(issueStatus))
+                counter++;
         }
         return counter;
+    }
+
+    private long countFailsOfUser(List<Commit> commits, BigInteger userId) {
+        long counter = 0;
+        for (Commit commit : commits) {
+            if (commit.getBuildStatus().equals(BuildStatus.FAILURE) && commit.getUserId().equals(userId))
+                counter++;
+        }
+        return counter;
+    }
+
+    private Map<IssuePriority, Integer> getClosedIssuesWithPriorityMap(Collection<BigInteger> issues, BigInteger userId) {
+        Map<IssuePriority, Integer> numberOfSolvedGroupByPriority = new HashMap<>();
+        for (IssuePriority priority: IssuePriority.values()) {
+            Integer counter = 0;
+            for (BigInteger issueId : issues) {
+                Issue issue = issueDAO.readIssueById(issueId);
+                if (issue.getPriority().equals(priority))
+                    counter++;
+            }
+            numberOfSolvedGroupByPriority.put(priority, counter);
+        }
+        return numberOfSolvedGroupByPriority;
+    }
+
+    private double getWeight(IssuePriority priority) {
+        switch (priority) {
+            case BLOCKER:
+                return 1.5;
+            case CRITICAL:
+                return 1;
+            case HIGH:
+                return 0.8;
+            case MEDIUM:
+                return 0.5;
+            case LOW:
+                return 0.3;
+            case LOWEST:
+                return 0.1;
+        }
+        return 0;
+    }
+
+    private double getProjectTotalWeight(Project project) {
+        double weight = 0;
+        for (BigInteger issueId : project.getIssuesId()) {
+            Issue issue = issueDAO.readIssueById(issueId);
+            weight += getWeight(issue.getPriority());
+        }
+        return weight;
+    }
+
+    private double countProjectReopens(Project project) {
+        return countByStatus(project.getIssuesId(), IssueStatus.REOPEN);
     }
 }

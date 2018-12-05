@@ -3,7 +3,6 @@ package com.devstr.services;
 import com.devstr.model.Issue;
 import com.devstr.model.Project;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -11,17 +10,17 @@ public interface StatisticService {
 
     double reopenRate(Project project, BigInteger userId);
 
-    BigInteger countClosedIssues(Project project, BigInteger userId);
+    long countClosedIssues(Project project, BigInteger userId);
 
-    BigDecimal countClosedIssuesWithPriority(Project project, BigInteger userId);
+    double countClosedIssuesWithPriority(Project project, BigInteger userId);
 
-    BigInteger countOverDates(List<Issue> issues);
+    double countIssueMarkPrioritized(Project project, BigInteger userId);
 
-    BigInteger countFailBuilds(Issue issue);
+    long countOverDates(List<Issue> issues);
 
-    BigInteger countFailBuildsOnProjectOfUser(Project project, BigInteger user);
+    long countFailBuildsOnProjectOfUser(Project project, BigInteger user);
 
-    BigInteger countFailBuildsOnProjectOfGroupUsers(Project project, List<BigInteger> users);
+    long countFailBuildsOnProjectOfGroupUsers(Project project, List<BigInteger> users);
 
     double failedBuildMarkPercentageOnProject(Project project, BigInteger userId);
 

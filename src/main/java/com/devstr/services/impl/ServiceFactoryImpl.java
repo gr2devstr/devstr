@@ -1,11 +1,13 @@
 package com.devstr.services.impl;
 
-import com.devstr.services.GitService;
-import com.devstr.services.ReviewService;
-import com.devstr.services.ServiceFactory;
-import com.devstr.services.TokenService;
+import com.devstr.services.*;
 
 public class ServiceFactoryImpl implements ServiceFactory {
+
+    @Override
+    public StatisticService getStatisticService() {
+        return new StatisticServiceImpl();
+    }
     @Override
     public GitService getGitService(String repositoryName, String token) {
         return new GitServiceImpl(repositoryName, token);
