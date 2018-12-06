@@ -8,4 +8,6 @@ public interface ServiceFactory {
     ReviewService getReviewService();
 
     TokenService getTokenService();
+
+    JiraService getJiraService(String login, String password, String domain);
 }

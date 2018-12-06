@@ -25,4 +25,13 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public TokenService getTokenService() {
         return new TokenServiceImp();
     }
+
+    @Override
+    public JiraService getJiraService(String login, String password, String domain) {
+        JiraService service = new JiraServiceImpl();
+        service.setLogin(login);
+        service.setPassword(password);
+        service.setDomain(domain);
+        return service;
+    }
 }

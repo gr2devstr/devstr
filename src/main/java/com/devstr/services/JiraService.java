@@ -20,11 +20,12 @@ public interface JiraService {
 
     void setPassword(String password);
 
+    void setDomain(String domain);
+
     Issue getIssueByKey(String issueKey, JiraRestClient restClient) throws URISyntaxException;
 
     List<Issue> getIssuesByProjectId(BigInteger projectId) throws URISyntaxException, IOException;
 
-    String URI = "https://nc-std.atlassian.net/";
     Integer START_VLUE = 0;
     Integer MAX_VLUE = 100000;
 

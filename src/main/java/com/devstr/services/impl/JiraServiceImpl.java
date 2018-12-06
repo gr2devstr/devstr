@@ -32,11 +32,13 @@ public class JiraServiceImpl implements JiraService {
 
     private String login;
     private String password;
+    private String domain;
 
     private JiraRestClient getConnection() throws URISyntaxException {
-        URI jiraServerUri = new URI(URI);
+        URI jiraServerUri = new URI(domain);
         return new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(jiraServerUri, login, password);
     }
+
 
     @Override
     public void setLogin(String login) {
@@ -47,6 +49,12 @@ public class JiraServiceImpl implements JiraService {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
 
     @Override
     public Issue getIssueByKey(String issueKey, JiraRestClient restClient) throws URISyntaxException {
