@@ -5,8 +5,12 @@ import com.devstr.model.Issue;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
+
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class IssueImpl implements Issue {
 
@@ -132,6 +136,7 @@ public class IssueImpl implements Issue {
         private BigInteger userId;
         private BigInteger reporterId;
         private List<Commit> commits;
+        private boolean isOverdated;
 
         public Builder() {}
 
@@ -193,11 +198,17 @@ public class IssueImpl implements Issue {
             return this;
         }
 
+
         public Builder setCommits(Set<Commit> commits) {
             if (this.commits == null) {
                 this.commits = new ArrayList<>();
             }
             this.commits.addAll(commits);
+            return this;
+        }
+
+        public Builder setOverdate(boolean overdated) {
+            this.isOverdated = overdated;
             return this;
         }
 
@@ -219,5 +230,6 @@ public class IssueImpl implements Issue {
         this.userId = builder.userId;
         this.reporterId = builder.reporterId;
         this.commits = builder.commits;
+        this.isOverdated = builder.isOverdated;
     }
 }
