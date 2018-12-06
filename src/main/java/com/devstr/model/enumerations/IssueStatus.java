@@ -4,11 +4,11 @@ import java.math.BigInteger;
 
 public enum IssueStatus {
 
-    OPEN(BigInteger.valueOf(49L)),
-    IN_PROGRESS(BigInteger.valueOf(50L)),
-    READY_FOR_TESTING(BigInteger.valueOf(51L)),
-    CLOSED(BigInteger.valueOf(52L)),
-    REOPEN(BigInteger.valueOf(53L));
+    OPEN(BigInteger.valueOf(51L)),
+    IN_PROGRESS(BigInteger.valueOf(52L)),
+    READY_FOR_TESTING(BigInteger.valueOf(53L)),
+    CLOSED(BigInteger.valueOf(54L)),
+    REOPEN(BigInteger.valueOf(55L));
 
     private BigInteger statusId;
 

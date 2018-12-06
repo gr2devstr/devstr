@@ -38,6 +38,9 @@ INSERT INTO ATTRNAMES (NAME)
 VALUES ('jira_pass');
 
 INSERT INTO ATTRNAMES (NAME)
+ VALUES ('jira_domain');
+
+INSERT INTO ATTRNAMES (NAME)
 VALUES ('repository_name');
 
 -- Нереференсные атрибуты сущности "Отзыв"
@@ -70,7 +73,7 @@ INSERT INTO ATTRNAMES (NAME)
 VALUES ('service_name');
 
 INSERT INTO ATTRNAMES (NAME)
-VALUES ('token_project'); -- reference attribute
+VALUES ('token_project');
 
 INSERT INTO ATTRNAMES (NAME)
 VALUES ('token_code');

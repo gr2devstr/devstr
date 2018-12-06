@@ -27,7 +27,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
     l_object_id NUMBER;
 	temp_id NUMBER;
     BEGIN
-	  IF a_object_type_id BETWEEN 30 AND 31 THEN
+	  IF a_object_type_id BETWEEN 31 AND 32 THEN
 	    temp_id := select_object_id(a_object_type_id, a_name);
 		IF temp_id IS NULL THEN
 		  INSERT INTO OBJECTS(object_type_id, name) VALUES (a_object_type_id, a_name)
@@ -183,7 +183,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
   FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
   res NUMBER;
   BEGIN
-    IF a_object_type_id NOT BETWEEN 30 AND 31 THEN
+    IF a_object_type_id NOT BETWEEN 31 AND 32 THEN
 	  logger_pkg.log('WARN', 'Only projects and users have unique names');
 	  RETURN NULL;
 	END IF;
