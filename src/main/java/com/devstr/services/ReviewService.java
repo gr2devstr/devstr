@@ -55,7 +55,37 @@ public interface ReviewService {
      */
     List<UserReview> readUserReviewsByProjectId(BigInteger id);
 
-    double getAverageUserMark(UserReview review);
+    /**
+     * Method to count average mark(of code quality, code amount and communication) of a user review.
+     *
+     * @param review review of which to count average mark
+     * @return double number with average mark(less than 10)
+     */
+    double getAverageUserReviewMark(UserReview review);
 
-    double getAverageProjectMark(ProjectReview review);
+    /**
+     * Method to count average mark(of xp quality, team spirit, time management and organization level)
+     * of a project review.
+     *
+     * @param review review of which to count average
+     * @return double value with average mark(less than 10)
+     */
+    double getAverageProjectReviewMark(ProjectReview review);
+
+    /**
+     * Method that counts average review mark of user on the project
+     *
+     * @param projectId id of project where to count average review mark of the user
+     * @param userId id of user to count
+     * @return average mark that < 10, 0 if there is no reviews for that user
+     */
+    double getAverageUserMarkOnProject(BigInteger projectId, BigInteger userId);
+
+    /**
+     * Method that counts average mark of a project
+     *
+     * @param projectId id of project to count average mark
+     * @return average mark of project less than 10, 0 if there is no reviews for that project
+     */
+    double getAverageProjectMark(BigInteger projectId);
 }
