@@ -9,9 +9,6 @@ public class CommitClassImpl implements CommitClass {
     private int numberOfLinesChanged;
     private int numberOfLinesDeleted;
 
-    private CommitClassImpl() {
-    }
-
     @Override
     public String getClassName() {
         return className;
@@ -30,10 +27,6 @@ public class CommitClassImpl implements CommitClass {
     @Override
     public int getNumberOfLinesDeleted() {
         return numberOfLinesDeleted;
-    }
-
-    public static CommitClassBuilder builder() {
-        return new CommitClassImpl().new CommitClassBuilder();
     }
 
     @Override
@@ -58,35 +51,46 @@ public class CommitClassImpl implements CommitClass {
         return result;
     }
 
-    public class CommitClassBuilder {
+    public static class CommitClassBuilder {
 
-        private CommitClassBuilder(){
+        private String className;
+        private int numberOfLinesAdded;
+        private int numberOfLinesChanged;
+        private int numberOfLinesDeleted;
+
+        public CommitClassBuilder(){
         }
 
         public CommitClassBuilder setClassName(String name) {
-            CommitClassImpl.this.className = name;
+            this.className = name;
             return this;
         }
 
         public CommitClassBuilder setAddedLines(int number) {
-            CommitClassImpl.this.numberOfLinesAdded = number;
+            this.numberOfLinesAdded = number;
             return this;
         }
 
         public CommitClassBuilder setChangedLines(int number) {
-            CommitClassImpl.this.numberOfLinesChanged = number;
+            this.numberOfLinesChanged = number;
             return this;
         }
 
         public CommitClassBuilder setDeletedLines(int number) {
-            CommitClassImpl.this.numberOfLinesDeleted = number;
+            this.numberOfLinesDeleted = number;
             return this;
         }
 
-        public CommitClassImpl build() {
-            return CommitClassImpl.this;
+        public CommitClass build() {
+            return new CommitClassImpl(this);
         }
+    }
 
+    private CommitClassImpl(CommitClassBuilder builder){
+        this.className = builder.className;
+        this.numberOfLinesAdded = builder.numberOfLinesAdded;
+        this.numberOfLinesChanged = builder.numberOfLinesChanged;
+        this.numberOfLinesDeleted = builder.numberOfLinesChanged;
     }
 
 }

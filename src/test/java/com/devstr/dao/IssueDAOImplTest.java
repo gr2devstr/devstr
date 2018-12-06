@@ -8,7 +8,6 @@ import com.devstr.model.enumerations.IssueType;
 import com.devstr.model.impl.IssueImpl;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,17 +35,17 @@ public class IssueDAOImplTest {
 
     @Before
     public void setIssue(){
-        issue = new IssueImpl.Builder()
+        issue = new IssueImpl.IssueBuilder()
                 .setIssueId(BigInteger.valueOf(769))
-                .setIssueKey("kes")
+                .setIssueKey("kee")
                 .setIssueType(IssueType.BUG)
                 .setIssuePriority(IssuePriority.HIGH)
                 .setIssueStatus(IssueStatus.OPEN)
                 .setStartDate(new Date())
                 .setDueDate(new Date())
-                .setProjectId(BigInteger.valueOf(81))
-                .setReporterId(BigInteger.valueOf(78))
-                .setUserId(BigInteger.valueOf(76))
+                .setProjectId(BigInteger.valueOf(89))
+                .setReporterId(BigInteger.valueOf(84))
+                .setUserId(BigInteger.valueOf(85))
                 .build();
         issueDAO.createIssue(issue);
         List<Issue> issues = issueDAO.readIssuesByProject(issue.getProjectId());
@@ -71,7 +70,7 @@ public class IssueDAOImplTest {
         issueDAO.updateIssueType(id,IssueType.EPIC);
         issueDAO.updateIssueStatus(id,IssueStatus.READY_FOR_TESTING);
         issueDAO.updateIssuePriority(id,IssuePriority.BLOCKER);
-        issueDAO.updateIssueUser(id,BigInteger.valueOf(80));
+        issueDAO.updateIssueUser(id,BigInteger.valueOf(86));
         updatedIssue = issueDAO.readIssueById(id);
         Assert.assertNotEquals(updatedIssue.getType(),issue.getType());
         Assert.assertNotEquals(updatedIssue.getStatus(),issue.getStatus());

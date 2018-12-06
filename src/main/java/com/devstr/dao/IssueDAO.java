@@ -1,6 +1,7 @@
 package com.devstr.dao;
 
 import com.devstr.model.Commit;
+import com.devstr.model.CommitClass;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
@@ -80,6 +81,20 @@ public interface IssueDAO {
     void deleteIssueById(BigInteger id);
 
     /**
+     * Write commits to db
+     * @param commits
+     * @param issueId
+     */
+    void createCommits(List<Commit> commits, BigInteger issueId);
+
+    /**
+     * Write commitClass to db
+     * @param commitClasses
+     */
+    void createCommitClasses(List<CommitClass> commitClasses, BigInteger commitId);
+
+
+    /**
      * The method returns the sha of the last commit from the database
      *
      * @return sha
@@ -91,6 +106,12 @@ public interface IssueDAO {
     String CREATE_ISSUE = "INSERT " +
             "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID)" +
                 "VALUES(?,?,?,?,?,?,?,?,?)";
+
+    String CREATE_COMMIT = "INSERT INTO COMMITS(AUTHOR_ID,SHA,PUBLICATION_DATE,STATUS_OF_BUILD,ISSUE_ID)" +
+            "VALUES(?,?,?,?,?)";
+
+    String CREATE_COMMITCLASS = "INSERT INTO COMMITCLASSES(NAME,NUMBER_OF_LINES_ADDED,NUMBER_OF_LINES_CHANGED," +
+            "NUMBER_OF_LINES_DELETED,COMMIT_ID)VALUES(?,?,?,?,?)";
 
     String READ_ISSUES_BY_PROJECT = "SELECT issue.ISSUE_ID, issue.ISSUE_KEY, issue.PROJECT_ID, " +
             "type.VALUE, status.VALUE, priority.VALUE, issue.START_DATE, issue.DUE_DATE, " +
@@ -120,12 +141,11 @@ public interface IssueDAO {
             "AND priority.JIRAPRIORITY_ID = issue.PRIORITY_ID";
 
     String GET_COMMITS_BY_ISSUE_ID = "SELECT * FROM COMMITS WHERE ISSUE_ID = ?";
-
     String UPDATE_ISSUE_TYPE = "UPDATE ISSUES SET TYPE_ID = ? WHERE ISSUE_ID = ?";
     String UPDATE_ISSUE_PRIORITY = "UPDATE ISSUES SET PRIORITY_ID = ? WHERE ISSUE_ID = ?";
     String UPDATE_ISSUE_STATUS = "UPDATE ISSUES SET STATUS_ID = ? WHERE ISSUE_ID = ?";
     String UPDATE_ISSUE_USER = "UPDATE ISSUES SET USER_ID = ? WHERE ISSUE_ID = ?";
-
     String DELETE_ISSUE = "DELETE FROM ISSUES WHERE ISSUE_ID = ?";
+
 
 }

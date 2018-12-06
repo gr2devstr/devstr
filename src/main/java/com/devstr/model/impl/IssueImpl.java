@@ -123,7 +123,7 @@ public class IssueImpl implements Issue {
         return getIssueId().hashCode();
     }
 
-    public static class Builder {
+    public static class IssueBuilder {
 
         private BigInteger issueId;
         private String issueKey;
@@ -138,59 +138,59 @@ public class IssueImpl implements Issue {
         private List<Commit> commits;
         private boolean isOverdated;
 
-        public Builder() {}
+        public IssueBuilder() {}
 
-        public Builder setIssueId(BigInteger id) {
+        public IssueBuilder setIssueId(BigInteger id) {
             this.issueId = id;
             return this;
         }
 
-        public Builder setIssueKey(String key) {
+        public IssueBuilder setIssueKey(String key) {
             this.issueKey = key;
             return this;
         }
 
-        public Builder setIssueType(IssueType type) {
+        public IssueBuilder setIssueType(IssueType type) {
             this.type = type;
             return this;
         }
 
-        public Builder setIssueStatus(IssueStatus status) {
+        public IssueBuilder setIssueStatus(IssueStatus status) {
             this.status = status;
             return this;
         }
 
-        public Builder setIssuePriority(IssuePriority priority) {
+        public IssueBuilder setIssuePriority(IssuePriority priority) {
             this.priority = priority;
             return this;
         }
 
-        public Builder setStartDate(Date startDate) {
+        public IssueBuilder setStartDate(Date startDate) {
             this.startDate = startDate;
             return this;
         }
 
-        public Builder setDueDate(Date dueDate) {
+        public IssueBuilder setDueDate(Date dueDate) {
             this.dueDate = dueDate;
             return this;
         }
 
-        public Builder setProjectId(BigInteger id) {
+        public IssueBuilder setProjectId(BigInteger id) {
             this.projectId = id;
             return this;
         }
 
-        public Builder setUserId(BigInteger id) {
+        public IssueBuilder setUserId(BigInteger id) {
             this.userId = id;
             return this;
         }
 
-        public Builder setReporterId(BigInteger reporterId) {
+        public IssueBuilder setReporterId(BigInteger reporterId) {
             this.reporterId = reporterId;
             return this;
         }
 
-        public Builder setCommit(Commit commit) {
+        public IssueBuilder setCommit(Commit commit) {
             if (this.commits == null) {
                 this.commits = new ArrayList<>();
             }
@@ -199,7 +199,7 @@ public class IssueImpl implements Issue {
         }
 
 
-        public Builder setCommits(Set<Commit> commits) {
+        public IssueBuilder setCommits(Set<Commit> commits) {
             if (this.commits == null) {
                 this.commits = new ArrayList<>();
             }
@@ -207,7 +207,7 @@ public class IssueImpl implements Issue {
             return this;
         }
 
-        public Builder setOverdate(boolean overdated) {
+        public IssueBuilder setOverdate(boolean overdated) {
             this.isOverdated = overdated;
             return this;
         }
@@ -218,7 +218,7 @@ public class IssueImpl implements Issue {
 
     }
 
-    private IssueImpl(Builder builder){
+    private IssueImpl(IssueBuilder builder){
         this.issueId = builder.issueId;
         this.issueKey = builder.issueKey;
         this.type = builder.type;

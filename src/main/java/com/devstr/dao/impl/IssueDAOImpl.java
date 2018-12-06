@@ -2,6 +2,7 @@ package com.devstr.dao.impl;
 
 import com.devstr.dao.IssueDAO;
 import com.devstr.model.Commit;
+import com.devstr.model.CommitClass;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.BuildStatus;
 import com.devstr.model.enumerations.IssuePriority;
@@ -10,12 +11,15 @@ import com.devstr.model.enumerations.IssueType;
 import com.devstr.model.impl.CommitImpl;
 import com.devstr.model.impl.IssueImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -90,6 +94,49 @@ public class IssueDAOImpl implements IssueDAO {
     }
 
     @Override
+    @Transactional
+    public void createCommits(List<Commit> commits, BigInteger issueId){
+        jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Commit commit = commits.get(i);
+                ps.setLong(1,commit.getUserId().longValue());
+                ps.setString(2,commit.getSha());
+                ps.setDate(3,new Date(commit.getDate().getTime()));
+                ps.setLong(4,commit.getBuildStatus().getStatus().longValue());
+                ps.setLong(5,issueId.longValue());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return commits.size();
+            }
+        });
+    }
+
+    @Override
+    @Transactional
+    public void createCommitClasses(List<CommitClass> commitClasses,BigInteger commitId){
+        jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                CommitClass commitClass = commitClasses.get(i);
+                ps.setString(1,commitClass.getClassName());
+                ps.setInt(2,commitClass.getNumberOfLinesAdded());
+                ps.setInt(3,commitClass.getNumberOfLinesChanged());
+                ps.setInt(4,commitClass.getNumberOfLinesDeleted());
+                ps.setLong(5,commitId.longValue());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return commitClasses.size();
+            }
+        });
+    }
+
+    @Override
     public String getShaLastCommitOnProject() {
         return jdbcTemplate.queryForObject(GET_COMMIT_SHA, String.class);
     }
@@ -98,7 +145,7 @@ public class IssueDAOImpl implements IssueDAO {
 
         @Override
         public Issue mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new IssueImpl.Builder()
+            return new IssueImpl.IssueBuilder()
                     .setIssueId(BigInteger.valueOf(resultSet.getLong(1)))
                     .setIssueKey(resultSet.getString(2))
                     .setProjectId(BigInteger.valueOf(resultSet.getLong(3)))

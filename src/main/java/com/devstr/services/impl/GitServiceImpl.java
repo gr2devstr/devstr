@@ -51,7 +51,7 @@ public class GitServiceImpl implements GitService {
         List<CommitClass> commitClasses = new ArrayList<>();
         List<GHCommit.File> files = commit.getFiles();
         for (GHCommit.File file : files) {
-            commitClasses.add(CommitClassImpl.builder()
+            commitClasses.add(new CommitClassImpl.CommitClassBuilder()
                     .setClassName(file.getFileName())
                     .setAddedLines(file.getLinesAdded())
                     .setChangedLines(file.getLinesChanged())

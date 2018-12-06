@@ -77,7 +77,7 @@ public class JiraServiceImpl implements JiraService {
             assigneeId = userDAO.readUserIdByEmail(restClient.getUserClient().getUser(assineeEmail.get(0)).claim().getEmailAddress());
         } else assigneeId = userDAO.readUserIdByEmail(issue.getAssignee().getEmailAddress());
 
-        return new IssueImpl.Builder()
+        return new IssueImpl.IssueBuilder()
                 .setIssueKey(issue.getKey())
                 .setIssueType(getIssueType(issue.getIssueType().getName()))
                 .setIssueStatus(getIssueStatus(issue.getStatus().getName()))
