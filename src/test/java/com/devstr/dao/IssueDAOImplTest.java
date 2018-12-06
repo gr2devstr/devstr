@@ -1,10 +1,13 @@
 package com.devstr.dao;
 
 import com.devstr.dao.impl.IssueDAOImpl;
+import com.devstr.model.Commit;
 import com.devstr.model.Issue;
+import com.devstr.model.enumerations.BuildStatus;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
+import com.devstr.model.impl.CommitImpl;
 import com.devstr.model.impl.IssueImpl;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -98,6 +102,30 @@ public class IssueDAOImplTest {
         Issue issue1 = issueDAO.readIssueById(updatedIssue.getIssueId());
 
         Assert.assertEquals(issue1.getIssueKey(),issue.getIssueKey());
+    }
+
+    @Test
+    public void createCommitTest(){
+        Commit commit1 = new CommitImpl.CommitBuilder()
+                .setUserId(BigInteger.valueOf(85L))
+                .setSha("sha5")
+                .setDate(new Date())
+                .setBuildStatus(BuildStatus.SUCCESS)
+                .build();
+        Commit commit2 = new CommitImpl.CommitBuilder()
+                .setUserId(BigInteger.valueOf(85L))
+                .setSha("sha6")
+                .setDate(new Date())
+                .setBuildStatus(BuildStatus.SUCCESS)
+                .build();
+//        List<Commit> commits = new ArrayList<>();
+//        commits.add(commit1);
+//        commits.add(commit2);
+        BigInteger issueId = BigInteger.valueOf(108L);
+
+//        issueDAO.createCommits(commits,issueId);
+        List<Commit> commitsFromDB =  issueDAO.readCommitsByIssue(issueId);
+        Assert.assertEquals(commit2.getSha(),commitsFromDB.get(commitsFromDB.size()-1).getSha());
     }
 
 

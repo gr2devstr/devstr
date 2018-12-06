@@ -18,4 +18,12 @@ public enum BuildStatus {
         return status;
     }
 
+    public static BuildStatus getStatusByValue(BigInteger statusValue){
+
+        for (BuildStatus buildStatus :BuildStatus.values()) {
+            if(buildStatus.getStatus().equals(statusValue))
+                return buildStatus;
+        }
+        return null;
+    }
 }

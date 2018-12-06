@@ -169,7 +169,7 @@ public class IssueDAOImpl implements IssueDAO {
                     .setUserId(BigInteger.valueOf(resultSet.getLong(2)))
                     .setSha(resultSet.getString(3))
                     .setDate(resultSet.getDate(4))
-                    .setBuildStatus(BuildStatus.valueOf(resultSet.getString(5)))
+                    .setBuildStatus(BuildStatus.getStatusByValue(BigInteger.valueOf(resultSet.getLong(5))))
                     .build();
         }
     }
