@@ -21,8 +21,8 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public BigInteger createProject(String name, BigInteger managerId) {
 
         BigInteger objID = createObject(ObjectType.PROJECT.getId(), name);
@@ -33,48 +33,56 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     }
 
     @Override
+    @Transactional
     public void updateProjectRepositoryName(BigInteger projectId, String repoName) {
         updateAttributeValue(AttributeID.REPOSITORY_NAME.getId(), projectId, repoName);
     }
 
     @Override
+    @Transactional
     public void updateProjectGitLogin(BigInteger projectId, String gitLogin) {
         updateAttributeValue(AttributeID.GIT_LOGIN.getId(), projectId, gitLogin);
     }
 
     @Override
+    @Transactional
     public void updateProjectGitPassword(BigInteger projectId, String gitPassword) {
         updateAttributeValue(AttributeID.GIT_PASSWORD.getId(), projectId, gitPassword);
     }
 
     @Override
+    @Transactional
     public void updateProjectJiraLogin(BigInteger projectId, String jiraLogin) {
         updateAttributeValue(AttributeID.JIRA_LOGIN.getId(), projectId, jiraLogin);
     }
 
     @Override
+    @Transactional
     public void updateProjectJiraPassword(BigInteger projectId, String jiraPassword) {
         updateAttributeValue(AttributeID.JIRA_PASSWORD.getId(), projectId, jiraPassword);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addDevOnProject(BigInteger projectId, BigInteger developerId) {
         createObjectReference(AttributeID.PROJECT_USERS.getId(), projectId, developerId);
         updateAttributeValue(AttributeID.USER_PROJECT.getId(), developerId, projectId.toString());
     }
 
     @Override
+    @Transactional
     public void deactivateUserOnProject(BigInteger developerId) {
         updateAttributeValue(AttributeID.USER_PROJECT.getId(), developerId, "0");
     }
 
     @Override
+    @Transactional
     public void addIssueOnProject(BigInteger projectId, BigInteger issueId) {
         jdbcTemplate.update(UPDATE_PROJECT_ISSUE, new Object[]{projectId.longValue(), issueId.longValue()});
     }
 
     @Override
+    @Transactional
     public Project readProjectById(BigInteger projectID) {
 
         BigInteger pmid = getUserID(projectID, UserRole.PROJECT_MANAGER);
@@ -89,11 +97,13 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
                 .setGitPassword(readAttributeValue(AttributeID.GIT_PASSWORD.getId(), projectID))
                 .setJiraLogin(readAttributeValue(AttributeID.JIRA_LOGIN.getId(), projectID))
                 .setJiraPassword(readAttributeValue(AttributeID.JIRA_PASSWORD.getId(), projectID))
+                .setJiraDomain(readAttributeValue(AttributeID.JIRA_DOMAIN.getId(), projectID))
                 .build();
     }
 
     @Deprecated
     @Override
+    @Transactional
     public Project readProjectByName(String projectName) {
         BigInteger projectID = readObjectIdByName(ObjectType.PROJECT.getId(), projectName);
         BigInteger pmid = getUserID(projectID, UserRole.PROJECT_MANAGER);
