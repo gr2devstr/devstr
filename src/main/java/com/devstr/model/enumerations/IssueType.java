@@ -9,7 +9,8 @@ public enum IssueType {
     TASK(BigInteger.valueOf(45L)),
     NEW_FEATURE(BigInteger.valueOf(46L)),
     DESIGN_BUG(BigInteger.valueOf(47L)),
-    EPIC(BigInteger.valueOf(48L));
+    EPIC(BigInteger.valueOf(48L)),
+    SUB_TASK(BigInteger.valueOf(60L));
 
     private BigInteger typeId;
 

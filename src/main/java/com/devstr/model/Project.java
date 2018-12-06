@@ -30,6 +30,8 @@ public interface Project {
 
     String getJiraPassword();
 
+    String getJiraDomain();
+
     Date getFromDate();
 
     Date getToDate();

@@ -59,7 +59,7 @@ public class StatisticServiceImpl implements StatisticService {
         long result = 0;
         for (BigInteger issueId :project.getIssuesId()) {
             Issue issue = issueDAO.readIssueById(issueId);
-            if (issue.getUserId().equals(userId)) //&& issue.isOverdated()
+            if (issue.getUserId().equals(userId) && issue.isOverdated())
                 result++;
         }
         return result;

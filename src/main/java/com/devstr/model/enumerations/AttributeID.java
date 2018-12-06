@@ -16,6 +16,7 @@ public enum AttributeID {
     GIT_PASSWORD(BigInteger.valueOf(10L)),
     JIRA_LOGIN(BigInteger.valueOf(11L)),
     JIRA_PASSWORD(BigInteger.valueOf(12L)),
+    JIRA_DOMAIN(BigInteger.valueOf(61L)),
     REPOSITORY_NAME(BigInteger.valueOf(13L)),
     REVIEW_TEXT(BigInteger.valueOf(14L)),
     JOB_QUALITY(BigInteger.valueOf(15L)),

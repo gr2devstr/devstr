@@ -21,6 +21,7 @@ public class IssueImpl implements Issue {
     private BigInteger userId;
     private BigInteger reporterId;
     private List<Commit> commits;
+    private boolean isOverdated;
 
     @Override
     public BigInteger getIssueId() {
@@ -92,6 +93,17 @@ public class IssueImpl implements Issue {
         }
         this.commits.addAll(commits);
     }
+
+    @Override
+    public boolean isOverdated() {
+        return isOverdated;
+    }
+
+    @Override
+    public void setOverdate(boolean overdated) {
+        this.isOverdated = overdated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -18,6 +18,7 @@ public class ProjectImpl implements Project {
     private String gitPassword;
     private String jiraLogin;
     private String jiraPassword;
+    private String jiraDomain;
     private Date fromDate;
     private Date toDate;
     private Status status;
@@ -78,6 +79,11 @@ public class ProjectImpl implements Project {
     }
 
     @Override
+    public String getJiraDomain() {
+        return jiraDomain;
+    }
+
+    @Override
     public Date getFromDate() {
         return fromDate;
     }
@@ -120,6 +126,7 @@ public class ProjectImpl implements Project {
         private String gitPassword;
         private String jiraLogin;
         private String jiraPassword;
+        private String jiraDomain;
         private Date fromDate;
         private Date toDate;
         private Status status;
@@ -174,6 +181,11 @@ public class ProjectImpl implements Project {
             return this;
         }
 
+        public Builder setJiraDomain(String jiraDomain) {
+            this.jiraDomain = jiraDomain;
+            return this;
+        }
+
         public Builder setFromDate(Date fromDate) {
             this.fromDate = fromDate;
             return this;
@@ -207,6 +219,7 @@ public class ProjectImpl implements Project {
         this.gitPassword = builder.gitPassword;
         this.jiraLogin = builder.jiraLogin;
         this.jiraPassword = builder.jiraPassword;
+        this.jiraDomain = builder.jiraDomain;
         this.fromDate = builder.fromDate;
         this.toDate = builder.toDate;
         this.status = builder.status;

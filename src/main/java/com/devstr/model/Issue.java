@@ -35,4 +35,8 @@ public interface Issue {
     void setCommit(Commit commit);
 
     void setCommits(List<Commit> commits);
+
+    boolean isOverdated();
+
+    void setOverdate(boolean overdate);
 }
