@@ -10,7 +10,10 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
     @Override
     public GitService getGitService(String repositoryName, String token) {
-        return new GitServiceImpl(repositoryName, token);
+        GitService service = new GitServiceImpl();
+        service.setRepositoryName(repositoryName);
+        service.setToken(token);
+        return service;
     }
 
     @Override
