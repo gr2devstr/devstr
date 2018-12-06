@@ -137,7 +137,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), "holinkonik");
         Collection<BigInteger> reviews = readObjectReferences(AttributeID.REVIEWS.getId(), userId);
 
-        BigInteger reviewId1 = BigInteger.valueOf(87L);
+        BigInteger reviewId1 = BigInteger.valueOf(90L);
 
         List<BigInteger> dbReviews = new ArrayList<>(reviews);
         Collections.sort(dbReviews);

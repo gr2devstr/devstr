@@ -90,7 +90,7 @@ public class ReviewServiceImpl implements ReviewService {
         double result = 0;
         List<UserReview> userReviews = new ArrayList<>();
         if (reviews == null) {
-            LOGGER.warn("No reviews read by id" + projectId);
+            LOGGER.warn("No reviews read by id " + projectId);
             return result;
         }
         for (UserReview review : reviews) {
