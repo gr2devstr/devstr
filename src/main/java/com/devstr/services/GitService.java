@@ -10,6 +10,17 @@ import java.util.List;
 
 public interface GitService {
 
+
+    /**
+     * @param repositoryName
+     */
+    void setRepositoryName(String repositoryName);
+
+    /**
+     * @param token
+     */
+    void setToken(String token);
+
     /**
      * The method creates a ghrepository object
      *
@@ -51,5 +62,15 @@ public interface GitService {
      * @throws IOException
      */
     List<Commit> getAllCommits() throws IOException;
+
+
+    /**
+     * The method returns a list of commit class objects by issue key
+     *
+     * @param issueKey search issue key
+     * @return commit list
+     * @throws IOException
+     */
+    List<Commit> getCommitsByIssueKey(String issueKey) throws IOException;
 
 }

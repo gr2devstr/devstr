@@ -1,6 +1,6 @@
 package com.devstr.services.impl;
 
-import com.devstr.dao.impl.IssueDAOImpl;
+import com.devstr.dao.impl.UserDAOImpl;
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
 import com.devstr.model.enumerations.BuildStatus;
@@ -12,22 +12,27 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.PagedIterable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class GitServiceImpl implements GitService {
 
     private String repositoryName;
     private String token;
 
     @Autowired
-    IssueDAOImpl issueDAO;
+    private UserDAOImpl userDAO;
 
-
-    public GitServiceImpl(String repositoryName, String token) {
+    public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
+    }
+
+    public void setToken(String token) {
         this.token = token;
     }
 
@@ -58,14 +63,21 @@ public class GitServiceImpl implements GitService {
 
     @Override
     public Commit getCommit(GHCommit commit) throws IOException {
-        BuildStatus status = getBuildStatus(commit);
-        return new CommitImpl.CommitBuilder()
-                //.setUserId()//some method in UserDaoImpl  some(commit.getCommitter().getEmail())
-                .setSha(commit.getSHA1())
-                .setDate(commit.getCommitDate())
-                .setCommitClasses(getClassesFromCommit(commit))
-                .setBuildStatus(status)
-                .build();
+        BigInteger userID;
+        BuildStatus status;
+
+        if (commit.getCommitter().getEmail() != null && getBuildStatus(commit) != null) {
+            userID = userDAO.readUserIdByEmail(commit.getCommitter().getEmail());
+            status = getBuildStatus(commit);
+            return new CommitImpl.CommitBuilder()
+                    .setUserId(userID)
+                    .setSha(commit.getSHA1())
+                    .setDate(commit.getCommitDate())
+                    .setCommitClasses(getClassesFromCommit(commit))
+                    .setBuildStatus(status)
+                    .build();
+        }
+        return null;
     }
 
 
@@ -79,8 +91,25 @@ public class GitServiceImpl implements GitService {
         return commits;
     }
 
+    @Override
+    public List<Commit> getCommitsByIssueKey(String issueKey) throws IOException {
+        List<Commit> commits = new ArrayList<>();
+        PagedIterable<GHCommit> ghcommits = getGHRepository().listCommits();
+        for (GHCommit commit : ghcommits) {
+            if (commit.getCommitShortInfo().getMessage().contains(issueKey)) {
+                commits.add(getCommit(commit));
+            }
+        }
+        return commits;
+    }
+
     private BuildStatus getBuildStatus(GHCommit commit) throws IOException {
-        String currentStatus = commit.getLastStatus().getState().toString();
+        String currentStatus;
+
+        if (commit.getLastStatus() != null) {
+            currentStatus = commit.getLastStatus().getState().toString();
+        } else return null;
+
         if (currentStatus.equals(BuildStatus.SUCCESS.toString())) return BuildStatus.SUCCESS;
         if (currentStatus.equals(BuildStatus.FAILURE.toString())) return BuildStatus.FAILURE;
         return BuildStatus.PENDING;
