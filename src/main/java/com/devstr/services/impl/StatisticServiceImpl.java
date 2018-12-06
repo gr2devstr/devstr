@@ -1,5 +1,6 @@
 package com.devstr.services.impl;
 
+import com.devstr.DevstrFactoryManager;
 import com.devstr.dao.IssueDAO;
 import com.devstr.model.Commit;
 import com.devstr.model.Issue;
@@ -13,12 +14,23 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class StatisticServiceImpl implements StatisticService {
-    private IssueDAO issueDAO;
+    private IssueDAO issueDAO = DevstrFactoryManager.getDAOFactory().getIssueDAO();
 
     @Override
-    public double reopenRate(Project project, BigInteger userId) {
+    public double reopenRateToClosedIssues(Project project, BigInteger userId) {
+        long reopenNumber = countByStatus(project.getIssuesId(), userId, IssueStatus.REOPEN);
+        return (double) reopenNumber/countClosedIssues(project, userId);
+    }
+
+    @Override
+    public double reopenRateToProjectReopens(Project project, BigInteger userId) {
         long reopenNumber = countByStatus(project.getIssuesId(), userId, IssueStatus.REOPEN);
         return (double) reopenNumber/countProjectReopens(project);
+    }
+
+    @Override
+    public long countClosedIssues(Project project) {
+        return countByStatus(project.getIssuesId(), IssueStatus.CLOSED);
     }
 
     @Override
@@ -43,8 +55,14 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public long countOverDates(List<Issue> issues) {
-        return 0;
+    public long countOverDates(Project project, BigInteger userId) {
+        long result = 0;
+        for (BigInteger issueId :project.getIssuesId()) {
+            Issue issue = issueDAO.readIssueById(issueId);
+            if (issue.getUserId().equals(userId)) //&& issue.isOverdated()
+                result++;
+        }
+        return result;
     }
 
     @Override
@@ -58,7 +76,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public long countFailBuildsOnProjectOfGroupUsers(Project project, List<BigInteger> users) {
+    public long countFailBuildsOnProjectOfGroupUsers(Project project, Collection<BigInteger> users) {
         long result = 0;
         for (BigInteger userId : users) {
             result += countFailBuildsOnProjectOfUser(project, userId);
@@ -67,8 +85,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public double failedBuildMarkPercentageOnProject(Project project, BigInteger userId) {
-        return 0;
+    public double failedBuildMarkOnProject(Project project, BigInteger userId) {
+        return ((double) countFailBuildsOnProjectOfUser(project, userId))/
+                countFailBuildsOnProjectOfGroupUsers(project, project.getDevelopersId());
     }
 
     private long countByStatus(Collection<BigInteger> issues, BigInteger userId, IssueStatus issueStatus) {
