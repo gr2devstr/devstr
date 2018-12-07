@@ -52,6 +52,8 @@ begin
 end;
 /
 
+alter session set nls_date_format = 'dd/mm/yyyy hh24:mi:ss';
+
 CREATE TABLE LOGGER_CONFIG
 (
 CONFIG_ID NUMBER(1) PRIMARY KEY,
