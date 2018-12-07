@@ -9,11 +9,8 @@ public class ServiceFactoryImpl implements ServiceFactory {
         return new StatisticServiceImpl();
     }
     @Override
-    public GitService getGitService(String repositoryName, String token) {
-        GitService service = new GitServiceImpl();
-        service.setRepositoryName(repositoryName);
-        service.setToken(token);
-        return service;
+    public GitService getGitService() {
+        return new GitServiceImpl();
     }
 
     @Override
@@ -27,11 +24,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public JiraService getJiraService(String login, String password, String domain) {
-        JiraService service = new JiraServiceImpl();
-        service.setLogin(login);
-        service.setPassword(password);
-        service.setDomain(domain);
-        return service;
+    public JiraService getJiraService() {
+        return new JiraServiceImpl();
     }
 }
