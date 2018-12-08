@@ -3,7 +3,6 @@ package com.devstr.services;
 import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
 import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GHRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,20 +21,10 @@ public interface GitService {
     void setToken(String token);
 
     /**
-     * The method creates a ghrepository object
+     * The method creates a GHCommits object
      *
-     * @return ghrepository object
-     * @throws IOException
      */
-    GHRepository getGHRepository() throws IOException;
-
-    /**
-     * The method returns a list of ghcommits from the repository
-     *
-     * @return list github commits
-     * @throws IOException
-     */
-    List<GHCommit> getAllGHCommits() throws IOException;
+    void getAllGHCommits() throws IOException;
 
     /**
      * The method returns a list of classes from commit
