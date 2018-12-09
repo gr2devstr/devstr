@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,8 +44,8 @@ public class IssueDAOImplTest {
                 .setIssueType(IssueType.BUG)
                 .setIssuePriority(IssuePriority.HIGH)
                 .setIssueStatus(IssueStatus.OPEN)
-                .setStartDate(new Date())
-                .setDueDate(new Date())
+                .setStartDate(new java.sql.Date(2))
+                .setDueDate(new java.sql.Date(3))
                 .setProjectId(BigInteger.valueOf(89))
                 .setReporterId(BigInteger.valueOf(84))
                 .setUserId(BigInteger.valueOf(85))
@@ -72,7 +71,7 @@ public class IssueDAOImplTest {
         List<Issue> issues = issueDAO.readIssuesByProject(issue.getProjectId());
         BigInteger id = issues.get(issues.size()-1).getIssueId();
         issueDAO.updateIssueType(id,IssueType.EPIC);
-        issueDAO.updateIssueStatus(id,IssueStatus.READY_FOR_TESTING);
+        //issueDAO.updateIssueStatus(id,IssueStatus.READY_FOR_TESTING.getId());
         issueDAO.updateIssuePriority(id,IssuePriority.BLOCKER);
         issueDAO.updateIssueUser(id,BigInteger.valueOf(86));
         updatedIssue = issueDAO.readIssueById(id);
