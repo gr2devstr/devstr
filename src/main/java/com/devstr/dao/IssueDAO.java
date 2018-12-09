@@ -4,10 +4,10 @@ import com.devstr.model.Commit;
 import com.devstr.model.CommitClass;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.IssuePriority;
-import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IssueDAO {
@@ -17,6 +17,10 @@ public interface IssueDAO {
      * @param issue issue object
      */
     void createIssue(Issue issue);
+
+    void createIssues(ArrayList<Issue> issues);
+
+    String getLastIssueKey();
 
     /**
      * Get project's issues
@@ -55,10 +59,10 @@ public interface IssueDAO {
 
     /**
      * Update issue status
-     * @param id issue id
-     * @param status new issue status
+     *
+     * @param issues issues list
      */
-    void updateIssueStatus(BigInteger id, IssueStatus status);
+    void updateIssuesStatus(List<Issue> issues);
 
     /**
      * Update issue priority
@@ -101,11 +105,14 @@ public interface IssueDAO {
      */
     String getShaLastCommitOnProject();
 
+    String GET_LAST_ISSUE_KEY = "select i.ISSUE_KEY from ISSUES i where ROWNUM = 1 ORDER BY i.ISSUE_ID desc";
+
+
     String GET_COMMIT_SHA = "SELECT c.SHA FROM COMMITS c where c.COMMIT_ID = (select max(c.COMMIT_ID) from COMMITS c)";
 
     String CREATE_ISSUE = "INSERT " +
-            "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID)" +
-                "VALUES(?,?,?,?,?,?,?,?,?)";
+            "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID,IS_OVERDATED)" +
+            "VALUES(?,?,?,?,?,?,?,?,?,?)";
 
     String CREATE_COMMIT = "INSERT INTO COMMITS(AUTHOR_ID,SHA,PUBLICATION_DATE,STATUS_OF_BUILD,ISSUE_ID)" +
             "VALUES(?,?,?,?,?)";
@@ -143,7 +150,7 @@ public interface IssueDAO {
     String GET_COMMITS_BY_ISSUE_ID = "SELECT * FROM COMMITS WHERE ISSUE_ID = ?";
     String UPDATE_ISSUE_TYPE = "UPDATE ISSUES SET TYPE_ID = ? WHERE ISSUE_ID = ?";
     String UPDATE_ISSUE_PRIORITY = "UPDATE ISSUES SET PRIORITY_ID = ? WHERE ISSUE_ID = ?";
-    String UPDATE_ISSUE_STATUS = "UPDATE ISSUES SET STATUS_ID = ? WHERE ISSUE_ID = ?";
+    String UPDATE_ISSUE_STATUS = "UPDATE ISSUES SET STATUS_ID = ? WHERE ISSUE_KEY = ?";
     String UPDATE_ISSUE_USER = "UPDATE ISSUES SET USER_ID = ? WHERE ISSUE_ID = ?";
     String DELETE_ISSUE = "DELETE FROM ISSUES WHERE ISSUE_ID = ?";
 

@@ -22,6 +22,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -33,78 +35,121 @@ public class IssueDAOImpl implements IssueDAO {
     @Override
     @Transactional
     public void createIssue(Issue issue) {
-           jdbcTemplate.update(CREATE_ISSUE, issue.getIssueKey(), issue.getProjectId().longValue(),
+        jdbcTemplate.update(CREATE_ISSUE, issue.getIssueKey(), issue.getProjectId().longValue(),
                 issue.getType().getId().longValue(), issue.getStatus().getId().longValue(), issue.getPriority().getId().longValue(),
                 issue.getStartDate(), issue.getDueDate(),
-                issue.getUserId().longValue(), issue.getReporterId().longValue());
+                issue.getUserId().longValue(), issue.getReporterId().longValue(), overdateNum(issue.isOverdated()));
+    }
+
+    @Override
+    public void createIssues(ArrayList<Issue> issues) {
+        Collections.reverse(issues);
+        jdbcTemplate.batchUpdate(CREATE_ISSUE, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Issue issue = issues.get(i);
+                ps.setString(1, issue.getIssueKey());
+                ps.setLong(2, issue.getProjectId().longValue());
+                ps.setLong(3, issue.getType().getId().longValue());
+                ps.setLong(4, issue.getStatus().getId().longValue());
+                ps.setLong(5, issue.getPriority().getId().longValue());
+                ps.setDate(6, issue.getStartDate());
+                ps.setDate(7, issue.getDueDate());
+                ps.setLong(8, issue.getUserId().longValue());
+                ps.setLong(9, issue.getReporterId().longValue());
+                ps.setLong(10, overdateNum(issue.isOverdated()));
+            }
+
+            @Override
+            public int getBatchSize() {
+                return issues.size();
+            }
+        });
+    }
+
+    @Override
+    public String getLastIssueKey() {
+        return jdbcTemplate.queryForObject(GET_LAST_ISSUE_KEY, new Object[]{}, String.class);
     }
 
     @Override
     @Transactional
     public List<Issue> readIssuesByProject(BigInteger projectId) {
-        return jdbcTemplate.query(READ_ISSUES_BY_PROJECT,new Object[]{projectId.longValue()}, new IssueMapper());
+        return jdbcTemplate.query(READ_ISSUES_BY_PROJECT, new Object[]{projectId.longValue()}, new IssueMapper());
     }
 
     @Override
     @Transactional
     public List<Issue> readIssuesByUser(BigInteger userId) {
-        return jdbcTemplate.query(READ_ISSUES_BY_USER,new Object[]{userId.longValue()},new IssueMapper());
+        return jdbcTemplate.query(READ_ISSUES_BY_USER, new Object[]{userId.longValue()}, new IssueMapper());
     }
 
     @Override
     @Transactional
     public Issue readIssueById(BigInteger id) {
-        return jdbcTemplate.queryForObject(READ_ISSUE_BY_ID,new IssueMapper(),id.longValue());
+        return jdbcTemplate.queryForObject(READ_ISSUE_BY_ID, new IssueMapper(), id.longValue());
     }
 
     @Override
     @Transactional
     public void updateIssueType(BigInteger id, IssueType type) {
-        jdbcTemplate.update(UPDATE_ISSUE_TYPE,type.getId().longValue(),id.longValue());
+        jdbcTemplate.update(UPDATE_ISSUE_TYPE, type.getId().longValue(), id.longValue());
     }
 
     @Override
     @Transactional
-    public void updateIssueStatus(BigInteger id, IssueStatus status) {
-        jdbcTemplate.update(UPDATE_ISSUE_STATUS,status.getId().longValue(),id.longValue());
+    public void updateIssuesStatus(List<Issue> issues) {
+        jdbcTemplate.batchUpdate(UPDATE_ISSUE_STATUS, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Issue issue = issues.get(i);
+                ps.setLong(1, issue.getStatus().getId().longValue());
+                ps.setString(2, issue.getIssueKey());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return issues.size();
+            }
+        });
     }
 
     @Override
     @Transactional
     public void updateIssuePriority(BigInteger id, IssuePriority priority) {
-        jdbcTemplate.update(UPDATE_ISSUE_PRIORITY,priority.getId().longValue(),id.longValue());
+        jdbcTemplate.update(UPDATE_ISSUE_PRIORITY, priority.getId().longValue(), id.longValue());
     }
 
     @Override
     @Transactional
     public void updateIssueUser(BigInteger id, BigInteger userId) {
-        jdbcTemplate.update(UPDATE_ISSUE_USER,userId.longValue(),id.longValue());
+        jdbcTemplate.update(UPDATE_ISSUE_USER, userId.longValue(), id.longValue());
     }
 
     @Override
     @Transactional
     public void deleteIssueById(BigInteger id) {
-        jdbcTemplate.update(DELETE_ISSUE,id.longValue());
+        jdbcTemplate.update(DELETE_ISSUE, id.longValue());
     }
 
     @Override
     @Transactional
-    public List<Commit> readCommitsByIssue(BigInteger issueId){
-        return jdbcTemplate.query(GET_COMMITS_BY_ISSUE_ID,new Object[]{issueId.longValue()},new CommitMapper());
+    public List<Commit> readCommitsByIssue(BigInteger issueId) {
+        return jdbcTemplate.query(GET_COMMITS_BY_ISSUE_ID, new Object[]{issueId.longValue()}, new CommitMapper());
     }
 
     @Override
     @Transactional
-    public void createCommits(List<Commit> commits, BigInteger issueId){
+    public void createCommits(List<Commit> commits, BigInteger issueId) {
         jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 Commit commit = commits.get(i);
-                ps.setLong(1,commit.getUserId().longValue());
-                ps.setString(2,commit.getSha());
-                ps.setDate(3,new Date(commit.getDate().getTime()));
-                ps.setLong(4,commit.getBuildStatus().getStatus().longValue());
-                ps.setLong(5,issueId.longValue());
+                ps.setLong(1, commit.getUserId().longValue());
+                ps.setString(2, commit.getSha());
+                ps.setDate(3, new Date(commit.getDate().getTime()));
+                ps.setLong(4, commit.getBuildStatus().getStatus().longValue());
+                ps.setLong(5, issueId.longValue());
             }
 
             @Override
@@ -116,17 +161,17 @@ public class IssueDAOImpl implements IssueDAO {
 
     @Override
     @Transactional
-    public void createCommitClasses(List<CommitClass> commitClasses,BigInteger commitId){
+    public void createCommitClasses(List<CommitClass> commitClasses, BigInteger commitId) {
         jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
 
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 CommitClass commitClass = commitClasses.get(i);
-                ps.setString(1,commitClass.getClassName());
-                ps.setInt(2,commitClass.getNumberOfLinesAdded());
-                ps.setInt(3,commitClass.getNumberOfLinesChanged());
-                ps.setInt(4,commitClass.getNumberOfLinesDeleted());
-                ps.setLong(5,commitId.longValue());
+                ps.setString(1, commitClass.getClassName());
+                ps.setInt(2, commitClass.getNumberOfLinesAdded());
+                ps.setInt(3, commitClass.getNumberOfLinesChanged());
+                ps.setInt(4, commitClass.getNumberOfLinesDeleted());
+                ps.setLong(5, commitId.longValue());
             }
 
             @Override
@@ -141,7 +186,12 @@ public class IssueDAOImpl implements IssueDAO {
         return jdbcTemplate.queryForObject(GET_COMMIT_SHA, String.class);
     }
 
-    class IssueMapper implements RowMapper<Issue>{
+    private long overdateNum(boolean over) {
+        if (over) return 1L;
+        else return 0;
+    }
+
+    class IssueMapper implements RowMapper<Issue> {
 
         @Override
         public Issue mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -160,7 +210,7 @@ public class IssueDAOImpl implements IssueDAO {
         }
     }
 
-    class CommitMapper implements RowMapper<Commit>{
+    class CommitMapper implements RowMapper<Commit> {
 
         @Override
         public Commit mapRow(ResultSet resultSet, int i) throws SQLException {

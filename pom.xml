@@ -40,10 +40,10 @@
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-security</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -52,10 +52,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.h2database</groupId>-->
+        <!--<artifactId>h2</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
@@ -69,12 +69,12 @@
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-rest-java-client-api</artifactId>
-            <version>3.0.0</version>
+            <version>5.0.4</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-rest-java-client-core</artifactId>
-            <version>3.0.0</version>
+            <version>5.0.4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.atlassian.jira/jira-rest-plugin -->
         <dependency>
@@ -84,11 +84,10 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.rcarz/jira-client -->
         <dependency>
-            <groupId>net.rcarz</groupId>
-            <artifactId>jira-client</artifactId>
-            <version>0.5</version>
+            <groupId>com.atlassian.fugue</groupId>
+            <artifactId>fugue</artifactId>
+            <version>2.6.1</version>
         </dependency>
 
 
@@ -128,6 +127,13 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.16</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>github-api</artifactId>
