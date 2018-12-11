@@ -3,58 +3,49 @@ package com.devstr.controllers;
 import com.devstr.dao.UserDAO;
 import com.devstr.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/admin/user")
 public class AdminController {
 
     @Autowired
     UserDAO userDAO;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
-    public User createUser(@RequestBody User user){
-        if(user!=null){
+    public ResponseEntity<User> createUser(@RequestBody User user){
+        try{
             userDAO.createUser(user.getLogin(),user.getFirstName(),user.getLastName(),user.getEmail(),user.getPassword(),user.getRole());
-            return userDAO.readBasicUserById(userDAO.readUserIdByLogin(user.getLogin()));
+            User responseUser = userDAO.readFullUserByLogin(user.getLogin());
+            return new ResponseEntity<>(responseUser, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
 
-    @GetMapping("/{login}")
-    public User getUserByLogin(@PathVariable String login){
-        return userDAO.readBasicUserById(userDAO.readUserIdByLogin(login));
-    }
-
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable BigInteger id){
-        if (id != null && id.longValue() > 0L) {
-            User user = userDAO.readBasicUserById(id);
-            if (user!=null) return user;
-        }
-        return null;
-    }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/update")
-    public User updateUser(@RequestBody User user){
+    public ResponseEntity<User> updateUser(@RequestBody User user){
 
-        return user;
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/{id}/inactivate")
-    public User inactivateUser(@PathVariable BigInteger id){
-        userDAO.inactivateUser(id);
-        return userDAO.readFullUserById(id);
+    public ResponseEntity<User> inactivateUser(@PathVariable BigInteger id){
+        try {
+            userDAO.inactivateUser(id);
+            User user = userDAO.readFullUserById(id);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (NullPointerException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("users")
-    public List<User> getAll(){
-        List<User> result = new ArrayList<>();
-
-        return result;
-    }
 }
