@@ -6,6 +6,7 @@ import com.devstr.model.enumerations.Status;
 import com.devstr.model.enumerations.UserRole;
 import com.devstr.model.impl.UserImpl;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @SpringBootTest
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)

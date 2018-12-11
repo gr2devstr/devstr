@@ -17,6 +17,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+@Ignore
 @SpringBootTest
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
