@@ -17,11 +17,10 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@Ignore
 @SpringBootTest
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class AbstractDaoTest extends AbstractDAOImpl{
+public class AbstractDaoTest extends AbstractDAOImpl {
 
     @Before
     public void setUp() throws Exception {
@@ -29,7 +28,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     }
 
     @Test
-    public void createObjectTest(){
+    public void createObjectTest() {
         String tUser = "user_test";
         String tProject = "project_test";
 
@@ -47,7 +46,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     }
 
     @Test
-    public void readObjectNameByIdTest(){
+    public void readObjectNameByIdTest() {
         String loginHn = "holinkonik";
         String loginTr = "robert_t";
         String loginRa = "alex_r";
@@ -65,7 +64,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     }
 
     @Test
-    public void deleteObjectByIdTest(){
+    public void deleteObjectByIdTest() {
         String tUser = "user_test";
 
         BigInteger userId = createObject(ObjectType.USER.getId(), tUser);
@@ -77,7 +76,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     }
 
     @Test
-    public void createAndReadAttributesTest(){
+    public void createAndReadAttributesTest() {
         String tProject = "project_test";
         String gitLogin = "gr2devstr";
         String gitPassword = "devstr623824!!";
@@ -108,7 +107,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
     }
 
     @Test
-    public void updateAttributesTest(){
+    public void updateAttributesTest() {
         String tProject = "project_gg";
         String gitLogin = "gr2devstr";
         String gitPassword = "devstr623824!!";
@@ -137,7 +136,7 @@ public class AbstractDaoTest extends AbstractDAOImpl{
         BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), "holinkonik");
         Collection<BigInteger> reviews = readObjectReferences(AttributeID.REVIEWS.getId(), userId);
 
-        BigInteger reviewId1 = BigInteger.valueOf(90L);
+        BigInteger reviewId1 = BigInteger.valueOf(71L);
 
         List<BigInteger> dbReviews = new ArrayList<>(reviews);
         Collections.sort(dbReviews);
