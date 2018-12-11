@@ -4,6 +4,7 @@ import com.devstr.model.User;
 import com.devstr.model.enumerations.UserRole;
 
 import java.math.BigInteger;
+import java.util.Collection;
 
 public interface UserDAO {
 
@@ -34,6 +35,29 @@ public interface UserDAO {
      * @return basic User with all fields.
      */
     User readFullUserById(BigInteger id);
+
+    /**
+     * Reads basic user by login from the DB
+     *
+     * @param login user's login in the DB (objects.name)
+     * @return basic User with: id, login, password, email, first name, last name, role & status fields.
+     */
+    User readBasicUserByLogin(String login);
+
+    /**
+     * Reads full user by login from the DB
+     *
+     * @param login user's login in the DB (objects.name)
+     * @return basic User with all fields.
+     */
+    User readFullUserByLogin(String login);
+
+    /**
+     * Reads all users from the DB
+     *
+     * @return basic Users with all fields.
+     */
+    Collection<User> readAllUsers();
 
     /**
      * Reads user ID by login from the DB
@@ -107,5 +131,7 @@ public interface UserDAO {
     void inactivateUser(BigInteger id);
 
     String READ_ID_BY_EMAIL = "SELECT a.object_id FROM attributes a WHERE a.attrn_id = 3 AND a.value = ?";
+
+    String READ_ALL_ID = "SELECT obj.object_id FROM objects obj WHERE obj.object_type_id = 31";
 
 }

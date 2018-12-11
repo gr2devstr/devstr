@@ -12,14 +12,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Transactional
 @Repository
 public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -61,8 +64,30 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
                 Status.valueOf(readAttributeListValue(AttributeID.STATUS.getId(), id)))
                 .setUserId(id)
                 .setHireDate(readAttributeDateValue(AttributeID.CREATION_DATE.getId(), id))
-                .setProjectId(BigInteger.valueOf(Long.parseLong(readAttributeValue(AttributeID.USER_PROJECT.getId(), id))))
+                .setProjectId(BigInteger.valueOf(readObjectReferences(AttributeID.USER_PROJECT.getId(), id).iterator().next().longValue()))
                 .build();
+    }
+
+    @Override
+    public User readBasicUserByLogin(String login) {
+        BigInteger id = readUserIdByLogin(login);
+        return readBasicUserById(id);
+    }
+
+    @Override
+    public User readFullUserByLogin(String login) {
+        BigInteger id = readUserIdByLogin(login);
+        return readFullUserById(id);
+    }
+
+    @Override
+    public Collection<User> readAllUsers() {
+        List<BigInteger> IDs = jdbcTemplate.queryForList(READ_ALL_ID, BigInteger.class);
+        Collection<User> users = new ArrayList<>();
+        for (BigInteger id : IDs) {
+            users.add(readBasicUserById(id));
+        }
+        return users;
     }
 
     @Override
