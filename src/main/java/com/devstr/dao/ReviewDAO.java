@@ -59,5 +59,5 @@ public interface ReviewDAO {
      */
     List<UserReview> readUserReviewsByProjectId(BigInteger id);
 
-    String SELECT_OBJECT_TYPE_BY_OBJECT_ID = " SELECT t.NAME FROM OBJTYPE t, OBJECTS o WHERE o.OBJECT_ID = ? AND t.OBJEC_TYPE_ID = o.OBJECT_TYPE_ID";
+    String SELECT_OBJECT_TYPE_BY_OBJECT_ID = " SELECT t.NAME FROM OBJTYPE t, OBJECTS o WHERE o.OBJECT_ID = ? AND t.OBJECT_TYPE_ID = o.OBJECT_TYPE_ID";
 }
