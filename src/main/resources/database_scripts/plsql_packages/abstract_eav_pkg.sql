@@ -1,6 +1,6 @@
 CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   err_code NUMBER;
-  err_message VARCHAR2(400);
+  err_message VARCHAR2(600 CHAR);
   FUNCTION insert_object(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
   PROCEDURE delete_object(a_object_id NUMBER);
   PROCEDURE insert_objreference(a_attrn_id NUMBER, a_object_id NUMBER, a_reference NUMBER);
