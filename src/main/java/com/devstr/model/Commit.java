@@ -1,12 +1,12 @@
 package com.devstr.model;
 
 import com.devstr.model.enumerations.BuildStatus;
-import com.devstr.model.impl.CommitClassImpl;
+import org.kohsuke.github.GHCommit;
 
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 public interface Commit {
     BigInteger getCommitId();
@@ -17,13 +17,9 @@ public interface Commit {
 
     Date getDate();
 
-    Collection<CommitClass> getCommitClasses();
+    Collection<GHCommit.File> getCommitClasses();
 
     BuildStatus getBuildStatus();
 
-    String getBuildSha();
-
-    void setCommitClass(CommitClassImpl commitClass);
-
-   void setCommitClasses(Set<CommitClassImpl> commitClasses);
+    void setCommitClasses(List<GHCommit.File> commitClasses);
 }

@@ -1,10 +1,11 @@
 package com.devstr.services;
 
 import com.devstr.model.Commit;
-import com.devstr.model.CommitClass;
 import org.kohsuke.github.GHCommit;
+import org.kohsuke.github.GHRepository;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 public interface GitService {
@@ -20,20 +21,13 @@ public interface GitService {
      */
     void setToken(String token);
 
+    GHRepository getGHRepository() throws IOException;
+
     /**
      * The method creates a GHCommits object
      *
      */
-    void getAllGHCommits() throws IOException;
-
-    /**
-     * The method returns a list of classes from commit
-     *
-     * @param commit ghcommit
-     * @return class list in ghcommit
-     * @throws IOException
-     */
-    List<CommitClass> getClassesFromCommit(GHCommit commit) throws IOException;
+    Collection<GHCommit> getAllGHCommits() throws IOException;
 
     /**
      * The method creates an instance of the Commit class
@@ -61,5 +55,9 @@ public interface GitService {
      * @throws IOException
      */
     List<Commit> getCommitsByIssueKey(String issueKey) throws IOException;
+
+    void writeToDataBase(Collection<Commit> commits, String key);
+
+
 
 }

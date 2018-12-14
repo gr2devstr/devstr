@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 public interface JiraService {
     static final HashSet<String> SEARCH_REST_FIELDS = new HashSet<String>(
@@ -25,7 +24,7 @@ public interface JiraService {
 
     Issue getIssueByKey(BigInteger projectId, String issueKey, JiraRestClient restClient) throws URISyntaxException;
 
-    List<Issue> getIssuesByProjectId(BigInteger projectId) throws URISyntaxException, IOException;
+    ArrayList<Issue> getIssuesByProjectId(BigInteger projectId) throws URISyntaxException, IOException;
 
     void updateIssues(BigInteger projectId) throws IOException, URISyntaxException;
 

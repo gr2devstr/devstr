@@ -13,7 +13,8 @@ import com.devstr.services.StatisticUpdateService;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class StatisticUpdateServiceImpl implements StatisticUpdateService {
 
@@ -38,11 +39,15 @@ public class StatisticUpdateServiceImpl implements StatisticUpdateService {
         jiraService.setLogin(project.getJiraLogin());
         jiraService.setPassword(project.getJiraPassword());
         try {
-            List<Issue> issues = jiraService.getIssuesByProjectId(projectId);
-            for (Issue issue : issues) {
-                if (issue.getStatus().equals(IssueStatus.REOPEN)||issue.getStatus().equals(IssueStatus.CLOSED))
-                    issueDAO.createIssue(issue);
-            }
+            ArrayList<Issue> issues = jiraService.getIssuesByProjectId(projectId);
+//            for (Issue issue : issues) {
+//                if (issue.getStatus().equals(IssueStatus.REOPEN)||issue.getStatus().equals(IssueStatus.CLOSED))
+//                    issueDAO.createIssue(issue);
+//            }
+            issues.stream().filter(issue -> issue.getStatus().equals(IssueStatus.REOPEN) || issue.getStatus().equals(IssueStatus.CLOSED)).collect(Collectors.toList());
+            issueDAO.createIssues(issues);
+
+
         } catch (IOException | URISyntaxException e) {
             LOGGER.error("Error while getting statistics from jira: ", e);
         }

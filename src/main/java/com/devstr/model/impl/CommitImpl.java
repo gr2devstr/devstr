@@ -1,14 +1,14 @@
 package com.devstr.model.impl;
 
 import com.devstr.model.Commit;
-import com.devstr.model.CommitClass;
 import com.devstr.model.enumerations.BuildStatus;
+import org.kohsuke.github.GHCommit;
 
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class CommitImpl  implements Commit {
 
@@ -16,9 +16,8 @@ public class CommitImpl  implements Commit {
     private BigInteger userId;
     private String sha;
     private Date date;
-    private Collection<CommitClass> commitClasses;
+    private Collection<GHCommit.File> commitClasses;
     private BuildStatus buildStatus;
-    private String buildSha;
 
 
     @Override
@@ -42,7 +41,7 @@ public class CommitImpl  implements Commit {
     }
 
     @Override
-    public Collection<CommitClass> getCommitClasses() {
+    public Collection<GHCommit.File> getCommitClasses() {
         return commitClasses;
     }
 
@@ -52,20 +51,7 @@ public class CommitImpl  implements Commit {
     }
 
     @Override
-    public String getBuildSha() {
-        return buildSha;
-    }
-
-    @Override
-    public void setCommitClass(CommitClassImpl commitClass) {
-        if (this.commitClasses == null) {
-            this.commitClasses = new HashSet<>();
-        }
-        this.commitClasses.add(commitClass);
-    }
-
-    @Override
-    public void setCommitClasses(Set<CommitClassImpl> commitClasses) {
+    public void setCommitClasses(List<GHCommit.File> commitClasses) {
         if (this.commitClasses == null) {
             this.commitClasses = new HashSet<>();
         }
@@ -93,9 +79,8 @@ public class CommitImpl  implements Commit {
         private BigInteger userId;
         private String sha;
         private Date date;
-        private Collection<CommitClass> commitClasses;
+        private Collection<GHCommit.File> commitClasses;
         private BuildStatus buildStatus;
-        private String buildSha;
 
         public CommitBuilder() {
         }
@@ -120,15 +105,7 @@ public class CommitImpl  implements Commit {
             return this;
         }
 
-        public CommitBuilder setCommitClass(CommitClass commitClass) {
-            if (this.commitClasses == null) {
-                this.commitClasses = new HashSet<>();
-            }
-            this.commitClasses.add(commitClass);
-            return this;
-        }
-
-        public CommitBuilder setCommitClasses(Collection<CommitClass> commitClasses) {
+        public CommitBuilder setCommitClasses(Collection<GHCommit.File> commitClasses) {
             if (this.commitClasses == null) {
                 this.commitClasses = new HashSet<>();
             }
@@ -141,10 +118,6 @@ public class CommitImpl  implements Commit {
             return this;
         }
 
-        public CommitBuilder setBuildSha(String buildSha) {
-            this.buildSha = buildSha;
-            return this;
-        }
 
         public Commit build() {
             return new CommitImpl(this);
@@ -158,7 +131,6 @@ public class CommitImpl  implements Commit {
         this.sha = builder.sha;
         this.date = builder.date;
         this.buildStatus = builder.buildStatus;
-        this.buildSha = builder.buildSha;
         this.commitClasses = builder.commitClasses;
     }
 

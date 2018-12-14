@@ -2,7 +2,6 @@ package com.devstr.dao.impl;
 
 import com.devstr.dao.IssueDAO;
 import com.devstr.model.Commit;
-import com.devstr.model.CommitClass;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.BuildStatus;
 import com.devstr.model.enumerations.IssuePriority;
@@ -10,6 +9,7 @@ import com.devstr.model.enumerations.IssueStatus;
 import com.devstr.model.enumerations.IssueType;
 import com.devstr.model.impl.CommitImpl;
 import com.devstr.model.impl.IssueImpl;
+import org.kohsuke.github.GHCommit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,6 +39,7 @@ public class IssueDAOImpl implements IssueDAO {
                 issue.getType().getId().longValue(), issue.getStatus().getId().longValue(), issue.getPriority().getId().longValue(),
                 issue.getStartDate(), issue.getDueDate(),
                 issue.getUserId().longValue(), issue.getReporterId().longValue(), overdateNum(issue.isOverdated()));
+
     }
 
     @Override
@@ -89,6 +90,12 @@ public class IssueDAOImpl implements IssueDAO {
     public Issue readIssueById(BigInteger id) {
         return jdbcTemplate.queryForObject(READ_ISSUE_BY_ID, new IssueMapper(), id.longValue());
     }
+
+    @Override
+    public BigInteger readIdIssueByKey(String key) {
+        return jdbcTemplate.queryForObject(READ_ISSUE_ID_BY_KEY, new Object[]{key}, BigInteger.class);
+    }
+
 
     @Override
     @Transactional
@@ -142,14 +149,16 @@ public class IssueDAOImpl implements IssueDAO {
     @Transactional
     public void createCommits(List<Commit> commits, BigInteger issueId) {
         jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
+            Commit commit;
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Commit commit = commits.get(i);
+                commit = commits.get(i);
                 ps.setLong(1, commit.getUserId().longValue());
                 ps.setString(2, commit.getSha());
                 ps.setDate(3, new Date(commit.getDate().getTime()));
                 ps.setLong(4, commit.getBuildStatus().getStatus().longValue());
                 ps.setLong(5, issueId.longValue());
+                //createCommitClasses((List<GHCommit.File>) commit.getCommitClasses(),commit.getCommitId());
             }
 
             @Override
@@ -157,20 +166,21 @@ public class IssueDAOImpl implements IssueDAO {
                 return commits.size();
             }
         });
+
     }
 
     @Override
     @Transactional
-    public void createCommitClasses(List<CommitClass> commitClasses, BigInteger commitId) {
+    public void createCommitClasses(List<GHCommit.File> commitClasses, BigInteger commitId) {
         jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
 
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                CommitClass commitClass = commitClasses.get(i);
-                ps.setString(1, commitClass.getClassName());
-                ps.setInt(2, commitClass.getNumberOfLinesAdded());
-                ps.setInt(3, commitClass.getNumberOfLinesChanged());
-                ps.setInt(4, commitClass.getNumberOfLinesDeleted());
+                GHCommit.File commitClass = commitClasses.get(i);
+                ps.setString(1, commitClass.getFileName());
+                ps.setInt(2, commitClass.getLinesAdded());
+                ps.setInt(3, commitClass.getLinesChanged());
+                ps.setInt(4, commitClass.getLinesDeleted());
                 ps.setLong(5, commitId.longValue());
             }
 
@@ -182,8 +192,14 @@ public class IssueDAOImpl implements IssueDAO {
     }
 
     @Override
-    public String getShaLastCommitOnProject() {
-        return jdbcTemplate.queryForObject(GET_COMMIT_SHA, String.class);
+    public Date getDateLastCommitOnProject() {
+        if (!commitsIsEmpty().equals(BigInteger.valueOf(0L)))
+            return jdbcTemplate.queryForObject(GET_COMMIT_DATE, Date.class);
+        else return null;
+    }
+
+    private BigInteger commitsIsEmpty() {
+        return jdbcTemplate.queryForObject(GET_COUNT, BigInteger.class);
     }
 
     private long overdateNum(boolean over) {

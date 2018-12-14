@@ -1,12 +1,13 @@
 package com.devstr.dao;
 
 import com.devstr.model.Commit;
-import com.devstr.model.CommitClass;
 import com.devstr.model.Issue;
 import com.devstr.model.enumerations.IssuePriority;
 import com.devstr.model.enumerations.IssueType;
+import org.kohsuke.github.GHCommit;
 
 import java.math.BigInteger;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,8 @@ public interface IssueDAO {
      * @return issue by id
      */
     Issue readIssueById(BigInteger id);
+
+    BigInteger readIdIssueByKey(String key);
 
     /**
      *  Get commits by issue id
@@ -95,7 +98,7 @@ public interface IssueDAO {
      * Write commitClass to db
      * @param commitClasses
      */
-    void createCommitClasses(List<CommitClass> commitClasses, BigInteger commitId);
+    void createCommitClasses(List<GHCommit.File> commitClasses, BigInteger commitId);
 
 
     /**
@@ -103,12 +106,13 @@ public interface IssueDAO {
      *
      * @return sha
      */
-    String getShaLastCommitOnProject();
+    Date getDateLastCommitOnProject();
 
     String GET_LAST_ISSUE_KEY = "select i.ISSUE_KEY from ISSUES i where ROWNUM = 1 ORDER BY i.ISSUE_ID desc";
 
+    String GET_COUNT = "SELECT COUNT(*) FROM COMMITS WHERE ROWNUM = 1";
 
-    String GET_COMMIT_SHA = "SELECT c.SHA FROM COMMITS c where c.COMMIT_ID = (select max(c.COMMIT_ID) from COMMITS c)";
+    String GET_COMMIT_DATE = "SELECT c.SHA FROM COMMITS c where c.COMMIT_ID = (select max(c.COMMIT_ID) from COMMITS c)";
 
     String CREATE_ISSUE = "INSERT " +
             "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID,IS_OVERDATED)" +
@@ -146,6 +150,9 @@ public interface IssueDAO {
             "AND type.JIRATYPE_ID = issue.TYPE_ID " +
             "AND status.JIRASTATUS_ID = issue.STATUS_ID " +
             "AND priority.JIRAPRIORITY_ID = issue.PRIORITY_ID";
+
+    String READ_ISSUE_ID_BY_KEY = "SELECT i.ISSUE_ID FROM ISSUES i where i.ISSUE_KEY = ?";
+
 
     String GET_COMMITS_BY_ISSUE_ID = "SELECT * FROM COMMITS WHERE ISSUE_ID = ?";
     String UPDATE_ISSUE_TYPE = "UPDATE ISSUES SET TYPE_ID = ? WHERE ISSUE_ID = ?";

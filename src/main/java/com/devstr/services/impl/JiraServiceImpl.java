@@ -85,15 +85,10 @@ public class JiraServiceImpl implements JiraService {
             if (closeTime.isAfter(issue.getDueDate())) overDate = true;
             if (assigneeName != null) {
                 String email = restClient.getUserClient().getUser(assigneeName).claim().getEmailAddress();
-                LOGGER.info("getAssignee " + email + " " + issue.getKey());
-                LOGGER.info("getReporter " + issue.getReporter().getEmailAddress());
                 assigneeId = userDAO.readUserIdByEmail(email);
-                LOGGER.info("Read email");
             } else assigneeId = userDAO.readUserIdByEmail(issue.getAssignee().getEmailAddress());
         } else {
             String email = issue.getAssignee().getEmailAddress();
-            LOGGER.info("getAssignee " + email + " " + issue.getKey());
-            LOGGER.info("getReporter " + issue.getReporter().getEmailAddress());
             assigneeId = userDAO.readUserIdByEmail(email);
         }
 
@@ -113,7 +108,7 @@ public class JiraServiceImpl implements JiraService {
 
 
     @Override
-    public List<Issue> getIssuesByProjectId(BigInteger projectId) throws URISyntaxException, IOException {
+    public ArrayList<Issue> getIssuesByProjectId(BigInteger projectId) throws URISyntaxException, IOException {
         JiraRestClient jiraRestClient = getConnection();
         ArrayList<Issue> issuesList = new ArrayList<>();
         String jql = String.format("project = %s", userDAO.readObjectNameById(projectId));

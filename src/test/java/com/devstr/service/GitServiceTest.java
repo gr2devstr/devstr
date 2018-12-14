@@ -11,11 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
 
 @Ignore
 @SpringBootTest
@@ -31,13 +28,16 @@ public class GitServiceTest {
     public void setUp() {
         Locale.setDefault(Locale.ENGLISH);
         gitService.setRepositoryName("gr2devstr/devstr");
-        gitService.setToken("7d60ff6e79d4f39a953f9f31467a95d9dac5f738");
+        gitService.setToken("1c610ac83e0fb22386660918d50315b5552ea59b");
+//        gitService.setRepositoryName("19Robert99/patchwork");
+//        gitService.setToken("10107a471e4b8fda374e61501839bb13ff607230 ");
     }
 
     @Test
     public void getCommitTest() throws IOException {
-        //List<Commit> commits = gitService.getCommitsByIssueKey("DEVSTR-31");
-        List<Commit> commits = gitService.getAllCommits();
-        assertEquals(BigInteger.valueOf(79L), commits.get(0).getUserId());
+        List<Commit> commits = gitService.getCommitsByIssueKey("DEVSTR-80");
+        //List<Commit> commits = gitService.getAllCommits();
+
+        //assertEquals(BigInteger.valueOf(66), commits.get(0).getUserId());
     }
 }
