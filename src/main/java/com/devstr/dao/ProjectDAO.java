@@ -52,6 +52,9 @@ public interface ProjectDAO {
      */
     void updateProjectJiraPassword(BigInteger projectId, String jiraPassword);
 
+    void updateProjectJiraDomain(BigInteger projectId, String domain);
+
+
     /**
      * Add developer on project
      *

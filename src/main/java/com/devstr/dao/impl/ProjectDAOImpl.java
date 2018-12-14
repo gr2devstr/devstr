@@ -63,6 +63,12 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     }
 
     @Override
+    public void updateProjectJiraDomain(BigInteger projectId, String domain) {
+        updateAttributeValue(AttributeID.JIRA_DOMAIN.getId(), projectId, domain);
+    }
+
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void addDevOnProject(BigInteger projectId, BigInteger developerId) {
         createObjectReference(AttributeID.PROJECT_USERS.getId(), projectId, developerId);
