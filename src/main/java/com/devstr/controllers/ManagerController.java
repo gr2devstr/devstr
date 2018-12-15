@@ -4,7 +4,6 @@ import com.devstr.DevstrFactoryManager;
 import com.devstr.dao.ProjectDAO;
 import com.devstr.dao.UserDAO;
 import com.devstr.logger.DevstrLogger;
-import com.devstr.model.Project;
 import com.devstr.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,13 +29,8 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
     @GetMapping("/assign/technical")
     public ResponseEntity<User> assignTechnicalManager(@RequestBody User technicalManager, BigInteger projectId) {
-        try {
-            projectDAO.addDevOnProject(projectId, technicalManager.getUserId());
-            return new ResponseEntity<>(technicalManager, HttpStatus.OK);
-        } catch (NullPointerException e) {
-            LOGGER.error("Could not set user on project", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        projectDAO.addDevOnProject(projectId, technicalManager.getUserId());
+        return new ResponseEntity<>(technicalManager, HttpStatus.OK);
     }
 
 //    public ResponseEntity<> sendNotitfication() {
@@ -49,7 +43,7 @@ public class ManagerController {
 
     @PreAuthorize("hasAuthority('GROUP_MANAGER')")
     @GetMapping("assign/confirm")
-    public ResponseEntity<User> declineUser() {
+    public ResponseEntity declineUser() {
         //sendNotification
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -57,24 +51,14 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('GROUP_MANAGER')")
     @GetMapping("assign/confirm")
     public ResponseEntity<User> assignDeveloper(@RequestBody User developer, BigInteger projectId) {
-        try {
-            projectDAO.addDevOnProject(projectId, developer.getUserId());
-            return new ResponseEntity<>(developer, HttpStatus.OK);
-        } catch (NullPointerException e) {
-            LOGGER.error("Could not set user on project", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        projectDAO.addDevOnProject(projectId, developer.getUserId());
+        return new ResponseEntity<>(developer, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
     @GetMapping("/assign/remove")
     public ResponseEntity<User> removeUserFromProject(@RequestBody User user) {
-        try {
-            projectDAO.deactivateUserOnProject(user.getUserId());
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (NullPointerException e) {
-            LOGGER.error("Could not remove user from project: ", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        projectDAO.deactivateUserOnProject(user.getUserId());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

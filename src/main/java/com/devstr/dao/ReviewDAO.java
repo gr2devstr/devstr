@@ -36,6 +36,21 @@ public interface ReviewDAO {
     Review readReviewById(BigInteger id);
 
     /**
+     * Method gets the user review by review's id
+     *
+     * @param id id of the review
+     * @return user review with such id in the database, null if there is no review with such id
+     */
+    UserReview readUserReviewById(BigInteger id);
+
+    /**
+     * Method gets project review by its id
+     * @param id id of the review
+     * @return project review with such id in the database, null if there is no such review
+     */
+    ProjectReview readProjectReviewById(BigInteger id);
+
+    /**
      * Gets all reviews of user with specified id
      *
      * @param id id of user that received the reviews

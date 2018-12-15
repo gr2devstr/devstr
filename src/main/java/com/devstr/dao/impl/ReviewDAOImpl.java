@@ -41,7 +41,7 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
     @Override
     @Transactional
     public BigInteger createProjectReview(BigInteger authorId, BigInteger receiverId, String comment, int[] marks) {
-        BigInteger id = createObject(ObjectType.PROJECT_REVIEW.getId(), "P" + authorId + receiverId);
+        BigInteger id = createObject(ObjectType.PROJECT_REVIEW.getId(), "PR" + authorId + receiverId);
         createAttributeDateValue(AttributeID.CREATION_DATE.getId(), id, new Date(Calendar.getInstance().getTime().getTime()));
         createAttributeValue(AttributeID.REVIEW_TEXT.getId(), id, comment);
         createAttributeValue(AttributeID.XP_QUALITY.getId(), id, String.valueOf(marks[0]));
@@ -66,24 +66,28 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
         return null;
     }
 
-    private UserReview readUserReviewById(BigInteger id) {
+    @Override
+    public UserReview readUserReviewById(BigInteger id) {
         Iterator<BigInteger> author = readObjectReferences(AttributeID.REVIEW_AUTHOR.getId(), id).iterator();
         Iterator<BigInteger> receiver = readObjectByReference(AttributeID.REVIEWS.getId(), id).iterator();
         Iterator<BigInteger> project = readObjectReferences(AttributeID.PROJECT.getId(), id).iterator();
         return new UserReviewImpl.Builder(author.next(), receiver.next(), readAttributeValue(BigInteger.valueOf(14L), id),
                 Integer.valueOf(readAttributeValue(AttributeID.JOB_QUALITY.getId(), id)),
                 Integer.valueOf(readAttributeValue(AttributeID.JOB_AMOUNT.getId(), id)),
-                Integer.valueOf(readAttributeValue(AttributeID.COMMUNICATION.getId(), id)), project.next()).build();
+                Integer.valueOf(readAttributeValue(AttributeID.COMMUNICATION.getId(), id)), project.next()).setReviewId(id)
+                .setCreationDate(readAttributeDateValue(AttributeID.CREATION_DATE.getId(), id)).build();
     }
 
-    private ProjectReview readProjectReviewById(BigInteger id) {
+    @Override
+    public ProjectReview readProjectReviewById(BigInteger id) {
         Iterator<BigInteger> author = readObjectReferences(AttributeID.REVIEW_AUTHOR.getId(), id).iterator();
         Iterator<BigInteger> receiver = readObjectByReference(AttributeID.REVIEWS.getId(), id).iterator();
         return new ProjectReviewImpl.Builder(author.next(), receiver.next(), readAttributeValue(AttributeID.REVIEW_TEXT.getId(), id),
                 Integer.valueOf(readAttributeValue(AttributeID.XP_QUALITY.getId(), id)),
                 Integer.valueOf(readAttributeValue(AttributeID.TEAM_SPIRIT.getId(), id)),
                 Integer.valueOf(readAttributeValue(AttributeID.ORGANIZATION.getId(), id)),
-                Integer.valueOf(readAttributeValue(AttributeID.TIME_MANAGMENT.getId(), id))).build();
+                Integer.valueOf(readAttributeValue(AttributeID.TIME_MANAGMENT.getId(), id)))
+                .setReviewId(id).setCreationDate(readAttributeDateValue(AttributeID.CREATION_DATE.getId(), id)).build();
     }
 
     @Override
