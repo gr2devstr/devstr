@@ -1,10 +1,13 @@
 package com.devstr.controllers;
 
 import com.devstr.DevstrFactoryManager;
+import com.devstr.dao.NotificationDAO;
 import com.devstr.dao.ProjectDAO;
 import com.devstr.dao.UserDAO;
 import com.devstr.logger.DevstrLogger;
+import com.devstr.model.Notification;
 import com.devstr.model.User;
+import com.devstr.model.impl.NotificationImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,9 @@ public class ManagerController {
     @Autowired
     private ProjectDAO projectDAO;
 
+    @Autowired
+    private NotificationDAO notificationDAO;
+
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
     @GetMapping("/assign/technical")
     public ResponseEntity<User> assignTechnicalManager(@RequestBody User technicalManager, BigInteger projectId) {
@@ -33,10 +39,12 @@ public class ManagerController {
         return new ResponseEntity<>(technicalManager, HttpStatus.OK);
     }
 
-//    public ResponseEntity<> sendNotitfication() {
-//
-//    }
-//
+    public ResponseEntity<Notification> sendNotification(String message, BigInteger receiverId) {
+        BigInteger id = notificationDAO.createNotification(message, receiverId);
+        return new ResponseEntity<>(new NotificationImpl.Builder(message, receiverId)
+                .setNotificationId(id).build(), HttpStatus.OK);
+    }
+
 //    public ResponseEntity<User> requestUser(User developer) {
 //
 //    }
