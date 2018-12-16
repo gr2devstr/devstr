@@ -33,6 +33,8 @@ public class GitServiceImpl implements GitService {
 
     private Collection<GHCommit> ghCommits;
 
+    private Map<String, List<GHCommit.File>> fileMap = new HashMap<>();
+
     @Autowired
     private UserDAOImpl userDAO;
 
@@ -91,12 +93,15 @@ public class GitServiceImpl implements GitService {
             if (commit.getCommitter().getEmail() != null && status != null && issueId != null) {
                 userID = userDAO.readUserIdByEmail(commit.getCommitter().getEmail());
 
+                String sha = commit.getSHA1();
+                List<GHCommit.File> files = commit.getFiles();
+                fileMap.put(sha, files);
                 return new CommitImpl.CommitBuilder()
                         .setIssueId(issueId)
                         .setUserId(userID)
-                        .setSha(commit.getSHA1())
+                        .setSha(sha)
                         .setDate(commit.getCommitDate())
-                        .setCommitClasses(commit.getFiles())
+                        .setCommitClasses(files)
                         .setBuildStatus(status)
                         .build();
 
@@ -143,13 +148,17 @@ public class GitServiceImpl implements GitService {
         }
 
 
-        writeToDataBase(commits);
+        issueDAO.createCommits(commits);
+        writeToDataBaseCommitClases();
         return commits;
     }
 
     @Override
-    public void writeToDataBase(Collection<Commit> commits) {
-        issueDAO.createCommits((List<Commit>) commits);
+    public void writeToDataBaseCommitClases() {
+        for (Map.Entry<String, List<GHCommit.File>> entry : fileMap.entrySet()) {
+            BigInteger commitID = issueDAO.readCommitIdBySha(entry.getKey());
+            issueDAO.createCommitClasses(entry.getValue(), commitID);
+        }
     }
 
     private BuildStatus getBuildStatus(GHCommit commit) throws IOException {

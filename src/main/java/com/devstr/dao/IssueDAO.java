@@ -102,6 +102,8 @@ public interface IssueDAO {
      */
     void createCommitClasses(List<GHCommit.File> commitClasses, BigInteger commitId);
 
+    BigInteger readCommitIdBySha(String sha);
+
 
     /**
      * The method returns the sha of the last commit from the database
@@ -110,6 +112,7 @@ public interface IssueDAO {
      */
     Date getDateLastCommitOnProject();
 
+    String GET_COMMIT_ID_BY_SHA = "SELECT c.COMMIT_ID FROM COMMITS C where c.SHA=?";
     String GET_LAST_ISSUE_KEY = "select i.ISSUE_KEY from ISSUES i where ROWNUM = 1 ORDER BY i.ISSUE_ID desc";
 
     String GET_COUNT = "SELECT COUNT(*) FROM COMMITS WHERE ROWNUM = 1";

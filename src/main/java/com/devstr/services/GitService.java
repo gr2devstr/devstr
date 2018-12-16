@@ -55,7 +55,7 @@ public interface GitService {
      */
     List<Commit> getCommitsByIssueKey() throws IOException;
 
-    void writeToDataBase(Collection<Commit> commits);
+    void writeToDataBaseCommitClases();
 
 
 

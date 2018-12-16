@@ -179,7 +179,6 @@ public class IssueDAOImpl implements IssueDAO {
                 ps.setDate(3, new Date(commit.getDate().getTime()));
                 ps.setLong(4, commit.getBuildStatus().getStatus().longValue());
                 ps.setLong(5, commit.getIssueId().longValue());
-                createCommitClasses((List<GHCommit.File>) commit.getCommitClasses(), commit.getCommitId());
             }
 
             @Override
@@ -188,12 +187,13 @@ public class IssueDAOImpl implements IssueDAO {
             }
         });
 
+
     }
 
     @Override
     @Transactional
     public void createCommitClasses(List<GHCommit.File> commitClasses, BigInteger commitId) {
-        jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate(CREATE_COMMITCLASS, new BatchPreparedStatementSetter() {
 
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -210,6 +210,11 @@ public class IssueDAOImpl implements IssueDAO {
                 return commitClasses.size();
             }
         });
+    }
+
+    @Override
+    public BigInteger readCommitIdBySha(String sha) {
+        return jdbcTemplate.queryForObject(GET_COMMIT_ID_BY_SHA, new Object[]{sha}, BigInteger.class);
     }
 
     @Override
