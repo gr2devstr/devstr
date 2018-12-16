@@ -50,13 +50,12 @@ public interface GitService {
     /**
      * The method returns a list of commit class objects by issue key
      *
-     * @param issueKey search issue key
      * @return commit list
      * @throws IOException
      */
-    List<Commit> getCommitsByIssueKey(String issueKey) throws IOException;
+    List<Commit> getCommitsByIssueKey() throws IOException;
 
-    void writeToDataBase(Collection<Commit> commits, String key);
+    void writeToDataBase(Collection<Commit> commits);
 
 
 

@@ -11,8 +11,10 @@ import com.devstr.model.impl.CommitImpl;
 import com.devstr.model.impl.IssueImpl;
 import org.kohsuke.github.GHCommit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +24,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class IssueDAOImpl implements IssueDAO {
@@ -70,7 +70,13 @@ public class IssueDAOImpl implements IssueDAO {
 
     @Override
     public String getLastIssueKey() {
-        return jdbcTemplate.queryForObject(GET_LAST_ISSUE_KEY, new Object[]{}, String.class);
+        if (!commitsIsEmpty().equals(BigInteger.valueOf(0L)))
+            return jdbcTemplate.queryForObject(GET_LAST_ISSUE_KEY, new Object[]{}, String.class);
+        else return null;
+    }
+
+    private BigInteger issuesIsEmpty() {
+        return jdbcTemplate.queryForObject(GET_ISSUES_COUNT, BigInteger.class);
     }
 
     @Override
@@ -94,6 +100,21 @@ public class IssueDAOImpl implements IssueDAO {
     @Override
     public BigInteger readIdIssueByKey(String key) {
         return jdbcTemplate.queryForObject(READ_ISSUE_ID_BY_KEY, new Object[]{key}, BigInteger.class);
+    }
+
+    @Override
+    @Transactional
+    public Map readAllIssuesKey() {
+        return jdbcTemplate.query(READ_ALL_ISSUES_KEY, new ResultSetExtractor<Map>() {
+            @Override
+            public Map extractData(ResultSet rs) throws SQLException, DataAccessException {
+                HashMap<String, BigInteger> mapRet = new HashMap<>();
+                while (rs.next()) {
+                    mapRet.put(rs.getString(1), BigInteger.valueOf(rs.getLong(2)));
+                }
+                return mapRet;
+            }
+        });
     }
 
 
@@ -147,7 +168,7 @@ public class IssueDAOImpl implements IssueDAO {
 
     @Override
     @Transactional
-    public void createCommits(List<Commit> commits, BigInteger issueId) {
+    public void createCommits(List<Commit> commits) {
         jdbcTemplate.batchUpdate(CREATE_COMMIT, new BatchPreparedStatementSetter() {
             Commit commit;
             @Override
@@ -157,7 +178,7 @@ public class IssueDAOImpl implements IssueDAO {
                 ps.setString(2, commit.getSha());
                 ps.setDate(3, new Date(commit.getDate().getTime()));
                 ps.setLong(4, commit.getBuildStatus().getStatus().longValue());
-                ps.setLong(5, issueId.longValue());
+                ps.setLong(5, commit.getIssueId().longValue());
                 //createCommitClasses((List<GHCommit.File>) commit.getCommitClasses(),commit.getCommitId());
             }
 
@@ -223,6 +244,15 @@ public class IssueDAOImpl implements IssueDAO {
                     .setUserId(BigInteger.valueOf(resultSet.getLong(9)))
                     .setReporterId(BigInteger.valueOf(resultSet.getLong(10)))
                     .build();
+        }
+    }
+
+    class IssueKeyMapper implements RowMapper<Map<String, BigInteger>> {
+        @Override
+        public Map<String, BigInteger> mapRow(ResultSet resultSet, int i) throws SQLException {
+            HashMap<String, BigInteger> map = new HashMap<>();
+            map.put(resultSet.getString(1), BigInteger.valueOf(resultSet.getLong(2)));
+            return map;
         }
     }
 

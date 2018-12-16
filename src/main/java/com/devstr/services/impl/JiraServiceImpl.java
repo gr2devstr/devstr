@@ -137,12 +137,15 @@ public class JiraServiceImpl implements JiraService {
         ArrayList<Issue> issueList = new ArrayList<>();
         updateIssuesStatus(issues);
         for (com.atlassian.jira.rest.client.api.domain.Issue issue : issues) {
-            if (lastKey != null && !issue.getKey().equals(lastKey)) {
-                issueList.add(getIssueByKey(projectId, issue.getKey(), jiraRestClient));
+            String key = issue.getKey();
+            LOGGER.info(key);
+            if (!key.equals(lastKey)) {
+                issueList.add(getIssueByKey(projectId, key, jiraRestClient));
             } else break;
         }
-        writeIssuesToDb(issueList);
+
         jiraRestClient.close();
+        //writeIssuesToDb(issueList);
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface IssueDAO {
 
@@ -45,6 +46,8 @@ public interface IssueDAO {
     Issue readIssueById(BigInteger id);
 
     BigInteger readIdIssueByKey(String key);
+
+    Map readAllIssuesKey();
 
     /**
      *  Get commits by issue id
@@ -90,9 +93,8 @@ public interface IssueDAO {
     /**
      * Write commits to db
      * @param commits
-     * @param issueId
      */
-    void createCommits(List<Commit> commits, BigInteger issueId);
+    void createCommits(List<Commit> commits);
 
     /**
      * Write commitClass to db
@@ -111,8 +113,9 @@ public interface IssueDAO {
     String GET_LAST_ISSUE_KEY = "select i.ISSUE_KEY from ISSUES i where ROWNUM = 1 ORDER BY i.ISSUE_ID desc";
 
     String GET_COUNT = "SELECT COUNT(*) FROM COMMITS WHERE ROWNUM = 1";
+    String GET_ISSUES_COUNT = "SELECT COUNT(*) FROM ISSUES WHERE ROWNUM = 1";
 
-    String GET_COMMIT_DATE = "SELECT c.SHA FROM COMMITS c where c.COMMIT_ID = (select max(c.COMMIT_ID) from COMMITS c)";
+    String GET_COMMIT_DATE = "SELECT c.PUBLICATION_DATE FROM COMMITS c where c.COMMIT_ID = (select max(c.COMMIT_ID) from COMMITS c)";
 
     String CREATE_ISSUE = "INSERT " +
             "INTO ISSUES(ISSUE_KEY,PROJECT_ID,TYPE_ID,STATUS_ID,PRIORITY_ID,START_DATE,DUE_DATE,USER_ID,REPORTER_ID,IS_OVERDATED)" +
@@ -123,6 +126,8 @@ public interface IssueDAO {
 
     String CREATE_COMMITCLASS = "INSERT INTO COMMITCLASSES(NAME,NUMBER_OF_LINES_ADDED,NUMBER_OF_LINES_CHANGED," +
             "NUMBER_OF_LINES_DELETED,COMMIT_ID)VALUES(?,?,?,?,?)";
+
+    String READ_ALL_ISSUES_KEY = "SELECT i.ISSUE_KEY, i.ISSUE_ID FROM ISSUES i";
 
     String READ_ISSUES_BY_PROJECT = "SELECT issue.ISSUE_ID, issue.ISSUE_KEY, issue.PROJECT_ID, " +
             "type.VALUE, status.VALUE, priority.VALUE, issue.START_DATE, issue.DUE_DATE, " +

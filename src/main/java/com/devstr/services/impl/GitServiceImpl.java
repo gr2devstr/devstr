@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +27,11 @@ public class GitServiceImpl implements GitService {
 
     private String repositoryName;
     private String token;
+
+    private Map<String, BigInteger> map;
+    private Set<String> keys;
+
+    private Collection<GHCommit> ghCommits;
 
     @Autowired
     private UserDAOImpl userDAO;
@@ -47,7 +50,11 @@ public class GitServiceImpl implements GitService {
 
     @Override
     public GHRepository getGHRepository() throws IOException {
-        return GitHub.connectUsingOAuth(token).getRepository(repositoryName);
+        LOGGER.info("Start");
+        if (repositoryName != null && token != null) {
+            return GitHub.connectUsingOAuth(token).getRepository(repositoryName);
+        }
+        return null;
     }
 
 
@@ -64,13 +71,28 @@ public class GitServiceImpl implements GitService {
     public Commit getCommit(GHCommit commit) {
         BigInteger userID;
         BuildStatus status;
+        BigInteger issueId = null;
+
         try {
             status = getBuildStatus(commit);
+            String info = commit.getCommitShortInfo().getMessage();
 
-            if (commit.getCommitter().getEmail() != null && status != null) {
+            for (Map.Entry<String, BigInteger> entry : map.entrySet()) {
+                String key = entry.getKey();
+                if (info.contains(key)) {
+                    LOGGER.info("---------------------------" + key);
+                    issueId = entry.getValue();
+                    LOGGER.info("---------------------------" + issueId);
+                    break;
+                }
+
+            }
+
+            if (commit.getCommitter().getEmail() != null && status != null && issueId != null) {
                 userID = userDAO.readUserIdByEmail(commit.getCommitter().getEmail());
 
                 return new CommitImpl.CommitBuilder()
+                        .setIssueId(issueId)
                         .setUserId(userID)
                         .setSha(commit.getSHA1())
                         .setDate(commit.getCommitDate())
@@ -86,23 +108,29 @@ public class GitServiceImpl implements GitService {
     }
 
 
+    @Deprecated
     @Override
     public List<Commit> getAllCommits() throws IOException {
+        map = issueDAO.readAllIssuesKey();
+
         Collection<GHCommit> ghCommits = getAllGHCommits();
         List<Commit> commits = null;
         if (ghCommits != null) {
             LOGGER.info("Commits :" + ghCommits.size());
             commits = new ArrayList<>();
-            commits.addAll(ghCommits.parallelStream().map(this::getCommit).collect(Collectors.toList()));
+            commits.addAll(ghCommits.stream().parallel().map(this::getCommit).filter(Objects::nonNull).collect(Collectors.toList()));
             LOGGER.info("End");
         }
         return commits;
     }
 
     @Override
-    public List<Commit> getCommitsByIssueKey(String issueKey) throws IOException {
+    public List<Commit> getCommitsByIssueKey() throws IOException {
+
+        map = issueDAO.readAllIssuesKey();
+
+        LOGGER.info(map.entrySet());
         Date date = issueDAO.getDateLastCommitOnProject();
-        Collection<GHCommit> ghCommits;
         if (date != null) ghCommits = getGHRepository().queryCommits().since(date).list().asList();
         else ghCommits = getAllGHCommits();
 
@@ -110,24 +138,17 @@ public class GitServiceImpl implements GitService {
         if (ghCommits != null) {
             LOGGER.info("Commits :" + ghCommits.size());
             commits = new ArrayList<>();
-            commits.addAll(ghCommits.parallelStream().filter(commit -> {
-                try {
-                    return commit.getCommitShortInfo().getMessage().contains(issueKey);
-                } catch (IOException e) {
-                    return false;
-                }
-
-            }).map(this::getCommit).collect(Collectors.toList()));
+            commits.addAll(ghCommits.stream().parallel().map(this::getCommit).filter(Objects::nonNull).collect(Collectors.toList()));
             LOGGER.info("End");
         }
-        writeToDataBase(commits, issueKey);
+
+        writeToDataBase(commits);
         return commits;
     }
 
     @Override
-    public void writeToDataBase(Collection<Commit> commits, String key) {
-        BigInteger id = issueDAO.readIdIssueByKey(key);
-        issueDAO.createCommits((List<Commit>) commits, id);
+    public void writeToDataBase(Collection<Commit> commits) {
+        issueDAO.createCommits((List<Commit>) commits);
     }
 
     private BuildStatus getBuildStatus(GHCommit commit) throws IOException {

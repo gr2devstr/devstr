@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface Commit {
+
+    BigInteger getIssueId();
+
     BigInteger getCommitId();
 
     BigInteger getUserId();

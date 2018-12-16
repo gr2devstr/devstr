@@ -18,7 +18,12 @@ public class CommitImpl  implements Commit {
     private Date date;
     private Collection<GHCommit.File> commitClasses;
     private BuildStatus buildStatus;
+    private BigInteger issueId;
 
+    @Override
+    public BigInteger getIssueId() {
+        return issueId;
+    }
 
     @Override
     public BigInteger getCommitId() {
@@ -81,8 +86,14 @@ public class CommitImpl  implements Commit {
         private Date date;
         private Collection<GHCommit.File> commitClasses;
         private BuildStatus buildStatus;
+        private BigInteger issueId;
 
         public CommitBuilder() {
+        }
+
+        public CommitBuilder setIssueId(BigInteger issueId) {
+            this.issueId = issueId;
+            return this;
         }
 
         public CommitBuilder setCommitId(BigInteger id) {
@@ -132,6 +143,7 @@ public class CommitImpl  implements Commit {
         this.date = builder.date;
         this.buildStatus = builder.buildStatus;
         this.commitClasses = builder.commitClasses;
+        this.issueId = builder.issueId;
     }
 
 }
