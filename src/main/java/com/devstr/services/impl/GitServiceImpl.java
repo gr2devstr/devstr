@@ -142,6 +142,7 @@ public class GitServiceImpl implements GitService {
             LOGGER.info("End");
         }
 
+
         writeToDataBase(commits);
         return commits;
     }

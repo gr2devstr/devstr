@@ -104,7 +104,7 @@ public class IssueDAOImpl implements IssueDAO {
 
     @Override
     @Transactional
-    public Map readAllIssuesKey() {
+    public Map<String, BigInteger> readAllIssuesKey() {
         return jdbcTemplate.query(READ_ALL_ISSUES_KEY, new ResultSetExtractor<Map>() {
             @Override
             public Map extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -179,7 +179,7 @@ public class IssueDAOImpl implements IssueDAO {
                 ps.setDate(3, new Date(commit.getDate().getTime()));
                 ps.setLong(4, commit.getBuildStatus().getStatus().longValue());
                 ps.setLong(5, commit.getIssueId().longValue());
-                //createCommitClasses((List<GHCommit.File>) commit.getCommitClasses(),commit.getCommitId());
+                createCommitClasses((List<GHCommit.File>) commit.getCommitClasses(), commit.getCommitId());
             }
 
             @Override

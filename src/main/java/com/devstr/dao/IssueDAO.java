@@ -47,7 +47,7 @@ public interface IssueDAO {
 
     BigInteger readIdIssueByKey(String key);
 
-    Map readAllIssuesKey();
+    Map<String, BigInteger> readAllIssuesKey();
 
     /**
      *  Get commits by issue id
