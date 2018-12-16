@@ -1,7 +1,7 @@
 package com.devstr.service;
 
 import com.devstr.model.Commit;
-import com.devstr.services.impl.GitServiceImpl;
+import com.devstr.services.GitService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,23 +21,24 @@ public class GitServiceTest {
 
 
     @Autowired
-    private GitServiceImpl gitService;
+    private GitService gitService;
+
 
 
     @Before
     public void setUp() {
         Locale.setDefault(Locale.ENGLISH);
         gitService.setRepositoryName("gr2devstr/devstr");
-        gitService.setToken("1c610ac83e0fb22386660918d50315b5552ea59b");
+        gitService.setToken("7d2a8630b9b5a9946c809c3f02149ba5ef2b2050");
 //        gitService.setRepositoryName("19Robert99/patchwork");
 //        gitService.setToken("10107a471e4b8fda374e61501839bb13ff607230 ");
     }
 
     @Test
     public void getCommitTest() throws IOException {
-        List<Commit> commits = gitService.getCommitsByIssueKey("DEVSTR-80");
+        List<Commit> commits = gitService.getCommitsByIssueKey();
         //List<Commit> commits = gitService.getAllCommits();
 
-        //assertEquals(BigInteger.valueOf(66), commits.get(0).getUserId());
+        //assertEquals(bigInteger, BigInteger.valueOf(549L));
     }
 }
