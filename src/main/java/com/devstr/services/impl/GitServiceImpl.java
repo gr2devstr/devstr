@@ -29,7 +29,6 @@ public class GitServiceImpl implements GitService {
     private String token;
 
     private Map<String, BigInteger> map;
-    private Set<String> keys;
 
     private Collection<GHCommit> ghCommits;
 

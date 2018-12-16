@@ -29,6 +29,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class JiraServiceImpl implements JiraService {
@@ -110,15 +112,22 @@ public class JiraServiceImpl implements JiraService {
     @Override
     public ArrayList<Issue> getIssuesByProjectId(BigInteger projectId) throws URISyntaxException, IOException {
         JiraRestClient jiraRestClient = getConnection();
-        ArrayList<Issue> issuesList = new ArrayList<>();
         String jql = String.format("project = %s", userDAO.readObjectNameById(projectId));
 
         SearchRestClient searchRestClient = jiraRestClient.getSearchClient();
         SearchResult searchResult = searchRestClient.searchJql(jql, MAX_VLUE, START_VLUE, SEARCH_REST_FIELDS).claim();
-        Iterable<com.atlassian.jira.rest.client.api.domain.Issue> issues = searchResult.getIssues();
-        for (com.atlassian.jira.rest.client.api.domain.Issue issue : issues) {
-            issuesList.add(getIssueByKey(projectId, issue.getKey(), jiraRestClient));
-        }
+        List<com.atlassian.jira.rest.client.api.domain.Issue> issues = (List<com.atlassian.jira.rest.client.api.domain.Issue>) searchResult.getIssues();
+
+        ArrayList<Issue> issuesList = issues.stream().parallel().map(issue -> {
+            try {
+                return getIssueByKey(projectId, issue.getKey(), jiraRestClient);
+            } catch (URISyntaxException e) {
+                return null;
+            }
+        }).collect(Collectors.toCollection(ArrayList::new));
+
+        issuesList.stream().map(Objects::nonNull).collect(Collectors.toList());
+
         jiraRestClient.close();
         writeIssuesToDb(issuesList);
         return issuesList;
@@ -138,14 +147,13 @@ public class JiraServiceImpl implements JiraService {
         updateIssuesStatus(issues);
         for (com.atlassian.jira.rest.client.api.domain.Issue issue : issues) {
             String key = issue.getKey();
-            LOGGER.info(key);
             if (!key.equals(lastKey)) {
                 issueList.add(getIssueByKey(projectId, key, jiraRestClient));
             } else break;
         }
 
         jiraRestClient.close();
-        //writeIssuesToDb(issueList);
+        writeIssuesToDb(issueList);
     }
 
     @Override
