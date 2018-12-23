@@ -17,15 +17,13 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@Ignore
 @SpringBootTest
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AbstractDaoTest extends AbstractDAOImpl {
 
     @Before
-    public void setUp() throws Exception {
-        Locale.setDefault(Locale.ENGLISH);
+    public void setUp() {
     }
 
     @Test
@@ -132,8 +130,9 @@ public class AbstractDaoTest extends AbstractDAOImpl {
         deleteObjectById(projId);
     }
 
+    @Ignore
     @Test
-    public void getReferencesByObjectId() {
+    public void getReferencesByObjectIdTest() {
         BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), "holinkonik");
         Collection<BigInteger> reviews = readObjectReferences(AttributeID.REVIEWS.getId(), userId);
 
@@ -143,6 +142,22 @@ public class AbstractDaoTest extends AbstractDAOImpl {
         Collections.sort(dbReviews);
 
         assertEquals(reviewId1, dbReviews.get(0));
+    }
+
+    @Test
+    public void checkObcetTypeTest() {
+        String userName = "holinkonik";
+        BigInteger invalidId = BigInteger.valueOf(8888L);
+
+        BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), userName);
+
+        BigInteger checkVar1 = checkObjectType(ObjectType.USER.getId(), userId);
+        BigInteger checkVar2 = checkObjectType(ObjectType.USER.getId(), invalidId);
+        BigInteger checkVar3 = checkObjectType(ObjectType.PROJECT.getId(), userId);
+
+        assertEquals(1L, checkVar1.longValue());
+        assertEquals(0L, checkVar2.longValue());
+        assertEquals(0L, checkVar3.longValue());
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
@@ -232,6 +233,17 @@ abstract class AbstractDAOImpl implements AbstractDAO {
         in.put("a_object_id", objectId);
         in.put("a_reference", referenceId);
         call.execute(in);
+    }
+
+    @Override
+    public BigInteger checkObjectType(BigInteger objectTypeId, BigInteger objectId) {
+        SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("abstract_eav_pkg")
+                .withFunctionName("check_obj_type");
+        Map<String, Object> in = new HashMap<>();
+        in.put("a_object_type_id", objectTypeId);
+        in.put("a_object_id", objectId);
+        return call.executeFunction(BigDecimal.class, in).toBigInteger();
     }
 
 }

@@ -1,6 +1,7 @@
 CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   err_code NUMBER;
   err_message VARCHAR2(600 CHAR);
+  FUNCTION check_obj_type(a_object_type_id NUMBER, a_object_id NUMBER) RETURN NUMBER;
   FUNCTION insert_object(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
   PROCEDURE delete_object(a_object_id NUMBER);
   PROCEDURE insert_objreference(a_attrn_id NUMBER, a_object_id NUMBER, a_reference NUMBER);
@@ -23,6 +24,28 @@ END abstract_eav_pkg;
 /
 
 CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
+  FUNCTION check_obj_type(a_object_type_id NUMBER, a_object_id NUMBER) RETURN NUMBER IS
+    tmp_obj_id NUMBER;
+  BEGIN
+    SELECT OBJECTS.object_type_id INTO tmp_obj_id
+    FROM OBJECTS
+    WHERE OBJECTS.object_id = a_object_id;
+  IF tmp_obj_id = a_object_type_id THEN
+    RETURN 1;
+  ELSE
+    RETURN 0;
+  END IF;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      logger_pkg.log('WARN', 'Object with type'||a_object_type_id||' and id '||a_object_id||' doesnt exists');
+      RETURN 0;
+    WHEN OTHERS THEN
+      err_code := SQLCODE;
+      err_message := SQLERRM;
+      logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to check object type of object with id '||a_object_id);
+    RAISE;
+  END;
+
   FUNCTION insert_object(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
     l_object_id NUMBER;
 	temp_id NUMBER;
@@ -50,7 +73,7 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
 	    logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to insert object '||a_name);
 		RAISE;
 	END;
-	
+
   PROCEDURE delete_object(a_object_id NUMBER) IS
   BEGIN
       DELETE FROM OBJECTS WHERE OBJECT_ID = a_object_id;
