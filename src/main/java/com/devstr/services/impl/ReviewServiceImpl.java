@@ -50,7 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> readReviewsByRecId(BigInteger id) {
+    public List<UserReview> readReviewsByRecId(BigInteger id) {
         if (id != null)
             return reviewDAO.readReviewsByRecId(id);
         LOGGER.warn("receiverId is null");
@@ -108,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public double getAverageProjectMark(BigInteger projectId) {
-        List<Review> projectReviews = reviewDAO.readReviewsByRecId(projectId);
+        List<UserReview> projectReviews = reviewDAO.readReviewsByRecId(projectId);
         double result = 0;
         try {
             for (Review review : projectReviews) {

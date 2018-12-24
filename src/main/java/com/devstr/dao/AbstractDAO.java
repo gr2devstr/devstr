@@ -192,6 +192,6 @@ public interface AbstractDAO {
      * @param objectTypeId attributes's name ID in the DB (objreference.attrn_id)
      * @param objectId     object's ID in the DB (objreference.object_id)
      */
-    BigInteger checkObjectType(BigInteger objectTypeId, BigInteger objectId);
+    Integer checkObjectTypeById(BigInteger objectTypeId, BigInteger objectId);
 
 }

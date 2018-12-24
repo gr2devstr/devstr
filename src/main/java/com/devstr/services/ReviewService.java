@@ -37,7 +37,7 @@ public interface ReviewService {
      * @param id id of user that received the reviews
      * @return list with the reviews
      */
-    List<Review> readReviewsByRecId(BigInteger id);
+    List<UserReview> readReviewsByRecId(BigInteger id);
 
     /**
      * Gets all the reviews written by certain author

@@ -12,7 +12,6 @@ import com.devstr.model.impl.ProjectReviewImpl;
 import com.devstr.model.impl.UserReviewImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigInteger;
 import java.sql.Date;
 import java.util.*;
@@ -91,11 +90,11 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
     }
 
     @Override
-    public List<Review> readReviewsByRecId(BigInteger id) {
-        List<Review> reviews = new ArrayList<>();
+    public List<UserReview> readReviewsByRecId(BigInteger id) {
+        List<UserReview> reviews = new ArrayList<>();
         Collection<BigInteger> reviewIds = readObjectByReference(AttributeID.REVIEWS.getId(), id);
         for (BigInteger reviewId : reviewIds) {
-            reviews.add(readReviewById(reviewId));
+            reviews.add(readUserReviewById(reviewId));
         }
         return reviews;
     }
@@ -122,4 +121,5 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
     private ObjectType getObjectTypeById(BigInteger id) {
         return ObjectType.valueOf(jdbcTemplate.queryForObject(SELECT_OBJECT_TYPE_BY_OBJECT_ID, new Object[]{id}, String.class));
     }
+
 }
