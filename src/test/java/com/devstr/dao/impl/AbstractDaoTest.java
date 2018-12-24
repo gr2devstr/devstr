@@ -1,5 +1,7 @@
 package com.devstr.dao.impl;
 
+import com.devstr.dao.UserDAO;
+import com.devstr.exception.DaoException;
 import com.devstr.model.enumerations.AttributeID;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.enumerations.Status;
@@ -7,13 +9,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigInteger;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -21,6 +25,9 @@ import static org.junit.Assert.assertNull;
 @Transactional(rollbackFor = Exception.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AbstractDaoTest extends AbstractDAOImpl {
+
+    @Autowired
+    private UserDAO userDAO;
 
     @Before
     public void setUp() {
@@ -151,13 +158,31 @@ public class AbstractDaoTest extends AbstractDAOImpl {
 
         BigInteger userId = readObjectIdByName(ObjectType.USER.getId(), userName);
 
-        BigInteger checkVar1 = checkObjectType(ObjectType.USER.getId(), userId);
-        BigInteger checkVar2 = checkObjectType(ObjectType.USER.getId(), invalidId);
-        BigInteger checkVar3 = checkObjectType(ObjectType.PROJECT.getId(), userId);
+        Integer checkVar1 = checkObjectTypeById(ObjectType.USER.getId(), userId);
+        Integer checkVar2 = checkObjectTypeById(ObjectType.USER.getId(), invalidId);
+        Integer checkVar3 = checkObjectTypeById(ObjectType.PROJECT.getId(), userId);
 
         assertEquals(1L, checkVar1.longValue());
         assertEquals(0L, checkVar2.longValue());
         assertEquals(0L, checkVar3.longValue());
+    }
+
+    @Test
+    public void checkObjetTypeWhenIdNullTest() {
+        Integer checkVar1 = checkObjectTypeById(ObjectType.USER.getId(), null);
+        assertEquals(0L, checkVar1.longValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void readObjectIdByIncorrectName() {
+        String incorrectName = "alladin";
+        BigInteger id = userDAO.readUserIdByLogin(incorrectName);
+    }
+
+    @Test(expected = DaoException.class)
+    public void readObjectIdByIncorrectEmail() {
+        String incorrectEmail = "alladin@arab.net";
+        BigInteger id = userDAO.readUserIdByEmail(incorrectEmail);
     }
 
 }
