@@ -6,12 +6,15 @@ import com.devstr.model.impl.NotificationImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Transactional
+@Repository
 public class NotificationDAOImpl implements NotificationDAO {
 
     @Autowired
@@ -30,13 +33,14 @@ public class NotificationDAOImpl implements NotificationDAO {
 
     @Override
     public List<Notification> readNotificationsByRecId(BigInteger receiverId) {
-        return jdbcTemplate.query(READ_NOTIFICATION_BY_REC_ID, new Object[] {receiverId}, new NotificationMapper());
+        return jdbcTemplate.query(READ_NOTIFICATION_BY_REC_ID, new Object[]{receiverId}, new NotificationMapper());
     }
 
     @Override
     public void deleteNotificationById(BigInteger id) {
         jdbcTemplate.update(DELETE_NOTIFICATION, id.longValue());
     }
+
     class NotificationMapper implements RowMapper<Notification> {
         @Override
         public Notification mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -45,4 +49,5 @@ public class NotificationDAOImpl implements NotificationDAO {
                     .setNotificationId(BigInteger.valueOf(resultSet.getLong(1))).build();
         }
     }
+
 }
