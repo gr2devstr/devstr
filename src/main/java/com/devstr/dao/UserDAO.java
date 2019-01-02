@@ -15,10 +15,11 @@ public interface UserDAO {
      * @param firstName user's first name attribute in the DB (attributes.value)
      * @param lastName  user's last name attribute in the DB (attributes.value)
      * @param email     user's email attribute in the DB (attributes.value)
+     * @param managerId user's manager, parent_id in the DB(objects)
      * @param password  user's password(encrypted) attribute in the DB (attributes.value)
      * @param userRole  user's role list value ID attribute in the DB (attributes.list_value_id)
      */
-    void createUser(String login, String firstName, String lastName, String email, String password, UserRole userRole);
+    void createUser(String login, String firstName, String lastName, String email, BigInteger managerId, String password, UserRole userRole);
 
     /**
      * Reads basic user by ID from the DB

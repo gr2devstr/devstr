@@ -37,6 +37,18 @@ abstract class AbstractDAOImpl implements AbstractDAO {
     }
 
     @Override
+    public BigInteger createObjectWithParent(BigInteger typeId, BigInteger parentId, String name) {
+        SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("abstract_eav_pkg")
+                .withFunctionName("insert_object_with_parent");
+        Map<String, Object> in = new HashMap<>();
+        in.put("a_object_type_id", typeId);
+        in.put("a_parent_id", parentId);
+        in.put("a_name", name);
+        return call.executeFunction(BigDecimal.class, in).toBigInteger();
+    }
+
+    @Override
     public String readObjectNameById(BigInteger objectId) {
         SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
                 .withCatalogName("abstract_eav_pkg")
@@ -54,6 +66,16 @@ abstract class AbstractDAOImpl implements AbstractDAO {
         Map<String, Object> in = new HashMap<>();
         in.put("a_object_type_id", typeId);
         in.put("a_name", name);
+        return call.executeFunction(BigDecimal.class, in).toBigInteger();
+    }
+
+    @Override
+    public BigInteger readParentId(BigInteger id) {
+        SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("abstract_eav_pkg")
+                .withFunctionName("select_parent_id");
+        Map<String, Object> in = new HashMap<>();
+        in.put("id", id);
         return call.executeFunction(BigDecimal.class, in).toBigInteger();
     }
 

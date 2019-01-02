@@ -17,6 +17,16 @@ public interface AbstractDAO {
     BigInteger createObject(BigInteger typeId, String name);
 
     /**
+     * Creates new object with parent_id, uses PL\SQL function insert_object_with_parent()
+     *
+     * @param typeId object's type ID in the DB (objects.object_type_id)
+     * @param parentId object's parent ID in the DB(objects.parent_id)
+     * @param name object's name in the DB (objects.name)
+     * @return
+     */
+    BigInteger createObjectWithParent(BigInteger typeId, BigInteger parentId, String name);
+
+    /**
      * Reads object's name by ID from OBJECTS table from the DB
      * Use SpringJdbcCall for PL\SQL Function:
      * FUNCTION select_object_name(id NUMBER) RETURN VARCHAR2;
@@ -34,6 +44,14 @@ public interface AbstractDAO {
      * @param name   object's name in the DB (objects.name)
      */
     BigInteger readObjectIdByName(BigInteger typeId, String name);
+
+    /**
+     * Reads object's parent_id
+     *
+     * @param id id of the object
+     * @return object's parent_id, null if not exists
+     */
+    BigInteger readParentId(BigInteger id);
 
     /**
      * Deletes object by ID from OBJECTS table from the DB

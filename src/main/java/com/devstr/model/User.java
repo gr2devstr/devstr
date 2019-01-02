@@ -15,6 +15,8 @@ public interface User {
 
     String getEmail();
 
+    BigInteger getManagerId();
+
     String getFirstName();
 
     String getLastName();

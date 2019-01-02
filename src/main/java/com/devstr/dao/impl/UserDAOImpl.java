@@ -33,9 +33,9 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createUser(String login, String firstName, String lastName, String email, String password, UserRole userRole) {
+    public void createUser(String login, String firstName, String lastName, String email, BigInteger managerId, String password, UserRole userRole) {
         try {
-            BigInteger userId = createObject(ObjectType.USER.getId(), login);
+            BigInteger userId = createObjectWithParent(ObjectType.USER.getId(), managerId, login);
             createAttributeValue(AttributeID.FIRST_NAME.getId(), userId, firstName);
             createAttributeValue(AttributeID.LAST_NAME.getId(), userId, lastName);
             createAttributeValue(AttributeID.FIRST_NAME.getId(), userId, firstName);
@@ -58,6 +58,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
                     readObjectNameById(id),
                     readAttributeValue(AttributeID.PASSWORD.getId(), id),
                     readAttributeValue(AttributeID.EMAIL.getId(), id),
+                    readParentId(id),
                     readAttributeValue(AttributeID.FIRST_NAME.getId(), id),
                     readAttributeValue(AttributeID.LAST_NAME.getId(), id),
                     UserRole.valueOf(readAttributeListValue(AttributeID.ROLE.getId(), id)),
@@ -78,6 +79,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
                     readObjectNameById(id),
                     readAttributeValue(AttributeID.PASSWORD.getId(), id),
                     readAttributeValue(AttributeID.EMAIL.getId(), id),
+                    readParentId(id),
                     readAttributeValue(AttributeID.FIRST_NAME.getId(), id),
                     readAttributeValue(AttributeID.LAST_NAME.getId(), id),
                     UserRole.valueOf(readAttributeListValue(AttributeID.ROLE.getId(), id)),

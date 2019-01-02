@@ -12,6 +12,7 @@ public class UserImpl implements User {
     private String login;
     private String password;
     private String email;
+    private BigInteger managerId;
     private String firstName;
     private String lastName;
     private UserRole role;
@@ -37,6 +38,10 @@ public class UserImpl implements User {
     @Override
     public String getEmail() {
         return email;
+    }
+
+    public BigInteger getManagerId() {
+        return managerId;
     }
 
     @Override
@@ -91,6 +96,7 @@ public class UserImpl implements User {
         private String login;
         private String password;
         private String email;
+        private BigInteger managerId;
         private String firstName;
         private String lastName;
         private UserRole role;
@@ -98,10 +104,11 @@ public class UserImpl implements User {
         private Date hireDate;
         private BigInteger projectId;
 
-        public Builder(String login, String password, String email, String firstName, String lastName, UserRole role, Status status) {
+        public Builder(String login, String password, String email, BigInteger managerId, String firstName, String lastName, UserRole role, Status status) {
             this.login = login;
             this.password = password;
             this.email = email;
+            this.managerId = managerId;
             this.firstName = firstName;
             this.lastName = lastName;
             this.role = role;
@@ -133,6 +140,7 @@ public class UserImpl implements User {
         this.login = builder.login;
         this.password = builder.password;
         this.email = builder.email;
+        this.managerId = builder.managerId;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.role = builder.role;

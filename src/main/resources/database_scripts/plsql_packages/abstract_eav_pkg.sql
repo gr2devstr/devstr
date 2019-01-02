@@ -3,6 +3,7 @@ CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   err_message VARCHAR2(600 CHAR);
   FUNCTION check_obj_type(a_object_type_id NUMBER, a_object_id NUMBER) RETURN NUMBER;
   FUNCTION insert_object(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
+  FUNCTION insert_object_with_parent(a_object_type_id NUMBER, a_parent_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
   PROCEDURE delete_object(a_object_id NUMBER);
   PROCEDURE insert_objreference(a_attrn_id NUMBER, a_object_id NUMBER, a_reference NUMBER);
   PROCEDURE delete_objreference(a_attrn_id NUMBER, a_object_id NUMBER, a_reference NUMBER);
@@ -13,6 +14,7 @@ CREATE OR REPLACE PACKAGE abstract_eav_pkg IS
   PROCEDURE update_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER, new_date DATE);
   PROCEDURE update_attribute_list_value(a_attrn_id NUMBER, a_object_id NUMBER, new_list_value_id NUMBER);
   FUNCTION select_object_name(id NUMBER) RETURN VARCHAR2;
+  FUNCTION select_parent_id(id NUMBER) RETURN NUMBER;
   FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER;
   FUNCTION select_attribute_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN VARCHAR2;
   FUNCTION select_attribute_date_value(a_attrn_id NUMBER, a_object_id NUMBER) RETURN DATE;
@@ -73,7 +75,27 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
 	    logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to insert object '||a_name);
 		RAISE;
 	END;
-
+  FUNCTION insert_object_with_parent(a_object_type_id NUMBER, a_parent_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
+    l_object_id NUMBER;
+	temp_id NUMBER;
+    BEGIN
+	    temp_id := select_object_id(a_object_type_id, a_name);
+		IF temp_id IS NULL THEN
+		  INSERT INTO OBJECTS(object_type_id, parent_id, name) VALUES (a_object_type_id, a_parent_id, a_name)
+	      returning object_id into l_object_id;
+	      RETURN l_object_id;
+		ELSE
+		  logger_pkg.log('WARN', 'Object with type'||a_object_type_id||' and name '||a_name||' already exists, no insert made');
+		  RETURN NULL;
+		END IF;
+	RETURN NULL;
+	EXCEPTION
+	  WHEN OTHERS THEN
+	    err_code := SQLCODE;
+		err_message := SQLERRM;
+	    logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to insert object '||a_name);
+		RAISE;
+	END;
   PROCEDURE delete_object(a_object_id NUMBER) IS
   BEGIN
       DELETE FROM OBJECTS WHERE OBJECT_ID = a_object_id;
@@ -202,7 +224,21 @@ CREATE OR REPLACE PACKAGE BODY abstract_eav_pkg IS
 	     logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to select object with object_id '||id);
 		 RAISE;
   END;
-  
+  FUNCTION select_parent_id(id NUMBER) RETURN NUMBER IS
+  res NUMBER;
+  BEGIN
+    SELECT parent_id INTO res FROM OBJECTS WHERE object_id = id;
+	RETURN res;
+	EXCEPTION
+	  WHEN NO_DATA_FOUND THEN
+	    logger_pkg.log('INFO', 'no objects selected by id '||id);
+	    RETURN NULL;
+	  WHEN OTHERS THEN
+		 err_code := SQLCODE;
+		 err_message := SQLERRM;
+	     logger_pkg.log('ERROR', err_code||': '||err_message||'; failed to select object with id '||id);
+		 RAISE;
+  END;
   FUNCTION select_object_id(a_object_type_id NUMBER, a_name VARCHAR2) RETURN NUMBER IS
   res NUMBER;
   BEGIN
