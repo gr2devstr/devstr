@@ -125,6 +125,14 @@ public interface UserDAO {
     void updateUserProjectId(BigInteger id, BigInteger projectId);
 
     /**
+     * Updates user manager ID in the DB by user ID
+     *
+     * @param id        user's ID in the DB (objects.object_id)
+     * @param managerId new manager ID for user
+     */
+    void updateUserManagerId(BigInteger id, BigInteger managerId);
+
+    /**
      * Updates user into inactive mode
      *
      * @param id user's ID in the DB (objects.object_id)
@@ -134,5 +142,7 @@ public interface UserDAO {
     String READ_ID_BY_EMAIL = "SELECT a.object_id FROM attributes a WHERE a.attrn_id = 3 AND a.value = ?";
 
     String READ_ALL_ID = "SELECT obj.object_id FROM objects obj WHERE obj.object_type_id = 31";
+
+    String UPDATE_MANAGER_ID = "UPDATE objects SET parent_id = ? WHERE object_id = ?";
 
 }

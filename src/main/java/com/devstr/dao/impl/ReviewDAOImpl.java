@@ -1,6 +1,7 @@
 package com.devstr.dao.impl;
 
 import com.devstr.DevstrFactoryManager;
+import com.devstr.exception.DaoException;
 import com.devstr.logger.DevstrLogger;
 import com.devstr.dao.ReviewDAO;
 import com.devstr.model.ProjectReview;
@@ -10,6 +11,7 @@ import com.devstr.model.enumerations.AttributeID;
 import com.devstr.model.enumerations.ObjectType;
 import com.devstr.model.impl.ProjectReviewImpl;
 import com.devstr.model.impl.UserReviewImpl;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
@@ -20,7 +22,8 @@ import java.util.*;
 @Transactional
 public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
 
-    private static DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory().getLogger(ReviewDAOImpl.class.getName());
+    private static final DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory()
+            .getLogger(ReviewDAOImpl.class.getName());
 
     @Override
     @Transactional
@@ -108,7 +111,6 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
         return result;
     }
 
-
     @Override
     public List<UserReview> readUserReviewsByProjectId(BigInteger id) {
         List<UserReview> result = new ArrayList<>();
@@ -119,7 +121,13 @@ public class ReviewDAOImpl extends AbstractDAOImpl implements ReviewDAO {
     }
 
     private ObjectType getObjectTypeById(BigInteger id) {
-        return ObjectType.valueOf(jdbcTemplate.queryForObject(SELECT_OBJECT_TYPE_BY_OBJECT_ID, new Object[]{id}, String.class));
+        try {
+            return ObjectType.valueOf(jdbcTemplate.queryForObject(SELECT_OBJECT_TYPE_BY_OBJECT_ID, new Object[]{id}, String.class));
+        } catch (DataAccessException exc) {
+            String message = "Failed to read object type by id: " + id;
+            LOGGER.error(message, exc);
+            throw new DaoException(message, exc);
+        }
     }
 
 }

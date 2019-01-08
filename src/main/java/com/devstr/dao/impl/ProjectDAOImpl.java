@@ -1,6 +1,9 @@
 package com.devstr.dao.impl;
 
+import com.devstr.DevstrFactoryManager;
 import com.devstr.dao.ProjectDAO;
+import com.devstr.exception.DaoException;
+import com.devstr.logger.DevstrLogger;
 import com.devstr.model.Project;
 import com.devstr.model.enumerations.AttributeID;
 import com.devstr.model.enumerations.ObjectType;
@@ -8,15 +11,18 @@ import com.devstr.model.enumerations.Status;
 import com.devstr.model.enumerations.UserRole;
 import com.devstr.model.impl.ProjectImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigInteger;
 
 @Transactional
 @Repository
 public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
+
+    private static final DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory()
+            .getLogger(ProjectDAOImpl.class.getName());
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -84,7 +90,14 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     @Override
     @Transactional
     public void addIssueOnProject(BigInteger projectId, BigInteger issueId) {
-        jdbcTemplate.update(UPDATE_PROJECT_ISSUE, new Object[]{projectId.longValue(), issueId.longValue()});
+        try {
+            jdbcTemplate.update(UPDATE_PROJECT_ISSUE, new Object[]{projectId.longValue(), issueId.longValue()});
+        } catch (DataAccessException exc) {
+            String message = "Failed to add issue on project, project ID: " + projectId
+                    + ", issue ID: " + issueId;
+            LOGGER.error(message, exc);
+            throw new DaoException(message, exc);
+        }
     }
 
     @Override
@@ -128,7 +141,16 @@ public class ProjectDAOImpl extends AbstractDAOImpl implements ProjectDAO {
     }
 
     private BigInteger getUserID(BigInteger projectID, UserRole role) {
-        return jdbcTemplate.queryForObject(GET_USER_ID_BY_ROLE, new Object[]{projectID.longValue(), role.getId().longValue()}, BigInteger.class);
+        try {
+            return jdbcTemplate.queryForObject(GET_USER_ID_BY_ROLE,
+                    new Object[]{projectID.longValue(), role.getId().longValue()},
+                    BigInteger.class);
+        } catch (DataAccessException exc) {
+            String message = "Failed to get user ID on project by role, project ID: " + projectID
+                    + ", user role: " + role.toString();
+            LOGGER.error(message, exc);
+            throw new DaoException(message, exc);
+        }
     }
 
 }

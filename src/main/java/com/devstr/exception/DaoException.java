@@ -2,14 +2,16 @@ package com.devstr.exception;
 
 public class DaoException extends RuntimeException{
 
-    private static final String DEFAULT_MESSAGE = "Server-side issues.";
-
     public DaoException() {
-        super(DEFAULT_MESSAGE);
+        super();
     }
 
     public DaoException(String message) {
-        super(DEFAULT_MESSAGE + " Message: " + message);
+        super(message);
+    }
+
+    public DaoException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }
