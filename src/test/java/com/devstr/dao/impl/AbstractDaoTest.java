@@ -173,7 +173,7 @@ public class AbstractDaoTest extends AbstractDAOImpl {
         assertEquals(0L, checkVar1.longValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = DaoException.class)
     public void readObjectIdByIncorrectName() {
         String incorrectName = "alladin";
         BigInteger id = userDAO.readUserIdByLogin(incorrectName);
@@ -183,6 +183,24 @@ public class AbstractDaoTest extends AbstractDAOImpl {
     public void readObjectIdByIncorrectEmail() {
         String incorrectEmail = "alladin@arab.net";
         BigInteger id = userDAO.readUserIdByEmail(incorrectEmail);
+    }
+
+    @Test
+    public void createUserWithManagerId() {
+        String pUser = "user_parent";
+        String wUser = "user_with_parent";
+
+        BigInteger pUserId = createObject(ObjectType.USER.getId(), pUser);
+        BigInteger wUserId = createObjectWithParent(ObjectType.USER.getId(), pUserId, wUser);
+
+        String dbPUser = readObjectNameById(pUserId);
+        String dbWUser = readObjectNameById(wUserId);
+
+        assertEquals(pUser, dbPUser);
+        assertEquals(wUser, dbWUser);
+        /*Cleans after test*/
+        deleteObjectById(wUserId);
+        deleteObjectById(pUserId);
     }
 
 }
