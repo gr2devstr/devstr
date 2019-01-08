@@ -2,10 +2,9 @@ package com.devstr.logger;
 
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.math.BigInteger;
-import java.sql.SQLException;
 
 public class DevstrLogger extends Log4JLogger {
 
@@ -36,42 +35,42 @@ public class DevstrLogger extends Log4JLogger {
 
     @Override
     public void trace(Object message, Throwable t) {
-        if (SQLException.class.isAssignableFrom(t.getClass()))
+        if (DataAccessException.class.isAssignableFrom(t.getClass()))
             logInDB("TRACE", message + t.getMessage());
         super.trace(message, t);
     }
 
     @Override
     public void debug(Object message, Throwable t) {
-        if (SQLException.class.isAssignableFrom(t.getClass()))
+        if (DataAccessException.class.isAssignableFrom(t.getClass()))
             logInDB("DEBUG", message + t.getMessage());
         super.debug(message, t);
     }
 
     @Override
     public void info(Object message, Throwable t) {
-        if (SQLException.class.isAssignableFrom(t.getClass()))
+        if (DataAccessException.class.isAssignableFrom(t.getClass()))
             logInDB("INFO", message + t.getMessage());
         super.info(message, t);
     }
 
     @Override
     public void warn(Object message, Throwable t) {
-        if (SQLException.class.isAssignableFrom(t.getClass()))
+        if (DataAccessException.class.isAssignableFrom(t.getClass()))
             logInDB("WARN", message + t.getMessage());
         super.warn(message, t);
     }
 
     @Override
     public void error(Object message, Throwable t) {
-        if (SQLException.class.isAssignableFrom(t.getClass()))
+        if (DataAccessException.class.isAssignableFrom(t.getClass()))
             logInDB("ERROR", message + t.getMessage());
         super.error(message, t);
     }
 
     @Override
     public void fatal(Object message, Throwable t) {
-        if (SQLException.class.isAssignableFrom(t.getClass()))
+        if (DataAccessException.class.isAssignableFrom(t.getClass()))
             logInDB("FATAL", message + t.getMessage());
         super.fatal(message, t);
     }
