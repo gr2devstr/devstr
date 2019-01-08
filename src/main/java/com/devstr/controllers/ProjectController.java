@@ -1,89 +1,218 @@
 package com.devstr.controllers;
 
+import com.devstr.DevstrFactoryManager;
+import com.devstr.controllers.validation.ProjectValidator;
 import com.devstr.dao.ProjectDAO;
+import com.devstr.exception.DaoException;
+import com.devstr.logger.DevstrLogger;
 import com.devstr.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 import java.math.BigInteger;
-import java.util.Locale;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 public class ProjectController {
+
+    private static final DevstrLogger LOGGER = DevstrFactoryManager.getLoggerFactory()
+            .getLogger(ProjectController.class.getName());
 
     @Autowired
     private ProjectDAO projectDAO;
 
-    static {
-        Locale.setDefault(Locale.ENGLISH);
-    }
+    @Autowired
+    private ProjectValidator projectValidator;
 
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
-    @RequestMapping(value = "/crateProject/{name}/{pmid}", method = RequestMethod.POST)
-    public ResponseEntity<Void> createProject(@PathVariable("name") String name, @PathVariable("pmid") BigInteger managerId, UriComponentsBuilder builder) throws IOException {
-        BigInteger flag = projectDAO.createProject(name, managerId);
-        if (flag == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+    @PostMapping("/create")
+    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+        if (!projectValidator.isNameValid(project.getProjectName())) {
+            String message = "Project with this name already exists";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/crateProject/{name}/{pmid}").buildAndExpand().toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        try {
+            if (projectValidator.isPmIdValid(project.getProjectManagerId())) {
+                BigInteger id = projectDAO.createProject(
+                        project.getProjectName(),
+                        project.getProjectManagerId()
+                );
+                Project newProject = projectDAO.readProjectById(id);
+                return new ResponseEntity<>(newProject, HttpStatus.OK);
+            } else {
+                String message = "Project manager ID is incorrect, ID: " + project.getProjectManagerId();
+                LOGGER.info(message);
+                return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+            }
+        } catch (DaoException exc) {
+            LOGGER.error(exc.getMessage(), exc);
+            String message = "Sorry, server is temporarily busy";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
-    @RequestMapping(value = "/crateProject/{name}/{projid}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateProjectRepositoryName(@PathVariable("name") String name, @PathVariable("projid") BigInteger projectID, UriComponentsBuilder builder) throws IOException {
-        projectDAO.updateProjectRepositoryName(projectID, name);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/update/{name}/{projid}").buildAndExpand().toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    @PatchMapping("/update/reponame/{name}/id/{id}")
+    public ResponseEntity<Project> updateProjectRepositoryName(@PathVariable("name") String name,
+                                                               @PathVariable("id") BigInteger id) {
+        if (projectValidator.isTextNotValid(name)) {
+            String message = "Repo name: " + name + " - isn't valid, have to be not null or empty";
+            LOGGER.info(message);
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (projectValidator.isProjectIdValid(id)) {
+                Project oldProject = projectDAO.readProjectById(id);
+                if (oldProject.getRepoName() != null && !oldProject.getRepoName().equals(name)) {
+                    projectDAO.updateProjectRepositoryName(id, name);
+                    Project updProject = projectDAO.readProjectById(id);
+                    return new ResponseEntity<>(updProject, HttpStatus.OK);
+                } else {
+                    String message = "Repo name: " + name + " - isn't valid, already exist";
+                    LOGGER.info(message);
+                    return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                String message = "Project not found, ID: " + id;
+                LOGGER.info(message);
+                return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.NOT_FOUND);
+            }
+        } catch (DaoException exc) {
+            LOGGER.error(exc.getMessage(), exc);
+            String message = "Sorry, server is temporarily busy";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
-    @RequestMapping(value = "/update/{jiraLogin}/{projid}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateProjectJiraLogin(@PathVariable("jiraLogin") String name, @PathVariable("projid") BigInteger projectID, UriComponentsBuilder builder) throws IOException {
-        projectDAO.updateProjectJiraLogin(projectID, name);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/update/{jiraLogin}/{projid}").buildAndExpand().toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    @PatchMapping("/update/jiralogin/{login}/id/{id}")
+    public ResponseEntity<Project> updateJiraLogin(@PathVariable("login") String login,
+                                                   @PathVariable("id") BigInteger id) {
+        if (projectValidator.isTextNotValid(login)) {
+            String message = "Jira login: " + login + " - isn't valid, have to be not null or empty";
+            LOGGER.info(message);
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (projectValidator.isProjectIdValid(id)) {
+                Project oldProject = projectDAO.readProjectById(id);
+                if (oldProject.getJiraLogin() != null && !oldProject.getJiraLogin().equals(login)) {
+                    projectDAO.updateProjectJiraLogin(id, login);
+                    Project updProject = projectDAO.readProjectById(id);
+                    return new ResponseEntity<>(updProject, HttpStatus.OK);
+                } else {
+                    String message = "Jira login: " + login + " - isn't valid, already exist";
+                    LOGGER.info(message);
+                    return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                String message = "Project not found, ID: " + id;
+                LOGGER.info(message);
+                return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.NOT_FOUND);
+            }
+        } catch (DaoException exc) {
+            LOGGER.error(exc.getMessage(), exc);
+            String message = "Sorry, server is temporarily busy";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
-    @RequestMapping(value = "/update/{jiraPassword}/{projid}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateProjectJiraPassword(@PathVariable("jiraPassword") String name, @PathVariable("projid") BigInteger projectID, UriComponentsBuilder builder) throws IOException {
-        projectDAO.updateProjectJiraPassword(projectID, name);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/update/{jiraPassword}/{projid}").buildAndExpand().toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    @PatchMapping("/update/jirapass/{pass}/id/{id}")
+    public ResponseEntity<Project> updateJiraPassword(@PathVariable("pass") String pass,
+                                                      @PathVariable("id") BigInteger id) {
+        if (projectValidator.isTextNotValid(pass)) {
+            String message = "Jira password: " + pass + " - isn't valid, have to be not null or empty";
+            LOGGER.info(message);
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (projectValidator.isProjectIdValid(id)) {
+                Project oldProject = projectDAO.readProjectById(id);
+                if (oldProject.getJiraPassword() != null && !oldProject.getJiraPassword().equals(pass)) {
+                    projectDAO.updateProjectJiraLogin(id, pass);
+                    Project updProject = projectDAO.readProjectById(id);
+                    return new ResponseEntity<>(updProject, HttpStatus.OK);
+                } else {
+                    String message = "Jira password: " + pass + " - isn't valid, already exist";
+                    LOGGER.info(message);
+                    return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                String message = "Project not found, ID: " + id;
+                LOGGER.info(message);
+                return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.NOT_FOUND);
+            }
+        } catch (DaoException exc) {
+            LOGGER.error(exc.getMessage(), exc);
+            String message = "Sorry, server is temporarily busy";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PreAuthorize("hasAuthority('PROJECT_MANAGER')")
-    @RequestMapping(value = "/update/{domain}/{projid}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateProjectJiraDomain(@PathVariable("domain") String name, @PathVariable("projid") BigInteger projectID, UriComponentsBuilder builder) throws IOException {
-        projectDAO.updateProjectJiraDomain(projectID, name);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/update/{domain}/{projid}").buildAndExpand().toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    @PatchMapping("/update/jiradomain/{domain}/id/{id}")
+    public ResponseEntity<Project> updateJiraDomain(@PathVariable("domain") String domain,
+                                                    @PathVariable("id") BigInteger id) {
+        if (projectValidator.isTextNotValid(domain)) {
+            String message = "Jira domain: " + domain + " - isn't valid, have to be not null or empty";
+            LOGGER.info(message);
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (projectValidator.isProjectIdValid(id)) {
+                Project oldProject = projectDAO.readProjectById(id);
+                if (oldProject.getJiraDomain() != null && !oldProject.getJiraDomain().equals(domain)) {
+                    projectDAO.updateProjectJiraLogin(id, domain);
+                    Project updProject = projectDAO.readProjectById(id);
+                    return new ResponseEntity<>(updProject, HttpStatus.OK);
+                } else {
+                    String message = "Jira domain: " + domain + " - isn't valid, already exist";
+                    LOGGER.info(message);
+                    return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                String message = "Project not found, ID: " + id;
+                LOGGER.info(message);
+                return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.NOT_FOUND);
+            }
+        } catch (DaoException exc) {
+            LOGGER.error(exc.getMessage(), exc);
+            String message = "Sorry, server is temporarily busy";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') " +
-            "OR hasAuthority('TECHNICAL_MANAGER') " +
-            "OR hasAuthority('PROJECT_MANAGER') " +
-            "OR hasAuthority('GROUP_MANAGER')")
-    @RequestMapping(value = "/read/{projid}", method = RequestMethod.GET)
-    public ResponseEntity<Project> readProjectById(@PathVariable("projid") BigInteger projID) {
-        Project project = projectDAO.readProjectById(projID);
-        return new ResponseEntity<>(project, HttpStatus.OK);
+    @PreAuthorize("hasAnyAuthority('ADMIN','TECHNICAL_MANAGER','PROJECT_MANAGER','GROUP_MANAGER')")
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Project> readProjectById(@PathVariable("id") BigInteger id) {
+        try {
+            if (projectValidator.isProjectIdValid(id)) {
+                Project project = projectDAO.readProjectById(id);
+                return new ResponseEntity<>(project, HttpStatus.OK);
+            } else {
+                String message = "Project not found, ID: " + id;
+                LOGGER.info(message);
+                return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.NOT_FOUND);
+            }
+        } catch (DaoException exc) {
+            LOGGER.error(exc.getMessage(), exc);
+            String message = "Sorry, server is temporarily busy";
+            return new ResponseEntity<>(null, getErrorMsg(message), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private MultiValueMap<String, String> getErrorMsg(String message) {
+        MultiValueMap<String, String> errorMessage = new LinkedMultiValueMap<>();
+        List<String> errorBody = Collections.singletonList(message);
+        errorMessage.put("Error", errorBody);
+        return errorMessage;
     }
 
 }
